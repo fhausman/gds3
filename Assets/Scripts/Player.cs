@@ -12,6 +12,8 @@ public class PlayerBase : BaseState
     protected Vector3 movementVector = new Vector3();
     protected Vector3 gravityDirection;
 
+    private int inverseMult = 1;
+
     public PlayerBase(Player p)
     {
         player = p;
@@ -26,7 +28,8 @@ public class PlayerBase : BaseState
     {
         if(Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            player.parent.Rotate(0, 180, 180);
+            player.parent.Rotate(0, 0, 180);
+            inverseMult *= -1;
         }
     }
 
@@ -48,7 +51,7 @@ public class PlayerBase : BaseState
         }
 
         //horizontal movement
-        var horizontalMove = player.transform.right * Input.GetAxis("Horizontal") * 0.2f;
+        var horizontalMove = player.transform.right * Input.GetAxis("Horizontal") * 0.2f * inverseMult;
         if (Physics.Raycast(player.transform.position, player.transform.right, out hit, 0.22f, 1 << 8))
         {
             horizontalMove.x = Mathf.Clamp(horizontalMove.x, -1.0f, 0.0f);
