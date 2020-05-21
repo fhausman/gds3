@@ -27,19 +27,7 @@ public class PlayerBase : BaseState
         if(Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             player.parent.Rotate(0, 180, 180);
-            player.Velocity = Vector3.zero;
         }
-
-        //gravityDirection = -player.transform.up;
-        //RaycastHit hit;
-        //if (Physics.Raycast(player.transform.position, -player.transform.up, out hit, 3.0f, 1 << 8))
-        //{
-        //    var angle = Vector3.Angle(player.transform.up, hit.normal);
-        //    if(angle > 0.0f)
-        //    {
-        //        player.transform.RotateAround(hit.point, Vector3.forward, angle);
-        //    }
-        //}
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -64,13 +52,12 @@ public class PlayerBase : BaseState
         if (Physics.Raycast(player.transform.position, player.transform.right, out hit, 0.22f, 1 << 8))
         {
             horizontalMove.x = Mathf.Clamp(horizontalMove.x, -1.0f, 0.0f);
-            player.parent.position = Vector3.right * (hit.point.x - 0.22f);// - player.parent.position;
-            //Debug.Log(string.Format("hit: {0} player: {0}", hit.point, player.transform.position));
+            player.parent.position = Vector3.right * (hit.point.x - 0.22f);
         }
         else if (Physics.Raycast(player.transform.position, -player.transform.right, out hit, 0.22f, 1 << 8))
         {
             horizontalMove.x = Mathf.Clamp(horizontalMove.x, 0.0f, 1.0f);
-            player.parent.position = hit.point;// + player.parent.position;
+            player.parent.position = hit.point;
         }
 
         player.parent.position += horizontalMove;
@@ -80,43 +67,23 @@ public class PlayerBase : BaseState
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _speed;
+    private float _speed = 0.0f;
     public float Speed { get => _speed; }
 
     [SerializeField]
-    private float _dashSpeed;
+    private float _dashSpeed = 0.0f;
     public float DashSpeed { get => _dashSpeed; }
 
     [SerializeField]
-    private float _fallSpeed;
-    public float FallSpeed { get => _fallSpeed; }
+    private float _gravitySpeed = 0.0f;
+    public float GravitySpeed { get => _gravitySpeed; }
 
-    [SerializeField]
-    private float _jumpForce;
-    public float JumpForce { get => _jumpForce; }
-
-    [SerializeField]
-    private float _jumpTime;
-    public float JumpTime { get => _jumpTime; }
-
-    [SerializeField]
-    private float _coyoteTime;
-    public float CoyoteTime { get => _coyoteTime; }
-
-    [SerializeField]
-    private bool _doubleJump = false;
-    public bool DoubleJump { get => _doubleJump; }
-
-    public Vector3 Velocity { get; set; }
-    public bool JumpEnabled { get; set; }
     public Transform parent;
 
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
-    public Rigidbody Rigidbody { get; private set; }
 
     void Start()
     {
-        Rigidbody = GetComponent<Rigidbody>();
         StateMachine.AddState(PlayerState.Running, new PlayerBase(this));
         StateMachine.ChangeState(PlayerState.Running);
     }
