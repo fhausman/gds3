@@ -40,7 +40,7 @@ public class PlayerMoving : BaseState
     {
         var horizontalInput = Vector3.Dot(player.transform.right, Vector3.right) * player.Controls.Player.HorizontalMovement.ReadValue<float>();
         var verticalInput = Vector3.Dot(player.transform.right, Vector3.up) * player.Controls.Player.VerticalMovement.ReadValue<float>();
-        var inputDirectionModifier = horizontalInput + verticalInput;
+        var inputDirectionModifier = Mathf.Clamp(horizontalInput + verticalInput, -1.0f, 1.0f);
 
         if(Mathf.Abs(inputDirectionModifier) > 0.0f + Mathf.Epsilon)
         {
