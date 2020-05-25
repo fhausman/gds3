@@ -5977,31 +5977,6 @@ PrefabInstance:
       propertyPath: parent
       value: 
       objectReference: {fileID: 1447021708}
-    - target: {fileID: 1065187206782375560, guid: f0e2243bba15c81419da0dea813f11b3,
-        type: 3}
-      propertyPath: _speed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065187206782375563, guid: f0e2243bba15c81419da0dea813f11b3,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065187206782375563, guid: f0e2243bba15c81419da0dea813f11b3,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065187206782375563, guid: f0e2243bba15c81419da0dea813f11b3,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065187206782375563, guid: f0e2243bba15c81419da0dea813f11b3,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6436082647343035379, guid: f0e2243bba15c81419da0dea813f11b3,
         type: 3}
       propertyPath: m_Name
