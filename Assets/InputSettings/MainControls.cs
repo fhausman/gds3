@@ -272,7 +272,7 @@ public class @MainControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""830cece0-3b0c-4fc4-97b6-2b7e679ad25b"",
-                    ""path"": ""<DualShockGamepad>/rightStick"",
+                    ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
