@@ -20,24 +20,20 @@ public class PlayerMoving : BaseState
 
     public override void onInit(params object[] args)
     {
+        player.Controls.Player.GravitySwitch.performed += GravitySwitch;
+        player.Controls.Player.Dash.performed += Dash;
     }
 
-    public override void onUpdate(float deltaTime)
+    public override void onExit()
     {
-        if(Keyboard.current.spaceKey.wasPressedThisFrame && player.CanSwitch)
-        {
-            player.Flip();
-        }
-        if(Keyboard.current.leftCtrlKey.wasPressedThisFrame)
-        {
-            player.StateMachine.ChangeState(PlayerState.Dashing);
-        }
+        player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
+        player.Controls.Player.Dash.performed -= Dash;
     }
 
     public override void onFixedUpdate(float deltaTime)
     {
-        var horizontalInput = Vector3.Dot(player.transform.right, Vector3.right) * Input.GetAxis("Horizontal");
-        var verticalInput = Vector3.Dot(player.transform.right, Vector3.up) * Input.GetAxis("Vertical");
+        var horizontalInput = Vector3.Dot(player.transform.right, Vector3.right) * player.Controls.Player.HorizontalMovement.ReadValue<float>();
+        var verticalInput = Vector3.Dot(player.transform.right, Vector3.up) * player.Controls.Player.VerticalMovement.ReadValue<float>();
         var inputDirectionModifier = horizontalInput + verticalInput;
 
         if(Mathf.Abs(inputDirectionModifier) > 0.0f + Mathf.Epsilon)
@@ -47,6 +43,19 @@ public class PlayerMoving : BaseState
 
         var horizontalMove = player.transform.right * inputDirectionModifier * player.Speed * deltaTime;
         player.Move(horizontalMove, deltaTime);
+    }
+
+    private void GravitySwitch(InputAction.CallbackContext ctx)
+    {
+        if(player.CanSwitch)
+        {
+            player.Flip();
+        }
+    }
+
+    private void Dash(InputAction.CallbackContext ctx)
+    {
+        player.StateMachine.ChangeState(PlayerState.Dashing);
     }
 }
 
@@ -103,6 +112,7 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Properties
+    public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
     public bool CanSwitch { get; private set; } = false;
     public float FacingDirection { get; set; } = 1.0f;
@@ -146,9 +156,13 @@ public class Player : MonoBehaviour
     #region Mono behaviour methods
     void Start()
     {
+        Controls = new MainControls();
+
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
         StateMachine.ChangeState(PlayerState.Moving);
+
+        Controls.Enable();
     }
 
     void Update()
