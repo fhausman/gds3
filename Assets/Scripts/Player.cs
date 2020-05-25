@@ -3,67 +3,57 @@ using UnityEngine.InputSystem;
 
 public enum PlayerState
 {
-    Running,
+    Moving,
 }
 
-public class PlayerBase : BaseState
+public class PlayerMain : BaseState
 {
-    protected Player player;
-    protected Vector3 movementVector = new Vector3();
-    protected Vector3 gravityDirection;
+    private Player player;
+    private Vector3 gravityVelocity = Vector3.zero;
+    private bool canSwitch = false;
 
-    private int inverseMult = 1;
-
-    public PlayerBase(Player p)
+    public PlayerMain(Player p)
     {
         player = p;
     }
 
     public override void onInit(params object[] args)
     {
-        gravityDirection = -player.transform.up;
     }
 
     public override void onUpdate(float deltaTime)
     {
-        if(Keyboard.current.spaceKey.wasPressedThisFrame)
+        if(Keyboard.current.spaceKey.wasPressedThisFrame && canSwitch)
         {
             player.parent.Rotate(0, 0, 180);
-            inverseMult *= -1;
+            player.parent.position -= player.parent.up;
         }
     }
 
     public override void onFixedUpdate(float deltaTime)
     {
-        RaycastHit hit;
+        var horizontalInput = Vector3.Dot(player.transform.right, Vector3.right) * Input.GetAxis("Horizontal");
+        var verticalInput = Vector3.Dot(player.transform.right, Vector3.up) * Input.GetAxis("Vertical");
 
+        var horizontalMove = player.transform.right * (horizontalInput + verticalInput) * player.Speed * deltaTime;
+        player.parent.position += horizontalMove;
+
+        RaycastHit hit;
         //vertical movement
         if (Physics.Raycast(player.transform.position, -player.transform.up, out hit, 0.52f, 1 << 8))
         {
-            //Debug.DrawRay(player.transform.position, -player.transform.up * 1.0f, Color.yellow);
-            Debug.DrawRay(hit.point, hit.normal, Color.red);
+            //Debug.DrawRay(hit.point, hit.normal, Color.red);
             player.parent.position = hit.point;
             player.parent.rotation = Quaternion.FromToRotation(player.transform.up, hit.normal) * player.transform.rotation;
+            gravityVelocity = Vector3.zero;
+            canSwitch = true;
         }
         else
         {
-            player.parent.position -= player.parent.up * 0.5f;
+            gravityVelocity += -player.parent.up * player.GravitySpeed * deltaTime;
+            player.parent.position += gravityVelocity * deltaTime;
+            canSwitch = false;
         }
-
-        //horizontal movement
-        var horizontalMove = player.transform.right * Input.GetAxis("Horizontal") * 0.2f * inverseMult;
-        if (Physics.Raycast(player.transform.position, player.transform.right, out hit, 0.22f, 1 << 8))
-        {
-            horizontalMove.x = Mathf.Clamp(horizontalMove.x, -1.0f, 0.0f);
-            player.parent.position = Vector3.right * (hit.point.x - 0.22f);
-        }
-        else if (Physics.Raycast(player.transform.position, -player.transform.right, out hit, 0.22f, 1 << 8))
-        {
-            horizontalMove.x = Mathf.Clamp(horizontalMove.x, 0.0f, 1.0f);
-            player.parent.position = hit.point;
-        }
-
-        player.parent.position += horizontalMove;
     }
 }
 
@@ -87,8 +77,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        StateMachine.AddState(PlayerState.Running, new PlayerBase(this));
-        StateMachine.ChangeState(PlayerState.Running);
+        StateMachine.AddState(PlayerState.Moving, new PlayerMain(this));
+        StateMachine.ChangeState(PlayerState.Moving);
     }
 
     void Update()
