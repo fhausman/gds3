@@ -12,6 +12,7 @@ public enum PlayerState
 public class PlayerMoving : BaseState
 {
     private Player player = null;
+    private float dashCooldownElapsed = 0.0f;
 
     public PlayerMoving(Player p)
     {
@@ -28,6 +29,11 @@ public class PlayerMoving : BaseState
     {
         player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
         player.Controls.Player.Dash.performed -= Dash;
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        dashCooldownElapsed += deltaTime;
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -55,7 +61,11 @@ public class PlayerMoving : BaseState
 
     private void Dash(InputAction.CallbackContext ctx)
     {
-        player.StateMachine.ChangeState(PlayerState.Dashing);
+        if (dashCooldownElapsed >= player.DashCooldown)
+        {
+            player.StateMachine.ChangeState(PlayerState.Dashing);
+            dashCooldownElapsed = 0.0f;
+        }
     }
 }
 
@@ -100,6 +110,7 @@ public class Player : MonoBehaviour
     public float GravitySpeed { get => settings.gravitySpeed; }
     public float DashSpeed { get => settings.dashSpeed; }
     public float DashTime { get => settings.dashTime; }
+    public float DashCooldown { get => settings.dashCooldown; }
     #endregion
 
     #region Outside References
