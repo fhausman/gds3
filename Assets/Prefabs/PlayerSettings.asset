@@ -17,3 +17,6 @@ MonoBehaviour:
   dashSpeed: 15
   dashTime: 0.25
   dashCooldown: 0.5
+  upperBlockZoneSize: {x: 0.5, y: 0.6}
+  bottomBlockZoneSize: {x: 0.5, y: 0.6}
+  sweetSpotWidth: 0.1
