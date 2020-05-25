@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1065187206782375561}
   - component: {fileID: 1065187206782375560}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,14 +109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab666931dc40ec447b5d8cb2056de231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 0
+  _speed: 2
   _dashSpeed: 0
-  _fallSpeed: 10
-  _jumpForce: 0
-  _jumpTime: 0
-  _coyoteTime: 0
-  _doubleJump: 0
-  parent: {fileID: 0}
+  _gravitySpeed: 15
+  parent: {fileID: 7776613916687982162}
 --- !u!1 &6436082647343035379
 GameObject:
   m_ObjectHideFlags: 0
