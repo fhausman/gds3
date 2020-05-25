@@ -59,17 +59,11 @@ public class PlayerMain : BaseState
 
 public class Player : MonoBehaviour
 {
-    [SerializeField]
-    private float _speed = 0.0f;
-    public float Speed { get => _speed; }
+    public PlayerSettings settings;
 
-    [SerializeField]
-    private float _dashSpeed = 0.0f;
-    public float DashSpeed { get => _dashSpeed; }
-
-    [SerializeField]
-    private float _gravitySpeed = 0.0f;
-    public float GravitySpeed { get => _gravitySpeed; }
+    public float Speed { get => settings.speed; }
+    public float DashSpeed { get => settings.dashSpeed; }
+    public float GravitySpeed { get => settings.gravitySpeed; }
 
     public Transform parent;
 
