@@ -16,3 +16,4 @@ MonoBehaviour:
   gravitySpeed: 10
   dashSpeed: 15
   dashTime: 0.25
+  dashCooldown: 0.5
