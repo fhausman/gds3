@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 9c815244d92b91940bf16011fb6ab243, type: 2}
-  parent: {fileID: 7776613916687982162}
+  _parent: {fileID: 7776613916687982162}
 --- !u!1 &6436082647343035379
 GameObject:
   m_ObjectHideFlags: 0
