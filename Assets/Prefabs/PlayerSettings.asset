@@ -19,4 +19,4 @@ MonoBehaviour:
   dashCooldown: 0.5
   upperBlockZoneSize: {x: 0.5, y: 0.6}
   bottomBlockZoneSize: {x: 0.5, y: 0.6}
-  sweetSpotWidth: 0.1
+  sweetSpotWidth: 0.2
