@@ -250,7 +250,7 @@ public class PlayerAttacking : BaseState
                     player.transform.position + new Vector3(player.FacingDirection * zoneSize.x / 2, Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
                     new Vector3(zoneSize.x / 2, zoneSize.y / 2, 0.5f),
                     player.transform.rotation,
-                    LayerMask.NameToLayer("Enemies")
+                    LayerMask.GetMask("Enemies")
                     );
     }
 
@@ -347,7 +347,6 @@ public class Player : MonoBehaviour
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
-
     public Bounds UpperBlockAreaBounds
     {
         get =>
