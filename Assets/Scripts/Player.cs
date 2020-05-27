@@ -39,6 +39,7 @@ public class PlayerMoving : BaseState
         player.Controls.Player.Block.canceled -= LeavingBlock;
 
         player.Weapon.SetIdle();
+        player.Blocking = false;
         speedModifier = 1.0f;
     }
 
@@ -275,10 +276,32 @@ public class PlayerReceivedDamage : BaseState
 {
     private Player player = null;
     private float damageCooldownDuration = 0.1f;
+    private float damageCooldownElapsed = 0.0f;
+    private float impactDirection = 1.0f;
 
     public PlayerReceivedDamage(Player p)
     {
         player = p;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        damageCooldownElapsed = 0.0f;
+        impactDirection = (float) args[0];
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        if (damageCooldownElapsed > damageCooldownDuration)
+        {
+            player.StateMachine.ChangeState(PlayerState.Moving);
+        }
+
+        var horizontalMove =
+            impactDirection * player.transform.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
+        player.Move(horizontalMove, deltaTime);
+
+        damageCooldownElapsed += deltaTime;
     }
 }
 #endregion
@@ -414,6 +437,11 @@ public class Player : MonoBehaviour
             {
                 if(collision.collider.bounds.Intersects(Aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
                     collision.collider.SendMessage("Destroy");
+            }
+            else
+            {
+                var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.attachedRigidbody.velocity));
+                StateMachine.ChangeState(PlayerState.ReceivedDamage, impactDirection);
             }
         }
     }
