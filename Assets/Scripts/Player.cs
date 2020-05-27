@@ -145,23 +145,46 @@ public class PlayerDashing : BaseState
 
     public override void onInit(params object[] args)
     {
+        player.Controls.Player.Attack.performed += Attack;
+        player.Controls.Player.Block.performed += Block;
+
         dashTimeElapsed = 0.0f;
+    }
+
+    public override void onExit()
+    {
+        player.Controls.Player.Attack.performed -= Attack;
+        player.Controls.Player.Block.performed -= Block;
+
+        player.DashCooldownElapsed = 0.0f;
     }
 
     public override void onFixedUpdate(float deltaTime)
     {
-        if(dashTimeElapsed <= player.DashTime)
-        {
-            var horizontalMove =
-                player.FacingDirection * player.transform.right * player.DashSpeed * deltaTime;
-            player.Move(horizontalMove, deltaTime);
-        }
-        else
+        if(dashTimeElapsed > player.DashTime)
         {
             player.StateMachine.ChangeState(PlayerState.Moving);
         }
 
+        var horizontalMove =
+            player.FacingDirection * player.transform.right * (player.DashSpeed - (dashTimeElapsed / player.DashTime) * player.DashSpeed) * deltaTime;
+        player.Move(horizontalMove, deltaTime);
+
         dashTimeElapsed += deltaTime;
+    }
+
+    private void Attack(InputAction.CallbackContext ctx)
+    {
+        if (player.WeaponEquipped)
+        {
+            player.StateMachine.ChangeState(PlayerState.Attacking);
+        }
+    }
+
+    private void Block(InputAction.CallbackContext ctx)
+    {
+        player.Blocking = true;
+        player.StateMachine.ChangeState(PlayerState.Moving);
     }
 }
 
@@ -212,6 +235,10 @@ public class PlayerAttacking : BaseState
         {
             player.StateMachine.ChangeState(PlayerState.Moving);
         }
+
+        var horizontalMove =
+            player.FacingDirection * player.transform.right * (player.Speed + 1.0f - (attackTimeElapsed / player.AttackDuration) * player.Speed) * deltaTime;
+        player.Move(horizontalMove, deltaTime);
 
         attackTimeElapsed += deltaTime;
     }
@@ -294,7 +321,7 @@ public class Player : MonoBehaviour
     public bool Blocking { get; set; } = false;
     public bool CanSwitch { get; set; } = false;
     public bool WeaponEquipped { get; set; } = true;
-    public bool CanDash { get => DashCooldownElapsed <= DashCooldown; }
+    public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
 
