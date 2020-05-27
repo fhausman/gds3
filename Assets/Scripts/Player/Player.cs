@@ -441,8 +441,8 @@ public class Player : MonoBehaviour
                 }
             }
 
-            var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.attachedRigidbody.velocity));
-            StateMachine.ChangeState(PlayerState.ReceivedDamage, impactDirection);
+            var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.transform.right));
+            StateMachine.ChangeState(PlayerState.ReceivedDamage, -impactDirection);
         }
     }
 

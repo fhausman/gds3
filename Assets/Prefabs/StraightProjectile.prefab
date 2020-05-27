@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 441650186031619232}
   - component: {fileID: 441650186031619239}
   m_Layer: 9
-  m_Name: Projectile
+  m_Name: StraightProjectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,3 +125,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73f08b77904122348bdc8078435aa545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: a4c82fabbb4b78a4d9392f9233fadeed, type: 2}
