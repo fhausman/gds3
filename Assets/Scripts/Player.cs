@@ -6,13 +6,16 @@ using UnityEngine.InputSystem;
 public enum PlayerState
 {
     Moving,
-    Dashing
+    Dashing,
+    Attacking,
+    ReceivedDamage
 }
 
 public class PlayerMoving : BaseState
 {
     private Player player = null;
     private float dashCooldownElapsed = 0.0f;
+    private float speedModifier = 1.0f;
 
     public PlayerMoving(Player p)
     {
@@ -23,23 +26,44 @@ public class PlayerMoving : BaseState
     {
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
         player.Controls.Player.Dash.performed += Dash;
-        player.Controls.Player.Attack.performed += player.Attack;
-        player.Controls.Player.Block.performed += player.Block;
-        player.Controls.Player.Block.canceled += player.LeavingBlock;
+        player.Controls.Player.Attack.performed += Attack;
+        player.Controls.Player.Block.performed += Block;
+        player.Controls.Player.Block.canceled += LeavingBlock;
     }
 
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
         player.Controls.Player.Dash.performed -= Dash;
-        player.Controls.Player.Attack.performed -= player.Attack;
-        player.Controls.Player.Block.performed -= player.Block;
-        player.Controls.Player.Block.canceled -= player.LeavingBlock;
+        player.Controls.Player.Attack.performed -= Attack;
+        player.Controls.Player.Block.performed -= Block;
+        player.Controls.Player.Block.canceled -= LeavingBlock;
+
+        player.Weapon.SetIdle();
+        speedModifier = 1.0f;
     }
 
     public override void onUpdate(float deltaTime)
     {
         dashCooldownElapsed += deltaTime;
+
+        if (player.Blocking)
+        {
+            speedModifier = player.BlockSpeedModifier;
+            if (player.Aim.y >= 0.0f)
+            {
+                player.Weapon.SetUpper();
+            }
+            else
+            {
+                player.Weapon.SetBottom();
+            }
+        }
+        else
+        {
+            player.Weapon.SetIdle();
+            speedModifier = 1.0f;
+        }
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -53,7 +77,7 @@ public class PlayerMoving : BaseState
             player.FacingDirection = Mathf.Sign(inputDirectionModifier);
         }
 
-        var horizontalMove = player.transform.right * inputDirectionModifier * player.Speed * deltaTime;
+        var horizontalMove = player.transform.right * inputDirectionModifier * player.Speed * speedModifier * deltaTime;
         player.Move(horizontalMove, deltaTime);
     }
 
@@ -71,6 +95,43 @@ public class PlayerMoving : BaseState
         {
             player.StateMachine.ChangeState(PlayerState.Dashing);
             dashCooldownElapsed = 0.0f;
+        }
+    }
+
+    private void Attack(InputAction.CallbackContext ctx)
+    {
+        if (player.WeaponEquipped)
+        {
+            player.StateMachine.ChangeState(PlayerState.Attacking);
+        }
+    }
+
+    private void Block(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("BLOCKING");
+        player.Blocking = true;
+
+        var zoneSize = player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
+        var projectiles =
+            Physics.OverlapBox(
+                player.transform.position + new Vector3(player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2), Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                new Vector3(player.SweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
+                player.transform.rotation,
+                LayerMask.GetMask("Projectiles")
+            );
+
+        foreach (var proj in projectiles)
+        {
+            proj.SendMessage("Reflect");
+        }
+    }
+
+    private void LeavingBlock(InputAction.CallbackContext ctx)
+    {
+        if (player.Blocking)
+        {
+            Debug.Log("NOT BLOCKING");
+            player.Blocking = false;
         }
     }
 }
@@ -106,6 +167,72 @@ public class PlayerDashing : BaseState
         dashTimeElapsed += deltaTime;
     }
 }
+
+public class PlayerAttacking : BaseState
+{
+    private Player player = null;
+    private float attackTimeElapsed = 0.0f;
+
+    public PlayerAttacking(Player p)
+    {
+        player = p;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        attackTimeElapsed = 0.0f;
+
+        Collider[] hitObjects = GetHitObjects(player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
+        foreach (var obj in hitObjects)
+        {
+            obj.SendMessage("ReceivedDamage");
+        }
+
+        if (player.Aim.y >= 0.0f)
+        {
+            player.Weapon.SetUpper();
+        }
+        else
+        {
+            player.Weapon.SetBottom();
+        }
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        if (attackTimeElapsed > player.AttackDuration)
+        {
+            player.StateMachine.ChangeState(PlayerState.Moving);
+        }
+
+        attackTimeElapsed += deltaTime;
+    }
+
+    public override void onExit()
+    {
+        player.Weapon.SetIdle();
+    }
+
+    private Collider[] GetHitObjects(Vector2 zoneSize)
+    {
+        return Physics.OverlapBox(
+                    player.transform.position + new Vector3(player.FacingDirection * zoneSize.x / 2, Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                    new Vector3(zoneSize.x / 2, zoneSize.y / 2, 0.5f),
+                    player.transform.rotation,
+                    LayerMask.NameToLayer("Enemies")
+                    );
+    }
+}
+
+public class PlayerReceivedDamage : BaseState
+{
+    private Player player = null;
+
+    public PlayerReceivedDamage(Player p)
+    {
+        player = p;
+    }
+}
 #endregion
 
 public class Player : MonoBehaviour
@@ -119,44 +246,47 @@ public class Player : MonoBehaviour
     public float DashTime { get => settings.dashTime; }
     public float DashCooldown { get => settings.dashCooldown; }
     public float AttackDuration { get => settings.attackDuration; }
+    public Vector2 UpperBlockZoneSize { get => settings.upperBlockZoneSize; }
+    public Vector2 BottomBlockZoneSize { get => settings.bottomBlockZoneSize; }
+    public float SweetSpotWidth { get => settings.sweetSpotWidth; }
     #endregion
 
     #region Outside References
     [SerializeField]
     private Transform _parent = null;
-    [SerializeField]
-    private SpriteRenderer _spriteRenderer = null;
+    public Transform Parent { get => _parent; }
+
     [SerializeField]
     private Weapon _weapon = null;
+    public Weapon Weapon { get => _weapon; }
+
     #endregion
 
     #region Private Fields 
-    private Vector3 _gravityVelocity = Vector3.zero;
-    private Vector2 _aim = Vector2.zero;
-    private bool _weaponEquipped = true;
-    private bool _blocking = false;
-    private bool _duringAttack = false;
-    private float _speedModifier = 1.0f;
     #endregion
 
     #region Properties
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
-    public bool CanSwitch { get; private set; } = false;
+    private Vector3 GravityVelocity { get; set; } = Vector3.zero;
+    public Vector2 Aim { get; set; } = Vector2.zero;
+    public bool Blocking { get; set; } = false;
+    public bool CanSwitch { get; set; } = false;
+    public bool WeaponEquipped { get; set; } = true;
     public float FacingDirection { get; set; } = 1.0f;
     public Bounds UpperBlockAreaBounds
     {
         get =>
             new Bounds(
-                transform.position + new Vector3(FacingDirection * settings.upperBlockZoneSize.x / 2, Mathf.Sign(_aim.y) * settings.upperBlockZoneSize.y / 2),
-                new Vector3(settings.upperBlockZoneSize.x, settings.upperBlockZoneSize.y, 0.5f));
+                transform.position + new Vector3(FacingDirection * UpperBlockZoneSize.x / 2, Mathf.Sign(Aim.y) * UpperBlockZoneSize.y / 2),
+                new Vector3(UpperBlockZoneSize.x, UpperBlockZoneSize.y, 0.5f));
     }
     public Bounds BottomBlockAreaBounds
     {
         get =>
               new Bounds(
-                  transform.position + new Vector3(FacingDirection * settings.bottomBlockZoneSize.x / 2, Mathf.Sign(_aim.y) * settings.bottomBlockZoneSize.y / 2),
-                  new Vector3(settings.bottomBlockZoneSize.x, settings.bottomBlockZoneSize.y, 0.5f));
+                  transform.position + new Vector3(FacingDirection * BottomBlockZoneSize.x / 2, Mathf.Sign(Aim.y) * BottomBlockZoneSize.y / 2),
+                  new Vector3(BottomBlockZoneSize.x, BottomBlockZoneSize.y, 0.5f));
     }
     #endregion
 
@@ -169,14 +299,14 @@ public class Player : MonoBehaviour
             //Debug.DrawRay(hit.point, hit.normal, Color.red);
             _parent.position = hit.point;
             _parent.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-            _gravityVelocity = Vector3.zero;
+            GravityVelocity = Vector3.zero;
             CanSwitch = true;
         }
         else
         {
             //TODO: change state to falling
-            _gravityVelocity += -_parent.up * GravitySpeed * deltaTime;
-            _parent.position += _gravityVelocity * deltaTime;
+            GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
+            _parent.position += GravityVelocity * deltaTime;
             CanSwitch = false;
         }
 
@@ -184,106 +314,13 @@ public class Player : MonoBehaviour
         {
             if (!Physics.Raycast(transform.position, dir, out hit, 0.22f, 1 << 8))
             {
-                _parent.position += dir * _speedModifier;
+                _parent.position += dir;
             }
         }
-    }
 
-    public void Attack(InputAction.CallbackContext ctx)
-    {
-        if (!_weaponEquipped || _duringAttack)
-            return;
-
-        StartCoroutine(PerformAttack());
-
-        //Collider[] hitObjects = GetHitObjects(_aim.y >= 0.0f ? settings.upperBlockZoneSize : settings.bottomBlockZoneSize);
-        //foreach(var obj in hitObjects)
-        //{
-        //    obj.SendMessage("ReceivedDamage");
-        //}
-    }
-
-    public IEnumerator PerformAttack()
-    {
-        Debug.Log("Heil");
-
-        _duringAttack = true;
-
-        if (_aim.y >= 0.0f)
-        {
-            _weapon.SetUpper();
-        }
-        else
-        {
-            _weapon.SetBottom();
-        }
-
-        yield return new WaitForSeconds(AttackDuration);
-
-        _weapon.SetIdle();
-
-        _duringAttack = false;
-    }
-
-    private Collider[] GetHitObjects(Vector2 zoneSize)
-    {
-        return Physics.OverlapBox(
-                    transform.position + new Vector3(FacingDirection * zoneSize.x / 2, Mathf.Sign(_aim.y) * zoneSize.y / 2),
-                    new Vector3(zoneSize.x / 2, zoneSize.y / 2, 0.5f),
-                    transform.rotation,
-                    LayerMask.NameToLayer("Enemies")
-                    );
-    }
-
-    public void Block(InputAction.CallbackContext ctx)
-    {
-        if (_duringAttack)
-            return;
-
-        Debug.Log("BLOCKING");
-        _blocking = true;
-
-        var zoneSize = _aim.y >= 0.0f ? settings.upperBlockZoneSize : settings.bottomBlockZoneSize;
-        var projectiles =
-            Physics.OverlapBox(
-                transform.position + new Vector3(FacingDirection * (zoneSize.x + (settings.sweetSpotWidth) / 2), Mathf.Sign(_aim.y) * zoneSize.y / 2),
-                new Vector3(settings.sweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
-                transform.rotation,
-                LayerMask.GetMask("Projectiles")
-            );
-
-        foreach(var proj in projectiles)
-        {
-            proj.SendMessage("Reflect");
-        }
-    }
-
-    public void LeavingBlock(InputAction.CallbackContext ctx)
-    {
-        if (_blocking)
-        {
-            Debug.Log("NOT BLOCKING");
-            _blocking = false;
-        }
-    }
-
-    public void SetWeaponPosition()
-    {
-        if(_blocking)
-        {
-            if(_aim.y >= 0.0f)
-            {
-                _weapon.SetUpper();
-            }
-            else
-            {
-                _weapon.SetBottom();
-            }
-        }
-        else if(!_duringAttack)
-        {
-            _weapon.SetIdle();
-        }
+        _parent.transform.localScale = new Vector3(
+            Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
+        );
     }
 
     public void Flip()
@@ -299,6 +336,8 @@ public class Player : MonoBehaviour
 
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
+        StateMachine.AddState(PlayerState.Attacking, new PlayerAttacking(this));
+        StateMachine.AddState(PlayerState.ReceivedDamage, new PlayerReceivedDamage(this));
         StateMachine.ChangeState(PlayerState.Moving);
 
         Controls.Enable();
@@ -306,15 +345,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        _aim = Controls.Player.Aim.ReadValue<Vector2>();
-        _parent.transform.localScale = new Vector3(
-            Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
-            );
-
-        _speedModifier = _blocking ? BlockSpeedModifier : 1.0f;
-
-        SetWeaponPosition();
-
+        Aim = Controls.Player.Aim.ReadValue<Vector2>();
         StateMachine.OnUpdate(Time.deltaTime);
     }
 
@@ -327,9 +358,9 @@ public class Player : MonoBehaviour
     {
         if(collision.collider.CompareTag("Projectile"))
         {
-            if(_blocking)
+            if(Blocking)
             {
-                if(collision.collider.bounds.Intersects(_aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
+                if(collision.collider.bounds.Intersects(Aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
                     collision.collider.SendMessage("Destroy");
             }
         }
@@ -339,13 +370,13 @@ public class Player : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.color = _aim.y > 0.0f + Mathf.Epsilon ?
+        Gizmos.color = Aim.y > 0.0f + Mathf.Epsilon ?
             Color.green : Color.red;
-        DrawZonesDebug(settings.upperBlockZoneSize, 1.0f);
+        DrawZonesDebug(UpperBlockZoneSize, 1.0f);
 
-        Gizmos.color = _aim.y < 0.0f - Mathf.Epsilon ?
+        Gizmos.color = Aim.y < 0.0f - Mathf.Epsilon ?
             Color.green : Color.red;
-        DrawZonesDebug(settings.bottomBlockZoneSize, -1.0f);
+        DrawZonesDebug(BottomBlockZoneSize, -1.0f);
     }
 
     private void DrawZonesDebug(Vector2 size, float dir)
@@ -357,8 +388,8 @@ public class Player : MonoBehaviour
         //sweetspot
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(
-            position + new Vector3((boxSize.x + settings.sweetSpotWidth) / 2, 0.0f),
-            new Vector3(settings.sweetSpotWidth, boxSize.y, boxSize.z)
+            position + new Vector3((boxSize.x + SweetSpotWidth) / 2, 0.0f),
+            new Vector3(SweetSpotWidth, boxSize.y, boxSize.z)
             );
     }
 #endif
