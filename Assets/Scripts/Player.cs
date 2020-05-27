@@ -435,14 +435,15 @@ public class Player : MonoBehaviour
         {
             if(Blocking)
             {
-                if(collision.collider.bounds.Intersects(Aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
+                if (collision.collider.bounds.Intersects(Aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
+                {
                     collision.collider.SendMessage("Destroy");
+                    return;
+                }
             }
-            else
-            {
-                var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.attachedRigidbody.velocity));
-                StateMachine.ChangeState(PlayerState.ReceivedDamage, impactDirection);
-            }
+
+            var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.attachedRigidbody.velocity));
+            StateMachine.ChangeState(PlayerState.ReceivedDamage, impactDirection);
         }
     }
 
