@@ -123,6 +123,8 @@ public class Player : MonoBehaviour
     private Transform _parent = null;
     [SerializeField]
     private SpriteRenderer _spriteRenderer = null;
+    [SerializeField]
+    private Weapon _weapon = null;
     #endregion
 
     #region Private Fields 
@@ -137,7 +139,7 @@ public class Player : MonoBehaviour
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
     public bool CanSwitch { get; private set; } = false;
     public float FacingDirection { get; set; } = 1.0f;
-    public Bounds UpperBlockAreaBounds 
+    public Bounds UpperBlockAreaBounds
     {
         get =>
             new Bounds(
@@ -232,6 +234,25 @@ public class Player : MonoBehaviour
         _blocking = false;
     }
 
+    public void SetWeaponPosition()
+    {
+        if(_blocking)
+        {
+            if(_aim.y >= 0.0f)
+            {
+                _weapon.SetUpper();
+            }
+            else
+            {
+                _weapon.SetBottom();
+            }
+        }
+        else
+        {
+            _weapon.SetIdle();
+        }
+    }
+
     public void Flip()
     {
         _parent.Rotate(0, 0, 180);
@@ -253,7 +274,11 @@ public class Player : MonoBehaviour
     void Update()
     {
         _aim = Controls.Player.Aim.ReadValue<Vector2>();
-        _spriteRenderer.flipX = FacingDirection > 0.0f;
+        _parent.transform.localScale = new Vector3(
+            Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
+            );
+
+        SetWeaponPosition();
 
         StateMachine.OnUpdate(Time.deltaTime);
     }
@@ -292,13 +317,13 @@ public class Player : MonoBehaviour
     private void DrawZonesDebug(Vector2 size, float dir)
     {
         //block box
-        var position = new Vector3(FacingDirection * size.x / 2, dir * size.y / 2);
+        var position = new Vector3(size.x / 2, dir * size.y / 2);
         var boxSize = new Vector3(size.x, size.y, 0.5f);
         Gizmos.DrawWireCube(position, boxSize);
         //sweetspot
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(
-            position + new Vector3(FacingDirection * (boxSize.x + settings.sweetSpotWidth) / 2, 0.0f),
+            position + new Vector3((boxSize.x + settings.sweetSpotWidth) / 2, 0.0f),
             new Vector3(settings.sweetSpotWidth, boxSize.y, boxSize.z)
             );
     }
