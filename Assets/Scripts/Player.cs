@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 #region Player States
@@ -113,9 +114,11 @@ public class Player : MonoBehaviour
     public PlayerSettings settings;
     public float Speed { get => settings.speed; }
     public float GravitySpeed { get => settings.gravitySpeed; }
+    public float BlockSpeedModifier { get => settings.blockSpeedModifier; }
     public float DashSpeed { get => settings.dashSpeed; }
     public float DashTime { get => settings.dashTime; }
     public float DashCooldown { get => settings.dashCooldown; }
+    public float AttackDuration { get => settings.attackDuration; }
     #endregion
 
     #region Outside References
@@ -132,6 +135,8 @@ public class Player : MonoBehaviour
     private Vector2 _aim = Vector2.zero;
     private bool _weaponEquipped = true;
     private bool _blocking = false;
+    private bool _duringAttack = false;
+    private float _speedModifier = 1.0f;
     #endregion
 
     #region Properties
@@ -179,23 +184,45 @@ public class Player : MonoBehaviour
         {
             if (!Physics.Raycast(transform.position, dir, out hit, 0.22f, 1 << 8))
             {
-                _parent.position += dir;
+                _parent.position += dir * _speedModifier;
             }
         }
     }
 
     public void Attack(InputAction.CallbackContext ctx)
     {
-        if (!_weaponEquipped)
+        if (!_weaponEquipped || _duringAttack)
             return;
 
-        Collider[] hitObjects = GetHitObjects(_aim.y >= 0.0f ? settings.upperBlockZoneSize : settings.bottomBlockZoneSize);
-        foreach(var obj in hitObjects)
+        StartCoroutine(PerformAttack());
+
+        //Collider[] hitObjects = GetHitObjects(_aim.y >= 0.0f ? settings.upperBlockZoneSize : settings.bottomBlockZoneSize);
+        //foreach(var obj in hitObjects)
+        //{
+        //    obj.SendMessage("ReceivedDamage");
+        //}
+    }
+
+    public IEnumerator PerformAttack()
+    {
+        Debug.Log("Heil");
+
+        _duringAttack = true;
+
+        if (_aim.y >= 0.0f)
         {
-            obj.SendMessage("ReceivedDamage");
+            _weapon.SetUpper();
         }
-        
-        Debug.Log(string.Format("ATTACK!!! {0}", _aim.y));
+        else
+        {
+            _weapon.SetBottom();
+        }
+
+        yield return new WaitForSeconds(AttackDuration);
+
+        _weapon.SetIdle();
+
+        _duringAttack = false;
     }
 
     private Collider[] GetHitObjects(Vector2 zoneSize)
@@ -210,6 +237,9 @@ public class Player : MonoBehaviour
 
     public void Block(InputAction.CallbackContext ctx)
     {
+        if (_duringAttack)
+            return;
+
         Debug.Log("BLOCKING");
         _blocking = true;
 
@@ -230,8 +260,11 @@ public class Player : MonoBehaviour
 
     public void LeavingBlock(InputAction.CallbackContext ctx)
     {
-        Debug.Log("NOT BLOCKING");
-        _blocking = false;
+        if (_blocking)
+        {
+            Debug.Log("NOT BLOCKING");
+            _blocking = false;
+        }
     }
 
     public void SetWeaponPosition()
@@ -247,7 +280,7 @@ public class Player : MonoBehaviour
                 _weapon.SetBottom();
             }
         }
-        else
+        else if(!_duringAttack)
         {
             _weapon.SetIdle();
         }
@@ -277,6 +310,8 @@ public class Player : MonoBehaviour
         _parent.transform.localScale = new Vector3(
             Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
             );
+
+        _speedModifier = _blocking ? BlockSpeedModifier : 1.0f;
 
         SetWeaponPosition();
 
@@ -311,7 +346,6 @@ public class Player : MonoBehaviour
         Gizmos.color = _aim.y < 0.0f - Mathf.Epsilon ?
             Color.green : Color.red;
         DrawZonesDebug(settings.bottomBlockZoneSize, -1.0f);
-
     }
 
     private void DrawZonesDebug(Vector2 size, float dir)
