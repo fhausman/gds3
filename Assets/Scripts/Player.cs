@@ -14,7 +14,6 @@ public enum PlayerState
 public class PlayerMoving : BaseState
 {
     private Player player = null;
-    private float dashCooldownElapsed = 0.0f;
     private float speedModifier = 1.0f;
 
     public PlayerMoving(Player p)
@@ -45,8 +44,6 @@ public class PlayerMoving : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        dashCooldownElapsed += deltaTime;
-
         if (player.Blocking)
         {
             speedModifier = player.BlockSpeedModifier;
@@ -89,12 +86,12 @@ public class PlayerMoving : BaseState
         }
     }
 
-    private void Dash(InputAction.CallbackContext ctx)
+    public void Dash(InputAction.CallbackContext ctx)
     {
-        if (dashCooldownElapsed >= player.DashCooldown)
+        if (player.CanDash)
         {
             player.StateMachine.ChangeState(PlayerState.Dashing);
-            dashCooldownElapsed = 0.0f;
+            player.DashCooldownElapsed = 0.0f;
         }
     }
 
@@ -180,6 +177,9 @@ public class PlayerAttacking : BaseState
 
     public override void onInit(params object[] args)
     {
+        player.Controls.Player.GravitySwitch.performed += GravitySwitch;
+        player.Controls.Player.Dash.performed += Dash;
+
         attackTimeElapsed = 0.0f;
 
         Collider[] hitObjects = GetHitObjects(player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
@@ -198,6 +198,14 @@ public class PlayerAttacking : BaseState
         }
     }
 
+    public override void onExit()
+    {
+        player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
+        player.Controls.Player.Dash.performed -= Dash;
+
+        player.Weapon.SetIdle();
+    }
+
     public override void onUpdate(float deltaTime)
     {
         if (attackTimeElapsed > player.AttackDuration)
@@ -206,11 +214,6 @@ public class PlayerAttacking : BaseState
         }
 
         attackTimeElapsed += deltaTime;
-    }
-
-    public override void onExit()
-    {
-        player.Weapon.SetIdle();
     }
 
     private Collider[] GetHitObjects(Vector2 zoneSize)
@@ -222,11 +225,29 @@ public class PlayerAttacking : BaseState
                     LayerMask.NameToLayer("Enemies")
                     );
     }
+
+    private void GravitySwitch(InputAction.CallbackContext ctx)
+    {
+        if (player.CanSwitch)
+        {
+            player.Flip();
+        }
+    }
+
+    public void Dash(InputAction.CallbackContext ctx)
+    {
+        if (player.CanDash)
+        {
+            player.StateMachine.ChangeState(PlayerState.Dashing);
+            player.DashCooldownElapsed = 0.0f;
+        }
+    }
 }
 
 public class PlayerReceivedDamage : BaseState
 {
     private Player player = null;
+    private float damageCooldownDuration = 0.1f;
 
     public PlayerReceivedDamage(Player p)
     {
@@ -273,7 +294,10 @@ public class Player : MonoBehaviour
     public bool Blocking { get; set; } = false;
     public bool CanSwitch { get; set; } = false;
     public bool WeaponEquipped { get; set; } = true;
+    public bool CanDash { get => DashCooldownElapsed <= DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
+    public float DashCooldownElapsed { get; set; } = 0.0f;
+
     public Bounds UpperBlockAreaBounds
     {
         get =>
@@ -346,6 +370,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         Aim = Controls.Player.Aim.ReadValue<Vector2>();
+        DashCooldownElapsed += Time.deltaTime;
         StateMachine.OnUpdate(Time.deltaTime);
     }
 
