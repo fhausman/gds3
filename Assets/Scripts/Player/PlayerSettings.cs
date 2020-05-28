@@ -5,10 +5,12 @@ public class PlayerSettings : ScriptableObject
 {
     public float speed = 0.0f;
     public float gravitySpeed = 0.0f;
+    public float blockSpeedModifier = 0.0f;
     public float dashSpeed = 0.0f;
     public float dashTime = 0.0f;
     public float dashCooldown = 0.0f;
     public Vector2 upperBlockZoneSize = Vector2.zero;
     public Vector2 bottomBlockZoneSize = Vector2.zero;
     public float sweetSpotWidth = 0.0f;
+    public float attackDuration = 0.0f;
 }

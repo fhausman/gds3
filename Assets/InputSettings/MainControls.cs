@@ -289,7 +289,7 @@ public class @MainControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""138d8183-a2fe-4c04-91db-8d9e803da550"",
                     ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold(duration=0.1,pressPoint=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Attack"",
