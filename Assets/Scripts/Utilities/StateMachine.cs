@@ -29,7 +29,7 @@ public class StateMachine<T>
         CurrentState = id;
         _currentState.onExit();
         _currentState = _states[id];
-        _currentState.onInit();
+        _currentState.onInit(args);
     }
 
     public void OnUpdate(float deltaTime)
