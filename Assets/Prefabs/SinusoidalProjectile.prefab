@@ -73,5 +73,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: e8884c8aceeb7844e9f00f488cee3334,
         type: 2}
+    - target: {fileID: 441650186031619239, guid: a244b19bb113390458def6a1fbdec980,
+        type: 3}
+      propertyPath: collider
+      value: 
+      objectReference: {fileID: 585903233231760338}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a244b19bb113390458def6a1fbdec980, type: 3}
+--- !u!135 &585903233231760338 stripped
+SphereCollider:
+  m_CorrespondingSourceObject: {fileID: 441650186031619232, guid: a244b19bb113390458def6a1fbdec980,
+    type: 3}
+  m_PrefabInstance: {fileID: 1008952981022734194}
+  m_PrefabAsset: {fileID: 0}

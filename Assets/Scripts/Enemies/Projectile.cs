@@ -3,15 +3,17 @@
 public class Projectile : MonoBehaviour
 {
     [SerializeField]
-    private ProjectileSettings settings = null;
-    //private Rigidbody rb;
-    private Vector3 _dir = Vector3.zero;
+    private ProjectileSettings _settings = null;
+    [SerializeField]
+    private Collider _collider = null;
     private float _elapsedTime = 0.0f;
+
+    public Vector3 Dir { get; set; } = Vector3.zero;
 
     private void Reflect()
     {
         Debug.Log("Reflect");
-        _dir = -_dir;
+        Dir = -Dir;
     }
 
     private void Destroy()
@@ -27,7 +29,7 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        _dir = -transform.right;
+        _collider.enabled = false;
     }
 
     // Update is called once per frame
@@ -35,10 +37,14 @@ public class Projectile : MonoBehaviour
     {
         var deltaTime = Time.deltaTime;
 
-        var horizontalVec = _dir * settings.projectileSpeed;
-        var verticalVec = Vector3.up * Mathf.Sin(_elapsedTime * settings.frequency) * settings.magnitude;
+        var horizontalVec = transform.right * Dir.x * _settings.projectileSpeed;
+        var verticalVec = transform.up * Dir.y * Mathf.Sin(_elapsedTime * _settings.frequency) * _settings.magnitude;
         transform.Translate((horizontalVec + verticalVec) * deltaTime);
 
         _elapsedTime += deltaTime;
+        if(_elapsedTime >= 0.1f)
+        {
+            _collider.enabled = true;
+        }
     }
 }

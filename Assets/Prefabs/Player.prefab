@@ -111,7 +111,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 9c815244d92b91940bf16011fb6ab243, type: 2}
   _parent: {fileID: 7776613916687982162}
-  _spriteRenderer: {fileID: 1065187206782375562}
   _weapon: {fileID: 367278532711267162}
 --- !u!1 &2983368276797543724
 GameObject:
@@ -216,7 +215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7776613916687982162}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}

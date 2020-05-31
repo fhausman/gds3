@@ -126,3 +126,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: a4c82fabbb4b78a4d9392f9233fadeed, type: 2}
+  collider: {fileID: 441650186031619232}
