@@ -48,7 +48,7 @@ public class PlayerMoving : BaseState
         if (player.Blocking)
         {
             speedModifier = player.BlockSpeedModifier;
-            if (player.Aim.y >= 0.0f)
+            if (Mathf.Sign(player.transform.up.y) * player.Aim.y >= 0.0f)
             {
                 player.Weapon.SetUpper();
             }
@@ -109,10 +109,11 @@ public class PlayerMoving : BaseState
         Debug.Log("BLOCKING");
         player.Blocking = true;
 
-        var zoneSize = player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
+        var zoneSize = Mathf.Sign(player.transform.up.y) * player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
         var projectiles =
             Physics.OverlapBox(
-                player.transform.position + new Vector3(player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2), Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                player.transform.position + new Vector3(Mathf.Sign(player.transform.right.x) * player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2),
+                                                        Mathf.Sign(player.transform.up.y) * Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
                 new Vector3(player.SweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
                 player.transform.rotation,
                 LayerMask.GetMask("Projectiles")
@@ -351,14 +352,20 @@ public class Player : MonoBehaviour
     {
         get =>
             new Bounds(
-                transform.position + new Vector3(FacingDirection * UpperBlockZoneSize.x / 2, Mathf.Sign(Aim.y) * UpperBlockZoneSize.y / 2),
+                transform.position + new Vector3(
+                    Mathf.Sign(transform.right.x) * FacingDirection * UpperBlockZoneSize.x / 2,
+                    Mathf.Sign(Aim.y) * UpperBlockZoneSize.y / 2
+                    ),
                 new Vector3(UpperBlockZoneSize.x, UpperBlockZoneSize.y, 0.5f));
     }
     public Bounds BottomBlockAreaBounds
     {
         get =>
               new Bounds(
-                  transform.position + new Vector3(FacingDirection * BottomBlockZoneSize.x / 2, Mathf.Sign(Aim.y) * BottomBlockZoneSize.y / 2),
+                  transform.position + new Vector3(
+                      Mathf.Sign(transform.right.x) * FacingDirection * BottomBlockZoneSize.x / 2,
+                      Mathf.Sign(Aim.y) * BottomBlockZoneSize.y / 2
+                      ),
                   new Vector3(BottomBlockZoneSize.x, BottomBlockZoneSize.y, 0.5f));
     }
     #endregion
