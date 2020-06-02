@@ -41,8 +41,9 @@ public class Projectile : MonoBehaviour
 
         var horizontalVec = transform.right * Dir.x * _settings.projectileSpeed;
         transform.Translate(horizontalVec * deltaTime);
-        var verticalVec = _startingPosition.y + Mathf.Sin(_elapsedTime * _settings.frequency) * _settings.magnitude;
-        transform.position = new Vector3(transform.position.x, verticalVec, transform.position.z);
+
+        var verticalVec = transform.up * (_startingPosition.y + Mathf.Sin(_elapsedTime * _settings.frequency) * _settings.magnitude);
+        transform.position = new Vector3(transform.position.x, verticalVec.y, transform.position.z);
 
         _elapsedTime += deltaTime;
         if(_elapsedTime >= 0.1f)

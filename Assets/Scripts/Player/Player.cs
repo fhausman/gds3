@@ -113,7 +113,7 @@ public class PlayerMoving : BaseState
         var projectiles =
             Physics.OverlapBox(
                 player.transform.position + new Vector3(Mathf.Sign(player.transform.right.x) * player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2),
-                                                        Mathf.Sign(player.transform.up.y) * Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                                                        Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
                 new Vector3(player.SweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
                 player.transform.rotation,
                 LayerMask.GetMask("Projectiles")
