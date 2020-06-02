@@ -48,7 +48,7 @@ public class PlayerMoving : BaseState
         if (player.Blocking)
         {
             speedModifier = player.BlockSpeedModifier;
-            if (Mathf.Sign(player.transform.up.y) * player.Aim.y >= 0.0f)
+            if (player.Aim >= 0.0f)
             {
                 player.Weapon.SetUpper();
             }
@@ -109,11 +109,11 @@ public class PlayerMoving : BaseState
         Debug.Log("BLOCKING");
         player.Blocking = true;
 
-        var zoneSize = Mathf.Sign(player.transform.up.y) * player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
+        var zoneSize = player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
         var projectiles =
             Physics.OverlapBox(
                 player.transform.position + new Vector3(Mathf.Sign(player.transform.right.x) * player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2),
-                                                        Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                                                        Mathf.Sign(player.Aim) * zoneSize.y / 2),
                 new Vector3(player.SweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
                 player.transform.rotation,
                 LayerMask.GetMask("Projectiles")
@@ -207,13 +207,13 @@ public class PlayerAttacking : BaseState
 
         attackTimeElapsed = 0.0f;
 
-        Collider[] hitObjects = GetHitObjects(player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
+        Collider[] hitObjects = GetHitObjects(player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
         foreach (var obj in hitObjects)
         {
             obj.SendMessage("ReceivedDamage");
         }
 
-        if (player.Aim.y >= 0.0f)
+        if (player.Aim >= 0.0f)
         {
             player.Weapon.SetUpper();
         }
@@ -248,7 +248,7 @@ public class PlayerAttacking : BaseState
     private Collider[] GetHitObjects(Vector2 zoneSize)
     {
         return Physics.OverlapBox(
-                    player.transform.position + new Vector3(player.FacingDirection * zoneSize.x / 2, Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                    player.transform.position + new Vector3(player.FacingDirection * zoneSize.x / 2, Mathf.Sign(player.Aim) * zoneSize.y / 2),
                     new Vector3(zoneSize.x / 2, zoneSize.y / 2, 0.5f),
                     player.transform.rotation,
                     LayerMask.GetMask("Enemies")
@@ -341,30 +341,33 @@ public class Player : MonoBehaviour
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
     private Vector3 GravityVelocity { get; set; } = Vector3.zero;
-    public Vector2 Aim { get; set; } = Vector2.zero;
     public bool Blocking { get; set; } = false;
     public bool CanSwitch { get; set; } = false;
     public bool WeaponEquipped { get; set; } = true;
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
+
+    public float Aim { get => Controls.Player.Aim.ReadValue<Vector2>().y * transform.up.y; }
+
     public Bounds UpperBlockAreaBounds
     {
         get =>
             new Bounds(
                 transform.position + new Vector3(
                     Mathf.Sign(transform.right.x) * FacingDirection * UpperBlockZoneSize.x / 2,
-                    Mathf.Sign(Aim.y) * UpperBlockZoneSize.y / 2
+                    Mathf.Sign(Aim) * UpperBlockZoneSize.y / 2
                     ),
                 new Vector3(UpperBlockZoneSize.x, UpperBlockZoneSize.y, 0.5f));
     }
+
     public Bounds BottomBlockAreaBounds
     {
         get =>
               new Bounds(
                   transform.position + new Vector3(
                       Mathf.Sign(transform.right.x) * FacingDirection * BottomBlockZoneSize.x / 2,
-                      Mathf.Sign(Aim.y) * BottomBlockZoneSize.y / 2
+                      Mathf.Sign(Aim) * BottomBlockZoneSize.y / 2
                       ),
                   new Vector3(BottomBlockZoneSize.x, BottomBlockZoneSize.y, 0.5f));
     }
@@ -396,17 +399,20 @@ public class Player : MonoBehaviour
             {
                 _parent.position += dir;
             }
-        }
 
-        _parent.transform.localScale = new Vector3(
-            Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
-        );
+            _parent.transform.localScale = new Vector3(
+                Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
+            );
+        }
     }
 
     public void Flip()
     {
         _parent.Rotate(0, 0, 180);
         _parent.position -= _parent.up;
+        _parent.transform.localScale = new Vector3(
+            -_parent.transform.localScale.x, _parent.transform.localScale.y, _parent.transform.localScale.z
+        ); ;
     }
 
     #region Mono behaviour methods
@@ -425,7 +431,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Aim = Controls.Player.Aim.ReadValue<Vector2>();
         DashCooldownElapsed += Time.deltaTime;
         StateMachine.OnUpdate(Time.deltaTime);
     }
@@ -441,7 +446,7 @@ public class Player : MonoBehaviour
         {
             if(Blocking)
             {
-                if (collision.collider.bounds.Intersects(Aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
+                if (collision.collider.bounds.Intersects(Aim >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
                 {
                     collision.collider.SendMessage("Destroy");
                     return;
@@ -453,15 +458,15 @@ public class Player : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.color = Aim.y > 0.0f + Mathf.Epsilon ?
+        Gizmos.color = Aim > 0.0f + Mathf.Epsilon ?
             Color.green : Color.red;
         DrawZonesDebug(UpperBlockZoneSize, 1.0f);
 
-        Gizmos.color = Aim.y < 0.0f - Mathf.Epsilon ?
+        Gizmos.color = Aim < 0.0f - Mathf.Epsilon ?
             Color.green : Color.red;
         DrawZonesDebug(BottomBlockZoneSize, -1.0f);
     }

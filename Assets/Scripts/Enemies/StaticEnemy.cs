@@ -108,11 +108,11 @@ public class EnemyBase : MonoBehaviour
     #endregion
 
     [SerializeField]
-    private Projectile projectile;
+    private Projectile projectile = null;
     public Projectile Projectile { get => projectile; }
 
     [SerializeField]
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer = null;
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
 
     public StateMachine<EnemyStates> StateMachine { get; private set; } = new StateMachine<EnemyStates>();
