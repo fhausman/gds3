@@ -299,7 +299,7 @@ public class PlayerReceivedDamage : BaseState
         }
 
         var horizontalMove =
-            impactDirection * player.transform.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
+            impactDirection * Vector3.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
         player.Move(horizontalMove, deltaTime);
 
         damageCooldownElapsed += deltaTime;
@@ -448,8 +448,8 @@ public class Player : MonoBehaviour
                 }
             }
 
-            var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.transform.right));
-            StateMachine.ChangeState(PlayerState.ReceivedDamage, -impactDirection);
+            StateMachine.ChangeState(PlayerState.ReceivedDamage,
+                collision.gameObject.GetComponent<Projectile>().Dir.x);
         }
     }
 
