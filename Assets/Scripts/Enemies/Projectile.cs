@@ -6,8 +6,12 @@ public class Projectile : MonoBehaviour
     private ProjectileSettings _settings = null;
     [SerializeField]
     private Collider _collider = null;
+
+    public bool IsReflected { get; set; } = false;
+
     private float _elapsedTime = 0.0f;
     private Vector3 _startingPosition = Vector3.zero;
+    
 
     public Vector3 Dir { get; set; } = Vector3.zero;
 
@@ -39,16 +43,20 @@ public class Projectile : MonoBehaviour
     {
         var deltaTime = Time.deltaTime;
 
-        var horizontalVec = transform.right * Dir.x * _settings.projectileSpeed;
-        transform.Translate(horizontalVec * deltaTime);
+        var moveVec = Dir * _settings.projectileSpeed;
+        transform.Translate(moveVec * deltaTime);
 
-        var verticalVec = transform.up * (_startingPosition.y + Mathf.Sin(_elapsedTime * _settings.frequency) * _settings.magnitude);
-        transform.position = new Vector3(transform.position.x, verticalVec.y, transform.position.z);
+        if (_settings.frequency != 0)
+        {
+            var sin = transform.up * (_startingPosition.y + Mathf.Sin(_elapsedTime * _settings.frequency) * _settings.magnitude);
+            transform.position = new Vector3(transform.position.x, sin.y, transform.position.z);
+        }
 
-        _elapsedTime += deltaTime;
         if(_elapsedTime >= 0.1f)
         {
             _collider.enabled = true;
         }
+
+        _elapsedTime += deltaTime;
     }
 }

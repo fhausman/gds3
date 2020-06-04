@@ -77,7 +77,7 @@ public class StaticEnemyShooting : BaseState
     {
         var projectile = Object.Instantiate(enemy.Projectile);
         projectile.transform.position = enemy.transform.position;
-        projectile.Dir = enemy.transform.right * enemy.FacingDirection + enemy.transform.up;
+        projectile.Dir = enemy.transform.right * enemy.FacingDirection;
     }
 }
 

@@ -8,7 +8,8 @@ public enum EnemyStates
     Idle,
     Shooting,
     Patroling,
-    Chasing,
+    InFight,
+    Dashing,
     Dead
 }
 
@@ -39,13 +40,13 @@ public class EnemyPatroling : BaseState
             currentPoint = (currentPoint + 1) % patrolingPoints.Count;
         }
 
-        var resolution = 10;
+        var resolution = 20;
         for(int i = 0; i <= resolution; i++)
         {
             var dir = Quaternion.Euler(0.0f, 0.0f, i * (180 / resolution)) * enemy.transform.right;
             if (enemy.Logic.LookForPlayer(dir, enemy.Range, out playerRef))
             {
-                enemy.StateMachine.ChangeState(EnemyStates.Chasing, playerRef);
+                enemy.StateMachine.ChangeState(EnemyStates.InFight, playerRef);
             }
         }
     }
@@ -63,6 +64,32 @@ public class EnemyDead : BaseState
     public override void onInit(params object[] args)
     {
         Object.Destroy(enemy.gameObject);
+    }
+}
+
+public class EnemyDashing : BaseState
+{
+    EnemyBase enemy;
+    Rigidbody rigidbody;
+
+    public EnemyDashing(EnemyBase e)
+    {
+        enemy = e;
+        rigidbody = enemy.GetComponent<Rigidbody>();
+    }
+
+    public override void onInit(params object[] args)
+    {
+        var dir = (float) args[0];
+        rigidbody.AddForce(enemy.transform.right * dir * enemy.DashForce, ForceMode.Impulse);
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        if(rigidbody.velocity.magnitude <= 0.0f + Mathf.Epsilon)
+        {
+            enemy.StateMachine.ChangeState(EnemyStates.InFight);
+        }
     }
 }
 
@@ -107,6 +134,7 @@ public class EnemyBase : MonoBehaviour
     public float ShootRate { get => settings.shootRate; }
     public float Range { get => settings.range; }
     public float SafeDistance { get => settings.safeDistance; }
+    public float DashForce { get => settings.dashForce; }
     #endregion
 
     [SerializeField]
@@ -148,12 +176,16 @@ public class EnemyBase : MonoBehaviour
 
     protected void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Projectile"))
+        var obj = collision.collider.gameObject;
+        if (obj.CompareTag("Projectile"))
         {
-            Health--;
+            if (obj.GetComponent<Projectile>().IsReflected)
+            {
+                Health--;
 
-            if (Health <= 0)
-                StateMachine.ChangeState(EnemyStates.Dead);
+                if (Health <= 0)
+                    StateMachine.ChangeState(EnemyStates.Dead);
+            }
         }
     }
 
