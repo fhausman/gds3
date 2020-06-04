@@ -23,11 +23,11 @@ public class StaticEnemyIdle : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if (IsEnemyOnLeft)
+        if (IsEnemyOnRight)
         {
             StartShooting(1.0f);
         }
-        else if (IsEnemyOnRight)
+        else if (IsEnemyOnLeft)
         {
             StartShooting(-1.0f);
         }
