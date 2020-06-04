@@ -2,45 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public enum EnemyStates
-{
-    Idle,
-    Shooting,
-    Dead
-}
-
-public class EnemyIdle : BaseState
-{
-    EnemyBase enemy;
-
-    public EnemyIdle(EnemyBase e)
-    {
-        enemy = e;
-    }
-
-    public override void onUpdate(float deltaTime)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(enemy.transform.position, enemy.transform.right, out hit, enemy.Range, LayerMask.GetMask("Player")))
-        {
-            StartShooting(1.0f);
-        }
-        else if (Physics.Raycast(enemy.transform.position, -enemy.transform.right, out hit, enemy.Range, LayerMask.GetMask("Player")))
-        {
-            StartShooting(-1.0f);
-        }
-    }
-
-    private void StartShooting(float facingDir)
-    {
-        enemy.FacingDirection = facingDir;
-        enemy.StateMachine.ChangeState(EnemyStates.Shooting);
-        enemy.SpriteRenderer.flipX = facingDir >= 0.0f;
-
-    }
-}
-
 public class EnemyDead : BaseState
 {
     EnemyBase enemy;
@@ -53,6 +14,22 @@ public class EnemyDead : BaseState
     public override void onInit(params object[] args)
     {
         Object.Destroy(enemy.gameObject);
+    }
+}
+
+public class EnemyCommonLogic
+{
+    private Transform _transform;
+
+    public EnemyCommonLogic(Transform t)
+    {
+        _transform = t;
+    }
+
+    public bool LookForPlayer(Vector3 dir, float range)
+    {
+        RaycastHit hit;
+        return Physics.Raycast(_transform.position, dir, out hit, range, LayerMask.GetMask("Player"));
     }
 }
 
@@ -73,13 +50,15 @@ public class EnemyBase : MonoBehaviour
     private SpriteRenderer spriteRenderer = null;
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
 
-    public StateMachine<EnemyStates> StateMachine { get; private set; } = new StateMachine<EnemyStates>();
+    public StateMachine<StaticEnemyStates> StateMachine { get; private set; } = new StateMachine<StaticEnemyStates>();
+    public EnemyCommonLogic Logic { get; private set; }
     public float FacingDirection { get; set; } = -1.0f;
     public float TimeBetweenShots { get => 1 / ShootRate; }
     public int Health { get; set; } = 0;
 
     protected void Start()
     {
+        Logic = new EnemyCommonLogic(transform);
         Health = settings.health;
     }
 
@@ -100,7 +79,7 @@ public class EnemyBase : MonoBehaviour
             Health--;
 
             if (Health <= 0)
-                StateMachine.ChangeState(EnemyStates.Dead);
+                StateMachine.ChangeState(StaticEnemyStates.Dead);
         }
     }
 }
