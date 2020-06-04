@@ -16,3 +16,5 @@ MonoBehaviour:
   speed: 0
   shootRate: 1
   range: 10
+  safeDistance: 0
+  dashForce: 0

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5bd8913a9e30d314a990ef3dd14490ed, type: 3}
-  m_Name: DoubleBlastEnemySettings
+  m_Name: MeleeEnemySettings
   m_EditorClassIdentifier: 
-  health: 3
-  speed: 2
-  shootRate: 0.5
-  range: 5
-  safeDistance: 1
-  dashForce: 6
+  health: 0
+  speed: 0
+  shootRate: 0
+  range: 0
+  safeDistance: 0
+  dashForce: 0
