@@ -335,6 +335,7 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Private Fields 
+    private Vector2 _aim = Vector2.zero;
     #endregion
 
     #region Properties
@@ -348,7 +349,7 @@ public class Player : MonoBehaviour
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
 
-    public float Aim { get => Controls.Player.Aim.ReadValue<Vector2>().y * transform.up.y; }
+    public float Aim { get => _aim.y * transform.up.y; }
 
     public Bounds UpperBlockAreaBounds
     {
@@ -431,6 +432,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        _aim = Controls.Player.Aim.ReadValue<Vector2>();
+
         DashCooldownElapsed += Time.deltaTime;
         StateMachine.OnUpdate(Time.deltaTime);
     }
