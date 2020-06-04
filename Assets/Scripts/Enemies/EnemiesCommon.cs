@@ -1,6 +1,55 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+public enum EnemyStates
+{
+    Idle,
+    Shooting,
+    Patroling,
+    Chasing,
+    Dead
+}
+
+public class EnemyPatroling : BaseState
+{
+    EnemyBase enemy;
+    GameObject playerRef;
+    List<Vector3> patrolingPoints = new List<Vector3>();
+    int currentPoint = 0;
+
+    public EnemyPatroling(EnemyBase e)
+    {
+        enemy = e;
+        patrolingPoints = e.PatrolingPoints.Select(t => t.position).ToList();
+    }
+
+    public override void onFixedUpdate(float deltaTime)
+    {
+        enemy.Logic.MoveTowards(patrolingPoints[currentPoint], enemy.Speed * deltaTime);
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        var target = patrolingPoints[currentPoint];
+        var current = enemy.transform.position;
+        if (Mathf.Abs(target.x - current.x) < Mathf.Epsilon)
+        {
+            currentPoint = (currentPoint + 1) % patrolingPoints.Count;
+        }
+
+        var resolution = 10;
+        for(int i = 0; i <= resolution; i++)
+        {
+            var dir = Quaternion.Euler(0.0f, 0.0f, i * (180 / resolution)) * enemy.transform.right;
+            if (enemy.Logic.LookForPlayer(dir, enemy.Range, out playerRef))
+            {
+                enemy.StateMachine.ChangeState(EnemyStates.Chasing, playerRef);
+            }
+        }
+    }
+}
 
 public class EnemyDead : BaseState
 {
@@ -26,10 +75,26 @@ public class EnemyCommonLogic
         _transform = t;
     }
 
-    public bool LookForPlayer(Vector3 dir, float range)
+    public bool LookForPlayer(Vector3 dir, float range, out GameObject player)
     {
         RaycastHit hit;
-        return Physics.Raycast(_transform.position, dir, out hit, range, LayerMask.GetMask("Player"));
+        if(Physics.Raycast(_transform.position, dir, out hit, range, LayerMask.GetMask("Player")))
+        {
+            player = hit.collider.gameObject;
+            return true;
+        }
+        else
+        {
+            player = null;
+            return false;
+        }
+
+    }
+
+    public void MoveTowards(Vector3 target, float speed)
+    {
+        _transform.position = Vector3.MoveTowards(_transform.position,
+            new Vector3(target.x, _transform.position.y, _transform.position.z), speed);
     }
 }
 
@@ -38,8 +103,10 @@ public class EnemyBase : MonoBehaviour
     #region Settings
     [SerializeField]
     private EnemySettings settings = null;
+    public float Speed { get => settings.speed; }
     public float ShootRate { get => settings.shootRate; }
     public float Range { get => settings.range; }
+    public float SafeDistance { get => settings.safeDistance; }
     #endregion
 
     [SerializeField]
@@ -50,14 +117,21 @@ public class EnemyBase : MonoBehaviour
     private SpriteRenderer spriteRenderer = null;
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
 
-    public StateMachine<StaticEnemyStates> StateMachine { get; private set; } = new StateMachine<StaticEnemyStates>();
+    [SerializeField]
+    private Transform[] patrolingPoints = null;
+    public Transform[] PatrolingPoints { get => patrolingPoints; }
+
+    public StateMachine<EnemyStates> StateMachine { get; private set; } = new StateMachine<EnemyStates>();
     public EnemyCommonLogic Logic { get; private set; }
+    public GameObject PlayerRef { get; set; } = null;
     public float FacingDirection { get; set; } = -1.0f;
     public float TimeBetweenShots { get => 1 / ShootRate; }
     public int Health { get; set; } = 0;
 
     protected void Start()
     {
+        StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
+
         Logic = new EnemyCommonLogic(transform);
         Health = settings.health;
     }
@@ -79,7 +153,16 @@ public class EnemyBase : MonoBehaviour
             Health--;
 
             if (Health <= 0)
-                StateMachine.ChangeState(StaticEnemyStates.Dead);
+                StateMachine.ChangeState(EnemyStates.Dead);
+        }
+    }
+
+    private void ReceivedDamage()
+    {
+        Health--;
+        if(Health <= 0)
+        {
+            StateMachine.ChangeState(EnemyStates.Dead);
         }
     }
 }

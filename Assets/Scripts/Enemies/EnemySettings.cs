@@ -7,4 +7,5 @@ public class EnemySettings : ScriptableObject
     public float speed = 0.0f;
     public float shootRate = 0.0f;
     public float range = 0.0f;
+    public float safeDistance = 0.0f;
 }
