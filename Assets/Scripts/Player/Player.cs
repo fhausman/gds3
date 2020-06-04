@@ -106,7 +106,6 @@ public class PlayerMoving : BaseState
 
     private void Block(InputAction.CallbackContext ctx)
     {
-        Debug.Log("BLOCKING");
         player.Blocking = true;
 
         var zoneSize = player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
@@ -129,7 +128,6 @@ public class PlayerMoving : BaseState
     {
         if (player.Blocking)
         {
-            Debug.Log("NOT BLOCKING");
             player.Blocking = false;
         }
     }
