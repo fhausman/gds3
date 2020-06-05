@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd8913a9e30d314a990ef3dd14490ed, type: 3}
   m_Name: MeleeEnemySettings
   m_EditorClassIdentifier: 
-  health: 0
-  speed: 0
+  health: 3
+  speed: 1
   shootRate: 0
   range: 0
   safeDistance: 0

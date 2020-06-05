@@ -13,10 +13,4 @@ public class MeleeEnemy : EnemyBase
         StateMachine.AddState(EnemyStates.Dashing, new EnemyDashing(this));
         StateMachine.ChangeState(EnemyStates.Patroling);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
