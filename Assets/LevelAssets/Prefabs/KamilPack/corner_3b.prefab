@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1714362892748031706}
   - component: {fileID: 4969206090677910051}
   - component: {fileID: 1090475665592467688}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: corner_3b
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5652ef0cfac3a9a489718cbd01956186, type: 2}
+  - {fileID: 2100000, guid: 1e23f6d12b1bb0c4398be728bece4495, type: 2}
+  - {fileID: 2100000, guid: 1e23f6d12b1bb0c4398be728bece4495, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
