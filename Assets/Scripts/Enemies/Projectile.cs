@@ -11,7 +11,6 @@ public class Projectile : MonoBehaviour
 
     private float _elapsedTime = 0.0f;
     private Vector3 _startingPosition = Vector3.zero;
-    
 
     public Vector3 Dir { get; set; } = Vector3.zero;
 
@@ -19,6 +18,7 @@ public class Projectile : MonoBehaviour
     {
         Debug.Log("Reflect");
         Dir = -Dir;
+        IsReflected = true;
     }
 
     private void Destroy()
