@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &441650186031619235
+--- !u!1 &3933024816326930148
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,39 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 441650186031619238}
-  - component: {fileID: 441650186031619233}
-  - component: {fileID: 441650186031619236}
-  - component: {fileID: 441650186031619232}
-  - component: {fileID: 441650186031619239}
-  m_Layer: 9
-  m_Name: StraightProjectile
-  m_TagString: Projectile
+  - component: {fileID: 3933024816326930136}
+  - component: {fileID: 3933024816326930137}
+  - component: {fileID: 3933024816326930150}
+  - component: {fileID: 3933024816326930151}
+  - component: {fileID: 5596830137119131895}
+  m_Layer: 11
+  m_Name: DoubleBlastEnemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &441650186031619238
+--- !u!4 &3933024816326930136
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441650186031619235}
+  m_GameObject: {fileID: 3933024816326930148}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 1, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &441650186031619233
+--- !u!212 &3933024816326930137
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441650186031619235}
+  m_GameObject: {fileID: 3933024816326930148}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -73,57 +73,61 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b1d62856af5dc2b4bbeeb28836e78797, type: 3}
-  m_Color: {r: 1, g: 0.6039734, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 41c0a4fca6aad3747b35213f745bf0ab, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.02, y: 1.69}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!54 &441650186031619236
+--- !u!54 &3933024816326930150
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441650186031619235}
+  m_GameObject: {fileID: 3933024816326930148}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 0.1
   m_AngularDrag: 0.05
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 124
+  m_Constraints: 120
   m_CollisionDetection: 0
---- !u!135 &441650186031619232
-SphereCollider:
+--- !u!136 &3933024816326930151
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441650186031619235}
+  m_GameObject: {fileID: 3933024816326930148}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 0.11
+  m_Height: 0.676
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &441650186031619239
+--- !u!114 &5596830137119131895
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441650186031619235}
+  m_GameObject: {fileID: 3933024816326930148}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f08b77904122348bdc8078435aa545, type: 3}
+  m_Script: {fileID: 11500000, guid: 894cb36c2ea0f03419fbccd6d781c4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _settings: {fileID: 11400000, guid: a4c82fabbb4b78a4d9392f9233fadeed, type: 2}
-  _collider: {fileID: 441650186031619232}
+  settings: {fileID: 11400000, guid: 829be437d4a815a4e8a2942cc0984803, type: 2}
+  projectile: {fileID: 441650186031619239, guid: a244b19bb113390458def6a1fbdec980,
+    type: 3}
+  spriteRenderer: {fileID: 3933024816326930137}
+  patrolingPoints: []

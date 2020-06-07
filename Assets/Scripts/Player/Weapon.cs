@@ -2,6 +2,9 @@
 
 public class Weapon : MonoBehaviour
 {
+    [SerializeField]
+    private BoxCollider _collider = null;
+
     private Vector3 upperPosition = new Vector3(0.205f, 0.679f, 0.0f);
     private Vector3 upperRotation = new Vector3(0.0f, 0.0f, -51.686f);
 
@@ -19,16 +22,19 @@ public class Weapon : MonoBehaviour
 
     public void SetUpper()
     {
+        _collider.enabled = true;
         SetTransform(upperPosition, upperRotation);
     }
 
     public void SetBottom()
     {
+        _collider.enabled = true;
         SetTransform(bottomPosition, bottomRotation);
     }
 
     public void SetIdle()
     {
+        _collider.enabled = false;
         SetTransform(idlePosition, idleRotation);
     }
 }
