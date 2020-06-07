@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
   speed: 5
-  gravitySpeed: 10
+  gravitySpeed: 20
   blockSpeedModifier: 0.1
-  dashSpeed: 15
+  dashSpeed: 30
   dashTime: 0.3
   dashCooldown: 0.5
   upperBlockZoneSize: {x: 0.5, y: 0.6}
