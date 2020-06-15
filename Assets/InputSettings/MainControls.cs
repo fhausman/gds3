@@ -298,8 +298,8 @@ public class @MainControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f6259951-35b4-4b0a-a3de-44226ddeaeea"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""id"": ""63cc610b-36f2-4a96-a6bd-49160659d1c6"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": ""Hold(duration=0.1,pressPoint=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
