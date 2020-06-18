@@ -32,7 +32,7 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
     {
         if(hit_object.CompareTag("Player"))
         {
-            hit_object.SendMessage("LaserHit");
+            hit_object.SendMessage("OnLaserHit");
             return true;
         }
 
