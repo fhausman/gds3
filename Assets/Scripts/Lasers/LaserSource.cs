@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ enum LaserType
 
 public interface ILaserHitBehaviour
 {
+    Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit);
     bool OnObjectHit(GameObject hit_object);
     int GetCollisionMask();
 }
@@ -38,6 +40,11 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
 
         return false;
     }
+
+    public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit)
+    {
+        return Tuple.Create(Vector3.Reflect(currDir, hit.normal), hit.point);
+    }
 }
 
 public class PowerBeamBehaviour : ILaserHitBehaviour
@@ -57,6 +64,18 @@ public class PowerBeamBehaviour : ILaserHitBehaviour
     public bool OnObjectHit(GameObject hit_object)
     {
         return false;
+    }
+
+    public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit)
+    {
+        if(hit.collider.gameObject.CompareTag("Lens"))
+        {
+            var lens = hit.collider.gameObject.GetComponent<Lens>();
+            return Tuple.Create(lens.GetReflectionDirection(), lens.transform.position);
+        }
+
+        return Tuple.Create(Vector3.Reflect(currDir, hit.normal), hit.point);
+
     }
 }
 
@@ -103,20 +122,19 @@ public class LaserSource : MonoBehaviour
                 break;
             }
 
-            beamPoints.Add(hit.point);
+            (currentDir, currentPoint) = _laserHitBehaviour.Reflect(currentDir, hit);
+            beamPoints.Add(currentPoint);
+
             if (_laserHitBehaviour.OnObjectHit(hit.collider.gameObject))
             {
                 break;
             }
 
             //beam hits orthogonal wall
-            if (Vector3.Dot(hit.normal, currentDir.normalized) == -1)
+            if (hit.normal == currentDir.normalized)
             {
                 break;
             }
-
-            currentDir = Vector3.Reflect(currentDir, hit.normal);
-            currentPoint = hit.point;
         }
 
         _beam.positionCount = beamPoints.Count;
