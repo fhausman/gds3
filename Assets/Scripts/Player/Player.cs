@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 #region Player States
 public enum PlayerState
@@ -457,6 +458,11 @@ public class Player : MonoBehaviour
             StateMachine.ChangeState(PlayerState.ReceivedDamage,
                 collision.gameObject.GetComponent<Projectile>().Dir.x);
         }
+    }
+
+    void OnLaserHit()
+    {
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 #if !UNITY_EDITOR
