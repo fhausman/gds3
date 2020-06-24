@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Projectile
   - Lens
+  - Detector
   layers:
   - Default
   - TransparentFX

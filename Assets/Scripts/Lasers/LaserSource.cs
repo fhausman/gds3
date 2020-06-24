@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 enum LaserType
 {
@@ -14,6 +15,7 @@ public interface ILaserHitBehaviour
     Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit);
     bool OnObjectHit(GameObject hit_object);
     int GetCollisionMask();
+    void OnNothingWasHit();
 }
 
 public class DeadlyLaserBehaviour : ILaserHitBehaviour
@@ -28,6 +30,10 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
     public int GetCollisionMask()
     {
         return _layerMask;
+    }
+
+    public void OnNothingWasHit()
+    {
     }
 
     public bool OnObjectHit(GameObject hit_object)
@@ -50,6 +56,7 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
 public class PowerBeamBehaviour : ILaserHitBehaviour
 {
     private int _layerMask = 0;
+    private Detector _hitDetector = null;
 
     public PowerBeamBehaviour()
     {
@@ -61,8 +68,31 @@ public class PowerBeamBehaviour : ILaserHitBehaviour
         return _layerMask;
     }
 
+    public void OnNothingWasHit()
+    {
+        if(_hitDetector)
+        {
+            _hitDetector.Deactivate();
+            _hitDetector = null;
+        }
+    }
+
     public bool OnObjectHit(GameObject hit_object)
     {
+        if(hit_object.CompareTag("Detector"))
+        {
+            var detector = hit_object.GetComponent<Detector>();
+            if(_hitDetector != detector)
+            {
+                if (_hitDetector)
+                    _hitDetector.Deactivate();
+
+                _hitDetector = detector;
+                _hitDetector.Activate();
+            }
+            return true;
+        }
+
         return false;
     }
 
@@ -92,6 +122,7 @@ public class LaserSource : MonoBehaviour
     private LaserType _laserType = LaserType.DeadlyLaser;
 
     private ILaserHitBehaviour _laserHitBehaviour;
+    private UnityEvent _onNothingWasHit = new UnityEvent();
     private const int MAX_REFLECTIONS_NUM = 10;
 
     private void Awake()
@@ -103,6 +134,7 @@ public class LaserSource : MonoBehaviour
                 break;
             case LaserType.PowerBeam:
                 _laserHitBehaviour = new PowerBeamBehaviour();
+                _onNothingWasHit.AddListener(() => _laserHitBehaviour.OnNothingWasHit());
                 break;
         }
     }
@@ -119,6 +151,7 @@ public class LaserSource : MonoBehaviour
             RaycastHit hit;
             if(!Physics.Raycast(currentPoint, currentDir, out hit, 100.0f, _laserHitBehaviour.GetCollisionMask()))
             {
+                _onNothingWasHit.Invoke();
                 break;
             }
 
@@ -133,6 +166,7 @@ public class LaserSource : MonoBehaviour
             //beam hits orthogonal wall
             if (hit.normal == currentDir.normalized)
             {
+                _onNothingWasHit.Invoke();
                 break;
             }
         }
