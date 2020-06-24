@@ -83,13 +83,13 @@ public class PowerBeamBehaviour : ILaserHitBehaviour
 public class LaserSource : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _beamOrigin;
+    private GameObject _beamOrigin = null;
 
     [SerializeField]
-    private LineRenderer _beam;
+    private LineRenderer _beam = null;
 
     [SerializeField]
-    private LaserType _laserType;
+    private LaserType _laserType = LaserType.DeadlyLaser;
 
     private ILaserHitBehaviour _laserHitBehaviour;
     private const int MAX_REFLECTIONS_NUM = 10;
