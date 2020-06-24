@@ -335,6 +335,7 @@ public class Player : MonoBehaviour
 
     #region Private Fields 
     private Vector2 _aim = Vector2.zero;
+    private Interactable _heldObject = null;
     #endregion
 
     #region Properties
@@ -435,6 +436,25 @@ public class Player : MonoBehaviour
 
         DashCooldownElapsed += Time.deltaTime;
         StateMachine.OnUpdate(Time.deltaTime);
+
+        if (Controls.Player.Interact.triggered)
+        {
+            if (_heldObject == null)
+            {
+                var objects = Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Lens"));
+                if (objects.Length > 0)
+                {
+                    _heldObject = objects[0].gameObject.GetComponent<Interactable>();
+                    _heldObject.OnInteractionStart();
+                }
+            }
+            else
+            {
+                _heldObject.OnInteractionEnd();
+                _heldObject.transform.position = new Vector3(transform.position.x, transform.position.y, _heldObject.transform.position.z);
+                _heldObject = null;
+            }
+        }
     }
 
     void FixedUpdate()

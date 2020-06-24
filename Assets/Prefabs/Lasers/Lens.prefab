@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4426441333234911682}
   - component: {fileID: 2589379735377298489}
   - component: {fileID: 6712462345435318474}
+  - component: {fileID: 9003489468778421104}
   m_Layer: 12
   m_Name: Lens
   m_TagString: Lens
@@ -59,6 +60,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dir: 0
+--- !u!114 &9003489468778421104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947018284543072950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade317c4e5406674688fc4398d0648b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onInteractionStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6712462345435318474}
+        m_MethodName: OnInteractionEnter
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onInteractionEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6712462345435318474}
+        m_MethodName: OnInteractionEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &9026517710965732037
 PrefabInstance:
   m_ObjectHideFlags: 0

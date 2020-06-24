@@ -13,7 +13,7 @@ enum LensDirection
 public class Lens : MonoBehaviour
 {
     [SerializeField]
-    private LensDirection _dir;
+    private LensDirection _dir = LensDirection.UP;
 
     public Vector3 GetReflectionDirection()
     {
@@ -30,5 +30,15 @@ public class Lens : MonoBehaviour
             default:
                 return Vector3.zero;
         }
+    }
+
+    public void OnInteractionEnter()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void OnInteractionEnd()
+    {
+        gameObject.SetActive(true);
     }
 }
