@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1714362892748031706}
   - component: {fileID: 4969206090677910051}
   - component: {fileID: 1090475665592467688}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: corner_3b
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 6686434293247528703}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 4.1550627, y: -1.9999998, z: -1.0985852}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -59,7 +59,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 98dadac0625c3d04facb71c08c333c38, type: 2}
+  - {fileID: 2100000, guid: 1e23f6d12b1bb0c4398be728bece4495, type: 2}
+  - {fileID: 2100000, guid: 1e23f6d12b1bb0c4398be728bece4495, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

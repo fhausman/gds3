@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Projectile
+  - Lens
+  - Detector
   layers:
   - Default
   - TransparentFX
@@ -17,8 +19,8 @@ TagManager:
   - Ground
   - Projectiles
   - Player
-  - 
-  - 
+  - Enemies
+  - Lens
   - 
   - 
   - 

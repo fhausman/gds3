@@ -60,6 +60,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "013137e2-3518-4a4b-90eb-1ce34e8d1886",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -285,12 +293,34 @@
                 },
                 {
                     "name": "",
-                    "id": "f6259951-35b4-4b0a-a3de-44226ddeaeea",
-                    "path": "<Gamepad>/leftTrigger",
+                    "id": "63cc610b-36f2-4a96-a6bd-49160659d1c6",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "Hold(duration=0.1,pressPoint=0.1)",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "75222ac7-711a-4b69-b4a1-aa6bfb6ce133",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb5dd53f-14b9-4670-9503-3358193b3d78",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

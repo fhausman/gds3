@@ -2,30 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EnemyStates
-{
-    Idle,
-    Shooting,
-    Dead
-}
-
-public class EnemyIdle : BaseState
+public class StaticEnemyIdle : BaseState
 {
     EnemyBase enemy;
+    GameObject playerRef;
 
-    public EnemyIdle(EnemyBase e)
+    bool IsEnemyOnLeft { get => enemy.Logic.LookForPlayer(-enemy.transform.right, enemy.Range, out playerRef); }
+    bool IsEnemyOnRight { get => enemy.Logic.LookForPlayer(enemy.transform.right, enemy.Range, out playerRef); }
+
+    public StaticEnemyIdle(EnemyBase e)
     {
         enemy = e;
     }
 
     public override void onUpdate(float deltaTime)
     {
-        RaycastHit hit;
-        if (Physics.Raycast(enemy.transform.position, enemy.transform.right, out hit, enemy.Range, LayerMask.GetMask("Player")))
+        if (IsEnemyOnRight)
         {
             StartShooting(1.0f);
         }
-        else if (Physics.Raycast(enemy.transform.position, -enemy.transform.right, out hit, enemy.Range, LayerMask.GetMask("Player")))
+        else if (IsEnemyOnLeft)
         {
             StartShooting(-1.0f);
         }
@@ -36,16 +32,19 @@ public class EnemyIdle : BaseState
         enemy.FacingDirection = facingDir;
         enemy.StateMachine.ChangeState(EnemyStates.Shooting);
         enemy.SpriteRenderer.flipX = facingDir >= 0.0f;
-        
+
     }
 }
 
-public class EnemyShooting : BaseState
+public class StaticEnemyShooting : BaseState
 {
     EnemyBase enemy;
+    GameObject playerRef;
     private float timeElapsed = 0.0f;
 
-    public EnemyShooting(EnemyBase e)
+    bool IsPlayerInRange { get => enemy.Logic.LookForPlayer(enemy.FacingDirection * enemy.transform.right, enemy.Range, out playerRef); }
+
+    public StaticEnemyShooting(EnemyBase e)
     {
         enemy = e;
     }
@@ -60,8 +59,7 @@ public class EnemyShooting : BaseState
     {
         if (timeElapsed >= enemy.TimeBetweenShots)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(enemy.transform.position, enemy.FacingDirection * enemy.transform.right, out hit, enemy.Range, LayerMask.GetMask("Player")))
+            if (IsPlayerInRange)
             {
                 Shoot();
                 timeElapsed = 0.0f;
@@ -79,71 +77,7 @@ public class EnemyShooting : BaseState
     {
         var projectile = Object.Instantiate(enemy.Projectile);
         projectile.transform.position = enemy.transform.position;
-        projectile.Dir = enemy.transform.right * enemy.FacingDirection + enemy.transform.up;
-    }
-}
-
-public class EnemyDead : BaseState
-{
-    EnemyBase enemy;
-
-    public EnemyDead(EnemyBase e)
-    {
-        enemy = e;
-    }
-
-    public override void onInit(params object[] args)
-    {
-        Object.Destroy(enemy.gameObject);
-    }
-}
-
-public class EnemyBase : MonoBehaviour
-{
-    #region Settings
-    [SerializeField]
-    private EnemySettings settings;
-    public float ShootRate { get => settings.shootRate; }
-    public float Range { get => settings.range; }
-    #endregion
-
-    [SerializeField]
-    private Projectile projectile;
-    public Projectile Projectile { get => projectile; }
-
-    [SerializeField]
-    private SpriteRenderer spriteRenderer;
-    public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
-
-    public StateMachine<EnemyStates> StateMachine { get; private set; } = new StateMachine<EnemyStates>();
-    public float FacingDirection { get; set; } = -1.0f;
-    public float TimeBetweenShots { get => 1 / ShootRate; }
-    public int Health { get; set; } = 0;
-
-    protected void Start()
-    {
-        Health = settings.health;
-    }
-
-    protected void Update()
-    {
-        StateMachine.OnUpdate(Time.deltaTime);
-    }
-
-    protected void FixedUpdate()
-    {
-        StateMachine.OnFixedUpdate(Time.deltaTime);
-    }
-
-    protected void OnCollisionEnter(Collision collision)
-    {
-        if(collision.collider.CompareTag("Projectile"))
-        {
-            Health--;
-
-            if (Health <= 0)
-                StateMachine.ChangeState(EnemyStates.Dead);
-        }
+        projectile.Dir = enemy.transform.right * enemy.FacingDirection;
     }
 }
 
@@ -153,9 +87,8 @@ public class StaticEnemy : EnemyBase
     {
         base.Start();
 
-        StateMachine.AddState(EnemyStates.Idle, new EnemyIdle(this));
-        StateMachine.AddState(EnemyStates.Shooting, new EnemyShooting(this));
-        StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
+        StateMachine.AddState(EnemyStates.Idle, new StaticEnemyIdle(this));
+        StateMachine.AddState(EnemyStates.Shooting, new StaticEnemyShooting(this));
         StateMachine.ChangeState(EnemyStates.Idle);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 #region Player States
 public enum PlayerState
@@ -48,7 +49,7 @@ public class PlayerMoving : BaseState
         if (player.Blocking)
         {
             speedModifier = player.BlockSpeedModifier;
-            if (player.Aim.y >= 0.0f)
+            if (player.Aim >= 0.0f)
             {
                 player.Weapon.SetUpper();
             }
@@ -106,13 +107,13 @@ public class PlayerMoving : BaseState
 
     private void Block(InputAction.CallbackContext ctx)
     {
-        Debug.Log("BLOCKING");
         player.Blocking = true;
 
-        var zoneSize = player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
+        var zoneSize = player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
         var projectiles =
             Physics.OverlapBox(
-                player.transform.position + new Vector3(player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2), Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                player.transform.position + new Vector3(Mathf.Sign(player.transform.right.x) * player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2),
+                                                        Mathf.Sign(player.Aim) * zoneSize.y / 2),
                 new Vector3(player.SweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
                 player.transform.rotation,
                 LayerMask.GetMask("Projectiles")
@@ -128,7 +129,6 @@ public class PlayerMoving : BaseState
     {
         if (player.Blocking)
         {
-            Debug.Log("NOT BLOCKING");
             player.Blocking = false;
         }
     }
@@ -206,13 +206,13 @@ public class PlayerAttacking : BaseState
 
         attackTimeElapsed = 0.0f;
 
-        Collider[] hitObjects = GetHitObjects(player.Aim.y >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
+        Collider[] hitObjects = GetHitObjects(player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
         foreach (var obj in hitObjects)
         {
             obj.SendMessage("ReceivedDamage");
         }
 
-        if (player.Aim.y >= 0.0f)
+        if (player.Aim >= 0.0f)
         {
             player.Weapon.SetUpper();
         }
@@ -247,7 +247,7 @@ public class PlayerAttacking : BaseState
     private Collider[] GetHitObjects(Vector2 zoneSize)
     {
         return Physics.OverlapBox(
-                    player.transform.position + new Vector3(player.FacingDirection * zoneSize.x / 2, Mathf.Sign(player.Aim.y) * zoneSize.y / 2),
+                    player.transform.position + new Vector3(player.FacingDirection * zoneSize.x / 2, Mathf.Sign(player.Aim) * zoneSize.y / 2),
                     new Vector3(zoneSize.x / 2, zoneSize.y / 2, 0.5f),
                     player.transform.rotation,
                     LayerMask.GetMask("Enemies")
@@ -298,7 +298,7 @@ public class PlayerReceivedDamage : BaseState
         }
 
         var horizontalMove =
-            impactDirection * player.transform.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
+            impactDirection * Vector3.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
         player.Move(horizontalMove, deltaTime);
 
         damageCooldownElapsed += deltaTime;
@@ -334,31 +334,42 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Private Fields 
+    private Vector2 _aim = Vector2.zero;
+    private Interactable _heldObject = null;
     #endregion
 
     #region Properties
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
     private Vector3 GravityVelocity { get; set; } = Vector3.zero;
-    public Vector2 Aim { get; set; } = Vector2.zero;
     public bool Blocking { get; set; } = false;
     public bool CanSwitch { get; set; } = false;
     public bool WeaponEquipped { get; set; } = true;
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
+
+    public float Aim { get => _aim.y * transform.up.y; }
+
     public Bounds UpperBlockAreaBounds
     {
         get =>
             new Bounds(
-                transform.position + new Vector3(FacingDirection * UpperBlockZoneSize.x / 2, Mathf.Sign(Aim.y) * UpperBlockZoneSize.y / 2),
+                transform.position + new Vector3(
+                    Mathf.Sign(transform.right.x) * FacingDirection * UpperBlockZoneSize.x / 2,
+                    Mathf.Sign(Aim) * UpperBlockZoneSize.y / 2
+                    ),
                 new Vector3(UpperBlockZoneSize.x, UpperBlockZoneSize.y, 0.5f));
     }
+
     public Bounds BottomBlockAreaBounds
     {
         get =>
               new Bounds(
-                  transform.position + new Vector3(FacingDirection * BottomBlockZoneSize.x / 2, Mathf.Sign(Aim.y) * BottomBlockZoneSize.y / 2),
+                  transform.position + new Vector3(
+                      Mathf.Sign(transform.right.x) * FacingDirection * BottomBlockZoneSize.x / 2,
+                      Mathf.Sign(Aim) * BottomBlockZoneSize.y / 2
+                      ),
                   new Vector3(BottomBlockZoneSize.x, BottomBlockZoneSize.y, 0.5f));
     }
     #endregion
@@ -389,17 +400,20 @@ public class Player : MonoBehaviour
             {
                 _parent.position += dir;
             }
-        }
 
-        _parent.transform.localScale = new Vector3(
-            Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
-        );
+            _parent.transform.localScale = new Vector3(
+                Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
+            );
+        }
     }
 
     public void Flip()
     {
         _parent.Rotate(0, 0, 180);
         _parent.position -= _parent.up;
+        _parent.transform.localScale = new Vector3(
+            -_parent.transform.localScale.x, _parent.transform.localScale.y, _parent.transform.localScale.z
+        ); ;
     }
 
     #region Mono behaviour methods
@@ -418,9 +432,29 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Aim = Controls.Player.Aim.ReadValue<Vector2>();
+        _aim = Controls.Player.Aim.ReadValue<Vector2>();
+
         DashCooldownElapsed += Time.deltaTime;
         StateMachine.OnUpdate(Time.deltaTime);
+
+        if (Controls.Player.Interact.triggered)
+        {
+            if (_heldObject == null)
+            {
+                var objects = Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Lens"));
+                if (objects.Length > 0)
+                {
+                    _heldObject = objects[0].gameObject.GetComponent<Interactable>();
+                    _heldObject.OnInteractionStart();
+                }
+            }
+            else
+            {
+                _heldObject.OnInteractionEnd();
+                _heldObject.transform.position = new Vector3(transform.position.x, transform.position.y, _heldObject.transform.position.z);
+                _heldObject = null;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -434,27 +468,32 @@ public class Player : MonoBehaviour
         {
             if(Blocking)
             {
-                if (collision.collider.bounds.Intersects(Aim.y >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
+                if (collision.collider.bounds.Intersects(Aim >= 0.0f ? UpperBlockAreaBounds : BottomBlockAreaBounds))
                 {
                     collision.collider.SendMessage("Destroy");
                     return;
                 }
             }
 
-            var impactDirection = Mathf.Sign(Vector3.Dot(transform.right, collision.collider.transform.right));
-            StateMachine.ChangeState(PlayerState.ReceivedDamage, -impactDirection);
+            StateMachine.ChangeState(PlayerState.ReceivedDamage,
+                collision.gameObject.GetComponent<Projectile>().Dir.x);
         }
     }
 
-#if UNITY_EDITOR
+    void OnLaserHit()
+    {
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+#if !UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.color = Aim.y > 0.0f + Mathf.Epsilon ?
+        Gizmos.color = Aim > 0.0f + Mathf.Epsilon ?
             Color.green : Color.red;
         DrawZonesDebug(UpperBlockZoneSize, 1.0f);
 
-        Gizmos.color = Aim.y < 0.0f - Mathf.Epsilon ?
+        Gizmos.color = Aim < 0.0f - Mathf.Epsilon ?
             Color.green : Color.red;
         DrawZonesDebug(BottomBlockZoneSize, -1.0f);
     }
