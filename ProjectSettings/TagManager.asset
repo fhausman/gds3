@@ -8,6 +8,7 @@ TagManager:
   - Lens
   - Detector
   - Elevator
+  - Terminal
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - Player
   - Enemies
   - Lens
-  - 
+  - Terminal
   - 
   - 
   - 

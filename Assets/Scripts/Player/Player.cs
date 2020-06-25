@@ -448,6 +448,7 @@ public class Player : MonoBehaviour
 
         if (Controls.Player.Interact.triggered)
         {
+            //todo: this is temporary garbage, requires refactoring
             if (_heldObject == null)
             {
                 var objects = Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Lens"));
@@ -455,6 +456,11 @@ public class Player : MonoBehaviour
                 {
                     _heldObject = objects[0].gameObject.GetComponent<Interactable>();
                     _heldObject.OnInteractionStart();
+                }
+
+                foreach(var obj in Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Terminal")))
+                {
+                    obj.gameObject.SendMessage("Activate");
                 }
             }
             else
