@@ -380,6 +380,15 @@ public class Player : MonoBehaviour
         //vertical movement
         if (Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8))
         {
+            if (hit.collider.CompareTag("Elevator"))
+            {
+                _parent.transform.parent = hit.collider.transform;
+            }
+            else
+            {
+                _parent.transform.parent = null;
+            }
+
             //Debug.DrawRay(hit.point, hit.normal, Color.red);
             _parent.position = hit.point;
             _parent.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
