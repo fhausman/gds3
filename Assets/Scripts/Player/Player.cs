@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -93,11 +94,11 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        //if(player.CanSwitch)
-        //{
-        //    player.Flip();
-        //}
-        //else
+        if (player.CanSwitch && Physics.Raycast(player.Parent.position, player.Parent.up, player.GravitySwitchHeight))
+        {
+            player.Flip();
+        }
+        else
         {
             player.StateMachine.ChangeState(PlayerState.FailedToFlip);
         }
@@ -332,6 +333,12 @@ public class PlayerFailedToFlip : BaseState
 
     public override void onInit(params object[] args)
     {
+        player.Animator.Play("SwitchFailed");
+    }
+
+    public override void onExit()
+    {
+        player.Animator.Rebind();
     }
 }
 #endregion
@@ -350,7 +357,8 @@ public class Player : MonoBehaviour
     public float AttackDuration { get => settings.attackDuration; }
     //public Vector2 UpperBlockZoneSize { get => settings.upperBlockZoneSize; }
     //public Vector2 BottomBlockZoneSize { get => settings.bottomBlockZoneSize; }
-    public float SweetSpotWidth { get => settings.sweetSpotWidth; }
+    //public float SweetSpotWidth { get => settings.sweetSpotWidth; }
+    public float GravitySwitchHeight { get => settings.gravitySwitchHeight; }
     #endregion
 
     #region Outside References
@@ -373,6 +381,7 @@ public class Player : MonoBehaviour
     #region Properties
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
+    public Animator Animator { get; private set; } = null;
     private Vector3 GravityVelocity { get; set; } = Vector3.zero;
     //public bool Blocking { get; set; } = false;
     public bool CanSwitch { get; set; } = false;
@@ -381,7 +390,7 @@ public class Player : MonoBehaviour
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
 
-    public float Aim { get => _aim.y * transform.up.y; }
+    //public float Aim { get => _aim.y * transform.up.y; }
 
     //public Bounds UpperBlockAreaBounds
     //{
@@ -486,6 +495,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         Controls = new MainControls();
+        Animator = GetComponent<Animator>();
 
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
@@ -558,6 +568,11 @@ public class Player : MonoBehaviour
     void OnLaserHit()
     {
         DecreaseHealth(100);
+    }
+
+    void OnSwitchFailEnd()
+    {
+        StateMachine.ChangeState(PlayerState.Moving);
     }
 
 #if !UNITY_EDITOR
