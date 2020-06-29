@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -9,7 +10,8 @@ public enum PlayerState
     Moving,
     Dashing,
     Attacking,
-    ReceivedDamage
+    ReceivedDamage,
+    FailedToFlip
 }
 
 public enum AttackType
@@ -92,9 +94,13 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        if(player.CanSwitch)
+        if (player.CanSwitch && Physics.Raycast(player.Parent.position, player.Parent.up, player.GravitySwitchHeight))
         {
             player.Flip();
+        }
+        else
+        {
+            player.StateMachine.ChangeState(PlayerState.FailedToFlip);
         }
     }
 
@@ -297,6 +303,8 @@ public class PlayerReceivedDamage : BaseState
     {
         damageCooldownElapsed = 0.0f;
         impactDirection = (float) args[0];
+
+        player.DecreaseHealth(1);
     }
 
     public override void onUpdate(float deltaTime)
@@ -313,12 +321,33 @@ public class PlayerReceivedDamage : BaseState
         damageCooldownElapsed += deltaTime;
     }
 }
+
+public class PlayerFailedToFlip : BaseState
+{
+    private Player player = null;
+
+    public PlayerFailedToFlip(Player p)
+    {
+        player = p;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        player.Animator.Play("SwitchFailed");
+    }
+
+    public override void onExit()
+    {
+        player.Animator.Rebind();
+    }
+}
 #endregion
 
 public class Player : MonoBehaviour
 {
     #region Settings
     public PlayerSettings settings;
+    public int Health { get => settings.health; }
     public float Speed { get => settings.speed; }
     public float GravitySpeed { get => settings.gravitySpeed; }
     //public float BlockSpeedModifier { get => settings.blockSpeedModifier; }
@@ -328,7 +357,8 @@ public class Player : MonoBehaviour
     public float AttackDuration { get => settings.attackDuration; }
     //public Vector2 UpperBlockZoneSize { get => settings.upperBlockZoneSize; }
     //public Vector2 BottomBlockZoneSize { get => settings.bottomBlockZoneSize; }
-    public float SweetSpotWidth { get => settings.sweetSpotWidth; }
+    //public float SweetSpotWidth { get => settings.sweetSpotWidth; }
+    public float GravitySwitchHeight { get => settings.gravitySwitchHeight; }
     #endregion
 
     #region Outside References
@@ -345,11 +375,13 @@ public class Player : MonoBehaviour
     #region Private Fields 
     private Vector2 _aim = Vector2.zero;
     private Interactable _heldObject = null;
+    private int _currentHealth = 0;
     #endregion
 
     #region Properties
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
+    public Animator Animator { get; private set; } = null;
     private Vector3 GravityVelocity { get; set; } = Vector3.zero;
     //public bool Blocking { get; set; } = false;
     public bool CanSwitch { get; set; } = false;
@@ -358,7 +390,7 @@ public class Player : MonoBehaviour
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
 
-    public float Aim { get => _aim.y * transform.up.y; }
+    //public float Aim { get => _aim.y * transform.up.y; }
 
     //public Bounds UpperBlockAreaBounds
     //{
@@ -434,6 +466,15 @@ public class Player : MonoBehaviour
         ); ;
     }
 
+    public void DecreaseHealth(int healthAmount)
+    {
+        _currentHealth -= healthAmount;
+        if (_currentHealth <= 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
     public void AttackHigh(InputAction.CallbackContext ctx)
     {
         if (WeaponEquipped)
@@ -454,12 +495,16 @@ public class Player : MonoBehaviour
     void Start()
     {
         Controls = new MainControls();
+        Animator = GetComponent<Animator>();
 
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
         StateMachine.AddState(PlayerState.Attacking, new PlayerAttacking(this));
         StateMachine.AddState(PlayerState.ReceivedDamage, new PlayerReceivedDamage(this));
+        StateMachine.AddState(PlayerState.FailedToFlip, new PlayerFailedToFlip(this));
         StateMachine.ChangeState(PlayerState.Moving);
+
+        _currentHealth = Health;
 
         Controls.Enable();
     }
@@ -522,7 +567,12 @@ public class Player : MonoBehaviour
 
     void OnLaserHit()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        DecreaseHealth(100);
+    }
+
+    void OnSwitchFailEnd()
+    {
+        StateMachine.ChangeState(PlayerState.Moving);
     }
 
 #if !UNITY_EDITOR

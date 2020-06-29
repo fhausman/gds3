@@ -3,6 +3,7 @@
 [CreateAssetMenu(fileName = "PlayerSettings", menuName = "GDS/PlayerSettings")]
 public class PlayerSettings : ScriptableObject
 {
+    public int health = 3;
     public float speed = 0.0f;
     public float gravitySpeed = 0.0f;
     public float blockSpeedModifier = 0.0f;
@@ -13,4 +14,5 @@ public class PlayerSettings : ScriptableObject
     public Vector2 bottomBlockZoneSize = Vector2.zero;
     public float sweetSpotWidth = 0.0f;
     public float attackDuration = 0.0f;
+    public float gravitySwitchHeight = 5.0f;
 }
