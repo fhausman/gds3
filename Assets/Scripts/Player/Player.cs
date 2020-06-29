@@ -9,7 +9,8 @@ public enum PlayerState
     Moving,
     Dashing,
     Attacking,
-    ReceivedDamage
+    ReceivedDamage,
+    FailedToFlip
 }
 
 public class PlayerMoving : BaseState
@@ -82,9 +83,13 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        if(player.CanSwitch)
+        //if(player.CanSwitch)
+        //{
+        //    player.Flip();
+        //}
+        //else
         {
-            player.Flip();
+            player.StateMachine.ChangeState(PlayerState.FailedToFlip);
         }
     }
 
@@ -306,6 +311,20 @@ public class PlayerReceivedDamage : BaseState
         damageCooldownElapsed += deltaTime;
     }
 }
+
+public class PlayerFailedToFlip : BaseState
+{
+    private Player player = null;
+
+    public PlayerFailedToFlip(Player p)
+    {
+        player = p;
+    }
+
+    public override void onInit(params object[] args)
+    {
+    }
+}
 #endregion
 
 public class Player : MonoBehaviour
@@ -447,6 +466,7 @@ public class Player : MonoBehaviour
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
         StateMachine.AddState(PlayerState.Attacking, new PlayerAttacking(this));
         StateMachine.AddState(PlayerState.ReceivedDamage, new PlayerReceivedDamage(this));
+        StateMachine.AddState(PlayerState.FailedToFlip, new PlayerFailedToFlip(this));
         StateMachine.ChangeState(PlayerState.Moving);
 
         _currentHealth = Health;
