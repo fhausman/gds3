@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb803a46a16b77b4395fe8750c15ea4d, type: 3}
   m_Name: StraightProjectileSettings
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileSettings
-  projectileSpeed: 3
+  projectileSpeed: 5
   magnitude: 0
   frequency: 0

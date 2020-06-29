@@ -15,6 +15,6 @@ MonoBehaviour:
   health: 3
   speed: 1
   shootRate: 0
-  range: 0
+  range: 4
   safeDistance: 0
   dashForce: 0
