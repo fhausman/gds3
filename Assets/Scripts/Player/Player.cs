@@ -522,7 +522,7 @@ public class Player : MonoBehaviour
 
     void OnLaserHit()
     {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 #if !UNITY_EDITOR
