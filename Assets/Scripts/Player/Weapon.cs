@@ -6,6 +6,9 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private BoxCollider _collider = null;
 
+    [SerializeField]
+    private BoxCollider _sweetSpot = null;
+
     private Vector3 upperPosition = new Vector3(0.205f, 0.679f, 0.0f);
     private Vector3 upperRotation = new Vector3(0.0f, 0.0f, -51.686f);
 
@@ -47,5 +50,14 @@ public class Weapon : MonoBehaviour
     public void DisableCollision()
     {
         _collider.enabled = false;
+    }
+
+    public bool IsInSweetSpot(Vector3 position)
+    {
+        _sweetSpot.enabled = true;
+        var res =  _sweetSpot.bounds.Contains(position);
+        _sweetSpot.enabled = false;
+
+        return res;
     }
 }
