@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Weapon : MonoBehaviour
 {
@@ -36,5 +37,15 @@ public class Weapon : MonoBehaviour
     {
         _collider.enabled = false;
         SetTransform(idlePosition, idleRotation);
+    }
+
+    public void EnableCollision()
+    {
+        _collider.enabled = true;
+    }
+
+    public void DisableCollision()
+    {
+        _collider.enabled = false;
     }
 }

@@ -12,6 +12,12 @@ public enum PlayerState
     ReceivedDamage
 }
 
+public enum AttackType
+{
+    High,
+    Low
+}
+
 public class PlayerMoving : BaseState
 {
     private Player player = null;
@@ -26,20 +32,24 @@ public class PlayerMoving : BaseState
     {
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
         player.Controls.Player.Dash.performed += Dash;
-        player.Controls.Player.Attack.performed += Attack;
+        player.Controls.Player.AttackHigh.performed += player.AttackHigh;
+        player.Controls.Player.AttackLow.performed += player.AttackLow;
         //player.Controls.Player.Block.performed += Block;
         //player.Controls.Player.Block.canceled += LeavingBlock;
+
+        player.Weapon.SetIdle();
     }
 
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
         player.Controls.Player.Dash.performed -= Dash;
-        player.Controls.Player.Attack.performed -= Attack;
+        player.Controls.Player.AttackHigh.performed -= player.AttackHigh;
+        player.Controls.Player.AttackLow.performed -= player.AttackLow;
         //player.Controls.Player.Block.performed -= Block;
         //player.Controls.Player.Block.canceled -= LeavingBlock;
 
-        player.Weapon.SetIdle();
+        //player.Weapon.SetIdle();
         //player.Blocking = false;
         speedModifier = 1.0f;
     }
@@ -97,14 +107,6 @@ public class PlayerMoving : BaseState
         }
     }
 
-    private void Attack(InputAction.CallbackContext ctx)
-    {
-        if (player.WeaponEquipped)
-        {
-            player.StateMachine.ChangeState(PlayerState.Attacking);
-        }
-    }
-
     //private void Block(InputAction.CallbackContext ctx)
     //{
     //    player.Blocking = true;
@@ -146,7 +148,8 @@ public class PlayerDashing : BaseState
 
     public override void onInit(params object[] args)
     {
-        player.Controls.Player.Attack.performed += Attack;
+        player.Controls.Player.AttackHigh.performed += player.AttackHigh;
+        player.Controls.Player.AttackLow.performed += player.AttackLow;
         //player.Controls.Player.Block.performed += Block;
 
         dashTimeElapsed = 0.0f;
@@ -154,7 +157,8 @@ public class PlayerDashing : BaseState
 
     public override void onExit()
     {
-        player.Controls.Player.Attack.performed -= Attack;
+        player.Controls.Player.AttackHigh.performed -= player.AttackHigh;
+        player.Controls.Player.AttackLow.performed -= player.AttackLow;
         //player.Controls.Player.Block.performed -= Block;
 
         player.DashCooldownElapsed = 0.0f;
@@ -172,14 +176,6 @@ public class PlayerDashing : BaseState
         player.Move(horizontalMove, deltaTime);
 
         dashTimeElapsed += deltaTime;
-    }
-
-    private void Attack(InputAction.CallbackContext ctx)
-    {
-        if (player.WeaponEquipped)
-        {
-            player.StateMachine.ChangeState(PlayerState.Attacking);
-        }
     }
 
     //private void Block(InputAction.CallbackContext ctx)
@@ -206,6 +202,18 @@ public class PlayerAttacking : BaseState
 
         attackTimeElapsed = 0.0f;
 
+        var attackType = (AttackType) args[0];
+        if(attackType == AttackType.High)
+        {
+            player.Weapon.GetComponent<Animator>().Play("Attack_High");
+        }
+        else if (attackType == AttackType.Low)
+        {
+            player.Weapon.GetComponent<Animator>().Play("Attack_Low");
+        }
+
+        player.Weapon.EnableCollision();
+
         //Collider[] hitObjects = GetHitObjects(player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize);
         //foreach (var obj in hitObjects)
         //{
@@ -227,7 +235,8 @@ public class PlayerAttacking : BaseState
         player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
         player.Controls.Player.Dash.performed -= Dash;
 
-       // player.Weapon.SetIdle();
+        player.Weapon.DisableCollision();
+        player.Weapon.SetIdle();
     }
 
     public override void onUpdate(float deltaTime)
@@ -425,6 +434,22 @@ public class Player : MonoBehaviour
         ); ;
     }
 
+    public void AttackHigh(InputAction.CallbackContext ctx)
+    {
+        if (WeaponEquipped)
+        {
+            StateMachine.ChangeState(PlayerState.Attacking, AttackType.High);
+        }
+    }
+
+    public void AttackLow(InputAction.CallbackContext ctx)
+    {
+        if (WeaponEquipped)
+        {
+            StateMachine.ChangeState(PlayerState.Attacking, AttackType.Low);
+        }
+    }
+
     #region Mono behaviour methods
     void Start()
     {
@@ -441,7 +466,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        _aim = Controls.Player.Aim.ReadValue<Vector2>();
+        //_aim = Controls.Player.Aim.ReadValue<Vector2>();
 
         DashCooldownElapsed += Time.deltaTime;
         StateMachine.OnUpdate(Time.deltaTime);

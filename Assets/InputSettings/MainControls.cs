@@ -51,15 +51,7 @@ public class @MainControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Aim"",
-                    ""type"": ""Value"",
-                    ""id"": ""f9cd17ff-31c5-466d-b409-f9ca30e3c249"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Attack"",
+                    ""name"": ""AttackHigh"",
                     ""type"": ""Button"",
                     ""id"": ""3410a797-60ff-4219-afa5-63bfee8fcc71"",
                     ""expectedControlType"": ""Button"",
@@ -67,7 +59,7 @@ public class @MainControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Block"",
+                    ""name"": ""AttackLow"",
                     ""type"": ""Button"",
                     ""id"": ""2cb10a96-e2e1-4873-8440-6df4b4a60728"",
                     ""expectedControlType"": ""Button"",
@@ -284,23 +276,23 @@ public class @MainControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""830cece0-3b0c-4fc4-97b6-2b7e679ad25b"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""138d8183-a2fe-4c04-91db-8d9e803da550"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": ""Hold(duration=0.1,pressPoint=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Attack"",
+                    ""action"": ""AttackHigh"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f7ee4b0-39cc-4cc5-9d1f-d6a4d10ac46e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""AttackHigh"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -311,7 +303,18 @@ public class @MainControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Hold(duration=0.1,pressPoint=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Block"",
+                    ""action"": ""AttackLow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4032b819-8349-4d76-ab24-207e2258bf52"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""AttackLow"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -371,9 +374,8 @@ public class @MainControls : IInputActionCollection, IDisposable
         m_Player_VerticalMovement = m_Player.FindAction("VerticalMovement", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_GravitySwitch = m_Player.FindAction("GravitySwitch", throwIfNotFound: true);
-        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
-        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
-        m_Player_Block = m_Player.FindAction("Block", throwIfNotFound: true);
+        m_Player_AttackHigh = m_Player.FindAction("AttackHigh", throwIfNotFound: true);
+        m_Player_AttackLow = m_Player.FindAction("AttackLow", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
     }
 
@@ -428,9 +430,8 @@ public class @MainControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_VerticalMovement;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_GravitySwitch;
-    private readonly InputAction m_Player_Aim;
-    private readonly InputAction m_Player_Attack;
-    private readonly InputAction m_Player_Block;
+    private readonly InputAction m_Player_AttackHigh;
+    private readonly InputAction m_Player_AttackLow;
     private readonly InputAction m_Player_Interact;
     public struct PlayerActions
     {
@@ -440,9 +441,8 @@ public class @MainControls : IInputActionCollection, IDisposable
         public InputAction @VerticalMovement => m_Wrapper.m_Player_VerticalMovement;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @GravitySwitch => m_Wrapper.m_Player_GravitySwitch;
-        public InputAction @Aim => m_Wrapper.m_Player_Aim;
-        public InputAction @Attack => m_Wrapper.m_Player_Attack;
-        public InputAction @Block => m_Wrapper.m_Player_Block;
+        public InputAction @AttackHigh => m_Wrapper.m_Player_AttackHigh;
+        public InputAction @AttackLow => m_Wrapper.m_Player_AttackLow;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -465,15 +465,12 @@ public class @MainControls : IInputActionCollection, IDisposable
                 @GravitySwitch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGravitySwitch;
                 @GravitySwitch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGravitySwitch;
                 @GravitySwitch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGravitySwitch;
-                @Aim.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Aim.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Aim.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Block.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBlock;
-                @Block.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBlock;
-                @Block.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBlock;
+                @AttackHigh.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackHigh;
+                @AttackHigh.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackHigh;
+                @AttackHigh.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackHigh;
+                @AttackLow.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackLow;
+                @AttackLow.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackLow;
+                @AttackLow.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackLow;
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
@@ -493,15 +490,12 @@ public class @MainControls : IInputActionCollection, IDisposable
                 @GravitySwitch.started += instance.OnGravitySwitch;
                 @GravitySwitch.performed += instance.OnGravitySwitch;
                 @GravitySwitch.canceled += instance.OnGravitySwitch;
-                @Aim.started += instance.OnAim;
-                @Aim.performed += instance.OnAim;
-                @Aim.canceled += instance.OnAim;
-                @Attack.started += instance.OnAttack;
-                @Attack.performed += instance.OnAttack;
-                @Attack.canceled += instance.OnAttack;
-                @Block.started += instance.OnBlock;
-                @Block.performed += instance.OnBlock;
-                @Block.canceled += instance.OnBlock;
+                @AttackHigh.started += instance.OnAttackHigh;
+                @AttackHigh.performed += instance.OnAttackHigh;
+                @AttackHigh.canceled += instance.OnAttackHigh;
+                @AttackLow.started += instance.OnAttackLow;
+                @AttackLow.performed += instance.OnAttackLow;
+                @AttackLow.canceled += instance.OnAttackLow;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -533,9 +527,8 @@ public class @MainControls : IInputActionCollection, IDisposable
         void OnVerticalMovement(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnGravitySwitch(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
-        void OnBlock(InputAction.CallbackContext context);
+        void OnAttackHigh(InputAction.CallbackContext context);
+        void OnAttackLow(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
     }
 }
