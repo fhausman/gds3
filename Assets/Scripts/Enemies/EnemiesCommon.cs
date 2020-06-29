@@ -181,11 +181,12 @@ public class EnemyBase : MonoBehaviour
         {
             if (obj.GetComponent<Projectile>().IsReflected)
             {
-                Health--;
-
-                if (Health <= 0)
-                    StateMachine.ChangeState(EnemyStates.Dead);
+                ReceivedDamage();
             }
+        }
+        else if(obj.CompareTag("Weapon"))
+        {
+            ReceivedDamage();
         }
     }
 

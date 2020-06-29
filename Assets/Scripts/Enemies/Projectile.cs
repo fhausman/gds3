@@ -29,6 +29,15 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        var obj = collision.gameObject;
+        if (obj.CompareTag("Weapon"))
+        {
+            if (obj.GetComponent<Weapon>().IsInSweetSpot(transform.position))
+            {
+                Reflect();
+                return;
+            }
+        }
         Destroy();
     }
 
