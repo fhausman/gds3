@@ -288,6 +288,8 @@ public class PlayerReceivedDamage : BaseState
     {
         damageCooldownElapsed = 0.0f;
         impactDirection = (float) args[0];
+
+        player.DecreaseHealth(1);
     }
 
     public override void onUpdate(float deltaTime)
@@ -310,6 +312,7 @@ public class Player : MonoBehaviour
 {
     #region Settings
     public PlayerSettings settings;
+    public int Health { get => settings.health; }
     public float Speed { get => settings.speed; }
     public float GravitySpeed { get => settings.gravitySpeed; }
     public float BlockSpeedModifier { get => settings.blockSpeedModifier; }
@@ -336,6 +339,7 @@ public class Player : MonoBehaviour
     #region Private Fields 
     private Vector2 _aim = Vector2.zero;
     private Interactable _heldObject = null;
+    private int _currentHealth = 0;
     #endregion
 
     #region Properties
@@ -425,6 +429,15 @@ public class Player : MonoBehaviour
         ); ;
     }
 
+    public void DecreaseHealth(int healthAmount)
+    {
+        _currentHealth -= healthAmount;
+        if (_currentHealth <= 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
     #region Mono behaviour methods
     void Start()
     {
@@ -435,6 +448,8 @@ public class Player : MonoBehaviour
         StateMachine.AddState(PlayerState.Attacking, new PlayerAttacking(this));
         StateMachine.AddState(PlayerState.ReceivedDamage, new PlayerReceivedDamage(this));
         StateMachine.ChangeState(PlayerState.Moving);
+
+        _currentHealth = Health;
 
         Controls.Enable();
     }
@@ -497,7 +512,7 @@ public class Player : MonoBehaviour
 
     void OnLaserHit()
     {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        DecreaseHealth(100);
     }
 
 #if !UNITY_EDITOR
