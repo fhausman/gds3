@@ -94,11 +94,12 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        if (player.CanSwitch && Physics.Raycast(player.Parent.position, player.Parent.up, player.GravitySwitchHeight))
+        var isTouchingGround = player.IsTouchingGround;
+        if (isTouchingGround && player.CanSwitch)
         {
             player.Flip();
         }
-        else
+        else if (isTouchingGround)
         {
             player.StateMachine.ChangeState(PlayerState.FailedToFlip);
         }
@@ -384,11 +385,26 @@ public class Player : MonoBehaviour
     public Animator Animator { get; private set; } = null;
     private Vector3 GravityVelocity { get; set; } = Vector3.zero;
     //public bool Blocking { get; set; } = false;
-    public bool CanSwitch { get; set; } = false;
     public bool WeaponEquipped { get; set; } = true;
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
+    public bool IsTouchingGround
+    {
+        get
+        {
+            RaycastHit hit;
+            return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
+        }
+    }
+    public bool CanSwitch
+    {
+        get
+        {
+            RaycastHit hit;
+            return Physics.Raycast(Parent.position, Parent.up, out hit, GravitySwitchHeight, 1 << 8);
+        }
+    }
 
     //public float Aim { get => _aim.y * transform.up.y; }
 
@@ -434,14 +450,12 @@ public class Player : MonoBehaviour
             _parent.position = hit.point;
             _parent.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             GravityVelocity = Vector3.zero;
-            CanSwitch = true;
         }
         else
         {
             //TODO: change state to falling
             GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
             _parent.position += GravityVelocity * deltaTime;
-            CanSwitch = false;
         }
 
         if (Mathf.Abs(dir.x) > 0.0f + Mathf.Epsilon)
