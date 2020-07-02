@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+    path: Assets/Scenes/Poziom1.unity
+    guid: 3abefc2913bb678409590c55e6a84b7b
+  - enabled: 1
+    path: Assets/Scenes/Poziom2.unity
+    guid: d256152e76beb42309d92c73734667dc
+  - enabled: 1
+    path: Assets/Scenes/Poziom3.unity
+    guid: 5f9f49e7daabb410e8e8f4f2324dd33e
   m_configObjects: {}
