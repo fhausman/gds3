@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76dca51ef4d472942a5581bcbca36905, type: 3}
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
+  health: 3
   speed: 5
   gravitySpeed: 10
   blockSpeedModifier: 0.1
@@ -20,5 +21,6 @@ MonoBehaviour:
   dashCooldown: 0.8
   upperBlockZoneSize: {x: 0.5, y: 0.6}
   bottomBlockZoneSize: {x: 0.5, y: 0.6}
-  sweetSpotWidth: 1
-  attackDuration: 0.15
+  sweetSpotWidth: 0.2
+  attackDuration: 0.2
+  gravitySwitchHeight: 3

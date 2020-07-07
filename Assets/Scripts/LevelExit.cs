@@ -9,7 +9,6 @@ public class LevelExit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("trigger");
         if(other.CompareTag("Player"))
         {
             SceneManager.LoadScene(sceneToLoad);

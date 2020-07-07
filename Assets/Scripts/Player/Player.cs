@@ -389,6 +389,8 @@ public class Player : MonoBehaviour
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
     public float DashCooldownElapsed { get; set; } = 0.0f;
+    public bool IsHoldingObject { get => _heldObject != null; }
+    public int CurrentHealth { get => _currentHealth; }
     public bool IsTouchingGround
     {
         get
