@@ -4,7 +4,7 @@ using UnityEngine;
 public class MeleeEnemyInFight : BaseState
 {
     EnemyBase enemy;
-    GameObject playerRef;
+    Player playerRef;
     float elapsedTimeBetweenShots = 0.0f;
 
     Vector3 DistanceToPlayer
@@ -22,7 +22,7 @@ public class MeleeEnemyInFight : BaseState
     {
         if (args.Length > 0)
         {
-            playerRef = (GameObject)args[0];
+            playerRef = ((GameObject) args[0]).GetComponent<Player>();
         }
 
         elapsedTimeBetweenShots = enemy.TimeBetweenShots + Mathf.Epsilon;
@@ -30,24 +30,17 @@ public class MeleeEnemyInFight : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if (elapsedTimeBetweenShots >= enemy.TimeBetweenShots)
+        if(playerRef.IsAttacking && DistanceToPlayer.magnitude < enemy.SafeDistance)
         {
-            enemy.StartCoroutine(Shoot());
-            elapsedTimeBetweenShots = 0.0f;
-        }
-        else
-        {
-            elapsedTimeBetweenShots += deltaTime;
+            enemy.StateMachine.ChangeState(EnemyStates.Dashing, playerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f);
         }
     }
 
     public override void onFixedUpdate(float deltaTime)
     {
-        if (DistanceToPlayer.magnitude > enemy.Range)
-        {
-            enemy.Logic.MoveTowards(playerRef.transform.position, enemy.Speed * deltaTime);
-        }
-        else if (DistanceToPlayer.magnitude < enemy.SafeDistance)
+        enemy.Logic.MoveTowards(playerRef.transform.position, enemy.Speed * deltaTime);
+        
+        if (DistanceToPlayer.magnitude < enemy.SafeDistance)
         {
             var dir = playerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
             enemy.transform.position += enemy.transform.right * dir * enemy.Speed * deltaTime;
@@ -70,6 +63,7 @@ public class MeleeEnemy : EnemyBase
 
         StateMachine.AddState(EnemyStates.Patroling, new EnemyPatroling(this));
         StateMachine.AddState(EnemyStates.Dashing, new EnemyDashing(this));
+        StateMachine.AddState(EnemyStates.InFight, new MeleeEnemyInFight(this));
         StateMachine.ChangeState(EnemyStates.Patroling);
     }
 }

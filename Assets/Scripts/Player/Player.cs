@@ -408,6 +408,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool IsAttacking
+    {
+        get => StateMachine.CurrentState == PlayerState.Attacking;
+    }
+
     //public float Aim { get => _aim.y * transform.up.y; }
 
     //public Bounds UpperBlockAreaBounds
