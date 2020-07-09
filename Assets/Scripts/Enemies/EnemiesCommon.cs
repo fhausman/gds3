@@ -57,7 +57,7 @@ public class EnemyDamaged : BaseState
 {
     EnemyBase enemy;
     Rigidbody rigidbody;
-    float angle = -60.0f;
+    float angle = 20.0f;
     float damagedDelay = 1.0f;
     float currentDelay = 0.0f;
 
@@ -71,7 +71,7 @@ public class EnemyDamaged : BaseState
     public override void onInit(params object[] args)
     {
         rigidbody.velocity = Vector3.zero;
-        rigidbody.AddForce(enemy.transform.right * 5, ForceMode.Impulse);
+        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, angle) * enemy.transform.right) * 3, ForceMode.Impulse);
         enemy.Health -= 1;
     }
 
@@ -224,7 +224,11 @@ public class EnemyBase : MonoBehaviour
                 ReceivedDamage();
             }
         }
-        else if(obj.CompareTag("Weapon"))
+    }
+
+    protected void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
         {
             ReceivedDamage();
         }
