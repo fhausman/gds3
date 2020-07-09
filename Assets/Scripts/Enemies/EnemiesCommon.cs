@@ -10,7 +10,8 @@ public enum EnemyStates
     Patroling,
     InFight,
     Dashing,
-    Dead
+    Dead,
+    Damaged
 }
 
 public class EnemyPatroling : BaseState
@@ -49,6 +50,46 @@ public class EnemyPatroling : BaseState
                 enemy.StateMachine.ChangeState(EnemyStates.InFight, playerRef);
             }
         }
+    }
+}
+
+public class EnemyDamaged : BaseState
+{
+    EnemyBase enemy;
+    Rigidbody rigidbody;
+    float force = 3.0f;
+    float angle = 20.0f;
+    float damagedDelay = 1.0f;
+    float currentDelay = 0.0f;
+
+    public EnemyDamaged(EnemyBase e)
+    {
+        enemy = e;
+        rigidbody = enemy.GetComponent<Rigidbody>();
+        currentDelay = damagedDelay;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, angle) * enemy.transform.right) * force, ForceMode.Impulse);
+        enemy.Health -= 1;
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        if(currentDelay >= damagedDelay)
+        {
+            if(enemy.Health <= 0)
+            {
+                enemy.StateMachine.ChangeState(EnemyStates.Dead);
+                return;
+            }
+
+            enemy.StateMachine.ChangeState(EnemyStates.InFight);
+        }
+
+        currentDelay += deltaTime;
     }
 }
 
@@ -159,6 +200,7 @@ public class EnemyBase : MonoBehaviour
     protected void Start()
     {
         StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
+        StateMachine.AddState(EnemyStates.Damaged, new EnemyDamaged(this));
 
         Logic = new EnemyCommonLogic(transform);
         Health = settings.health;
@@ -184,7 +226,11 @@ public class EnemyBase : MonoBehaviour
                 ReceivedDamage();
             }
         }
-        else if(obj.CompareTag("Weapon"))
+    }
+
+    protected void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
         {
             ReceivedDamage();
         }
@@ -192,10 +238,6 @@ public class EnemyBase : MonoBehaviour
 
     private void ReceivedDamage()
     {
-        Health--;
-        if(Health <= 0)
-        {
-            StateMachine.ChangeState(EnemyStates.Dead);
-        }
+        StateMachine.ChangeState(EnemyStates.Damaged);
     }
 }
