@@ -66,7 +66,7 @@ public class EnemyDamaged : BaseState
     {
         enemy = e;
         rigidbody = enemy.GetComponent<Rigidbody>();
-        currentDelay = 0.0f;
+        currentDelay = damagedDelay;
     }
 
     public override void onInit(params object[] args)
@@ -83,6 +83,7 @@ public class EnemyDamaged : BaseState
             if(enemy.Health <= 0)
             {
                 enemy.StateMachine.ChangeState(EnemyStates.Dead);
+                return;
             }
 
             enemy.StateMachine.ChangeState(EnemyStates.InFight);
