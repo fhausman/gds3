@@ -6,13 +6,16 @@ using UnityEngine.XR.WSA.Input;
 public class DoubleBlastEnemyInFight : BaseState
 {
     EnemyBase enemy;
-    GameObject playerRef;
     float elapsedTimeBetweenShots = 0.0f;
 
-    Vector3 DistanceToPlayer 
+    Vector3 DirToPlayer 
     {
-        get => new Vector3(playerRef.transform.position.x - enemy.transform.position.x,
-                            playerRef.transform.position.y - enemy.transform.position.y);
+        get => new Vector3(enemy.PlayerRef.transform.position.x - enemy.transform.position.x,
+                            enemy.PlayerRef.transform.position.y - enemy.transform.position.y);
+    }
+    float DistanceToPlayer
+    {
+        get => Vector3.Distance(enemy.transform.position, enemy.PlayerRef.transform.position);
     }
 
     public DoubleBlastEnemyInFight(EnemyBase e)
@@ -22,11 +25,6 @@ public class DoubleBlastEnemyInFight : BaseState
 
     public override void onInit(params object[] args)
     {
-        if (args.Length > 0)
-        {
-            playerRef = (GameObject)args[0];
-        }
-
         elapsedTimeBetweenShots = enemy.TimeBetweenShots + Mathf.Epsilon;
     }
 
@@ -41,17 +39,22 @@ public class DoubleBlastEnemyInFight : BaseState
         {
             elapsedTimeBetweenShots += deltaTime;
         }
+
+        if(!enemy.Logic.HasClearShot)
+        {
+            enemy.StateMachine.ChangeState(EnemyStates.Patroling);
+        }
     }
 
     public override void onFixedUpdate(float deltaTime)
     {
-        if(DistanceToPlayer.magnitude > enemy.Range)
+        if(DistanceToPlayer > enemy.Range)
         {
-            enemy.Logic.MoveTowards(playerRef.transform.position, enemy.Speed * deltaTime);
+            enemy.Logic.MoveTowards(enemy.PlayerRef.transform.position, enemy.Speed * deltaTime);
         }
-        else if(DistanceToPlayer.magnitude < enemy.SafeDistance)
+        else if(DistanceToPlayer < enemy.SafeDistance)
         {
-            var dir = playerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
+            var dir = enemy.PlayerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
             enemy.transform.position += enemy.transform.right * dir * enemy.Speed * deltaTime;
 
             RaycastHit hit;
@@ -75,7 +78,7 @@ public class DoubleBlastEnemyInFight : BaseState
     {
         var proj = Object.Instantiate(enemy.Projectile);
         proj.transform.position = enemy.transform.position;
-        proj.Dir = Quaternion.Euler(0.0f, 0.0f, offset) * DistanceToPlayer.normalized;
+        proj.Dir = Quaternion.Euler(0.0f, 0.0f, offset) * DirToPlayer.normalized;
     }
 }
 

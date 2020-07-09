@@ -5,10 +5,9 @@ using UnityEngine;
 public class StaticEnemyIdle : BaseState
 {
     EnemyBase enemy;
-    GameObject playerRef;
 
-    bool IsEnemyOnLeft { get => enemy.Logic.LookForPlayer(-enemy.transform.right, enemy.Range, out playerRef); }
-    bool IsEnemyOnRight { get => enemy.Logic.LookForPlayer(enemy.transform.right, enemy.Range, out playerRef); }
+    bool IsEnemyOnLeft { get => enemy.Logic.IsPlayerOnLeft; }
+    bool IsEnemyOnRight { get => !enemy.Logic.IsPlayerOnLeft; }
 
     public StaticEnemyIdle(EnemyBase e)
     {
@@ -39,10 +38,9 @@ public class StaticEnemyIdle : BaseState
 public class StaticEnemyShooting : BaseState
 {
     EnemyBase enemy;
-    GameObject playerRef;
     private float timeElapsed = 0.0f;
 
-    bool IsPlayerInRange { get => enemy.Logic.LookForPlayer(enemy.FacingDirection * enemy.transform.right, enemy.Range, out playerRef); }
+    bool IsPlayerInRange { get => enemy.Logic.IsInRange; }
 
     public StaticEnemyShooting(EnemyBase e)
     {
