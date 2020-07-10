@@ -4,13 +4,10 @@ using UnityEngine;
 public class MeleeEnemyInFight : BaseState
 {
     EnemyBase enemy;
-    Player playerRef;
-    float elapsedTimeBetweenShots = 0.0f;
 
-    Vector3 DistanceToPlayer
+    float DistanceToPlayer
     {
-        get => new Vector3(playerRef.transform.position.x - enemy.transform.position.x,
-                            playerRef.transform.position.y - enemy.transform.position.y);
+        get => Vector3.Distance(enemy.transform.position, enemy.PlayerRef.transform.position);
     }
 
     public MeleeEnemyInFight(EnemyBase e)
@@ -20,29 +17,23 @@ public class MeleeEnemyInFight : BaseState
 
     public override void onInit(params object[] args)
     {
-        if (args.Length > 0)
-        {
-            playerRef = ((GameObject) args[0]).GetComponent<Player>();
-        }
-
-        elapsedTimeBetweenShots = enemy.TimeBetweenShots + Mathf.Epsilon;
     }
 
     public override void onUpdate(float deltaTime)
     {
-        if(playerRef.IsAttacking && DistanceToPlayer.magnitude < enemy.SafeDistance)
+        if(enemy.PlayerRef.IsAttacking && DistanceToPlayer < enemy.SafeDistance)
         {
-            enemy.StateMachine.ChangeState(EnemyStates.Dashing, playerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f);
+            enemy.StateMachine.ChangeState(EnemyStates.Dashing, enemy.Logic.IsPlayerOnLeft ? -1.0f : 1.0f);
         }
     }
 
     public override void onFixedUpdate(float deltaTime)
     {
-        enemy.Logic.MoveTowards(playerRef.transform.position, enemy.Speed * deltaTime);
+        enemy.Logic.MoveTowards(enemy.PlayerRef.transform.position, enemy.Speed * deltaTime);
         
-        if (DistanceToPlayer.magnitude < enemy.SafeDistance)
+        if (DistanceToPlayer < enemy.SafeDistance)
         {
-            var dir = playerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
+            var dir = enemy.PlayerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
             enemy.transform.position += enemy.transform.right * dir * enemy.Speed * deltaTime;
 
             RaycastHit hit;
