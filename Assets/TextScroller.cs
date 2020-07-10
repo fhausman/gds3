@@ -25,14 +25,15 @@ public class TextScroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("Space"))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (currentIndex > plotText.Length)
+            currentIndex++;
+
+            if (currentIndex > plotText.Length - 1)
             {
                 SceneManager.LoadScene(nextScene);
             }
 
-            currentIndex++;
             sceneText.text = plotText[currentIndex].text;
         }
     }

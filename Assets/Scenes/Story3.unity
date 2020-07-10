@@ -276,7 +276,7 @@ PrefabInstance:
     - target: {fileID: 3135193979350419917, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: nextScene
-      value: Poziom1
+      value: Poziom3
       objectReference: {fileID: 0}
     - target: {fileID: 3135193979350419917, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
