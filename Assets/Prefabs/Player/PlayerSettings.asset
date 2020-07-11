@@ -23,4 +23,4 @@ MonoBehaviour:
   bottomBlockZoneSize: {x: 0.5, y: 0.6}
   sweetSpotWidth: 0.2
   attackDuration: 0.2
-  gravitySwitchHeight: 3
+  gravitySwitchHeight: 5

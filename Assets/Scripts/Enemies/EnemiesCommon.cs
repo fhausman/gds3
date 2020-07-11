@@ -10,13 +10,13 @@ public enum EnemyStates
     Patroling,
     InFight,
     Dashing,
-    Dead
+    Dead,
+    Damaged
 }
 
 public class EnemyPatroling : BaseState
 {
     EnemyBase enemy;
-    GameObject playerRef;
     List<Vector3> patrolingPoints = new List<Vector3>();
     int currentPoint = 0;
 
@@ -40,15 +40,50 @@ public class EnemyPatroling : BaseState
             currentPoint = (currentPoint + 1) % patrolingPoints.Count;
         }
 
-        var resolution = 20;
-        for(int i = 0; i <= resolution; i++)
+        if (enemy.Logic.IsInRange && enemy.Logic.HasClearShot)
         {
-            var dir = Quaternion.Euler(0.0f, 0.0f, i * (180 / resolution)) * enemy.transform.right;
-            if (enemy.Logic.LookForPlayer(dir, enemy.Range, out playerRef))
-            {
-                enemy.StateMachine.ChangeState(EnemyStates.InFight, playerRef);
-            }
+            enemy.StateMachine.ChangeState(EnemyStates.InFight);
         }
+    }
+}
+
+public class EnemyDamaged : BaseState
+{
+    EnemyBase enemy;
+    Rigidbody rigidbody;
+    float force = 3.0f;
+    float angle = 20.0f;
+    float damagedDelay = 1.0f;
+    float currentDelay = 0.0f;
+
+    public EnemyDamaged(EnemyBase e)
+    {
+        enemy = e;
+        rigidbody = enemy.GetComponent<Rigidbody>();
+        currentDelay = damagedDelay;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, angle) * enemy.transform.right) * force, ForceMode.Impulse);
+        enemy.Health -= 1;
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        if(currentDelay >= damagedDelay)
+        {
+            if(enemy.Health <= 0)
+            {
+                enemy.StateMachine.ChangeState(EnemyStates.Dead);
+                return;
+            }
+
+            enemy.StateMachine.ChangeState(EnemyStates.InFight);
+        }
+
+        currentDelay += deltaTime;
     }
 }
 
@@ -95,31 +130,49 @@ public class EnemyDashing : BaseState
 
 public class EnemyCommonLogic
 {
-    private Transform _transform;
+    private EnemyBase _enemy;
 
-    public EnemyCommonLogic(Transform t)
+    public EnemyCommonLogic(EnemyBase e)
     {
-        _transform = t;
+        _enemy = e;
     }
 
-    public bool LookForPlayer(Vector3 dir, float range, out GameObject player)
-    {
-        RaycastHit hit;
-        if(Physics.Raycast(_transform.position, dir, out hit, range, LayerMask.GetMask("Player")))
-        {
-            player = hit.collider.gameObject;
-            return true;
-        }
-        else
-        {
-            player = null;
-            return false;
-        }
+    //public bool LookForPlayer(Vector3 dir, float range, out GameObject player)
+    //{
+    //    RaycastHit hit;
+    //    if(Physics.Raycast(_transform.position, dir, out hit, range, LayerMask.GetMask("Player")))
+    //    {
+    //        player = hit.collider.gameObject;
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        player = null;
+    //        return false;
+    //    }
+    //}
 
+    public bool IsPlayerOnLeft
+    {
+        get => _enemy.transform.position.x <= _enemy.PlayerRef.transform.position.x;
+    }
+
+    public bool IsInRange
+    {
+        get => _enemy.Range > Vector3.Distance(_enemy.transform.position, _enemy.PlayerRef.transform.position);
+    }
+
+    public bool HasClearShot
+    {
+        get
+        {
+            return !Physics.Linecast(_enemy.transform.position, _enemy.PlayerRef.transform.position, LayerMask.GetMask("Ground"));
+        }
     }
 
     public void MoveTowards(Vector3 target, float speed)
     {
+        var _transform = _enemy.transform;
         _transform.position = Vector3.MoveTowards(_transform.position,
             new Vector3(target.x, _transform.position.y, _transform.position.z), speed);
     }
@@ -151,7 +204,7 @@ public class EnemyBase : MonoBehaviour
 
     public StateMachine<EnemyStates> StateMachine { get; private set; } = new StateMachine<EnemyStates>();
     public EnemyCommonLogic Logic { get; private set; }
-    public GameObject PlayerRef { get; set; } = null;
+    public Player PlayerRef { get; set; } = null;
     public float FacingDirection { get; set; } = -1.0f;
     public float TimeBetweenShots { get => 1 / ShootRate; }
     public int Health { get; set; } = 0;
@@ -159,9 +212,11 @@ public class EnemyBase : MonoBehaviour
     protected void Start()
     {
         StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
+        StateMachine.AddState(EnemyStates.Damaged, new EnemyDamaged(this));
 
-        Logic = new EnemyCommonLogic(transform);
+        Logic = new EnemyCommonLogic(this);
         Health = settings.health;
+        PlayerRef = GameObject.Find("Player").GetComponentInChildren<Player>();
     }
 
     protected void Update()
@@ -184,7 +239,11 @@ public class EnemyBase : MonoBehaviour
                 ReceivedDamage();
             }
         }
-        else if(obj.CompareTag("Weapon"))
+    }
+
+    protected void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
         {
             ReceivedDamage();
         }
@@ -192,10 +251,6 @@ public class EnemyBase : MonoBehaviour
 
     private void ReceivedDamage()
     {
-        Health--;
-        if(Health <= 0)
-        {
-            StateMachine.ChangeState(EnemyStates.Dead);
-        }
+        StateMachine.ChangeState(EnemyStates.Damaged);
     }
 }
