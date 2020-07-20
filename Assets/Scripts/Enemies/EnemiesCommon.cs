@@ -66,6 +66,7 @@ public class EnemyDamaged : BaseState
     public override void onInit(params object[] args)
     {
         rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
         rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, angle) * enemy.transform.right) * force, ForceMode.Impulse);
         enemy.Health -= 1;
     }
@@ -115,6 +116,9 @@ public class EnemyDashing : BaseState
 
     public override void onInit(params object[] args)
     {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+
         var dir = (float) args[0];
         rigidbody.AddForce(enemy.transform.right * dir * enemy.DashForce, ForceMode.Impulse);
     }
