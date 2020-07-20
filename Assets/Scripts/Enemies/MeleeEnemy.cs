@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class MeleeEnemyInFight : BaseState
@@ -21,9 +22,14 @@ public class MeleeEnemyInFight : BaseState
         enemy.PlayerRef.OnAttackStartNotify.AddListener(Dodge);
     }
 
+    public override void onExit()
+    {
+        enemy.PlayerRef.OnAttackStartNotify.RemoveListener(Dodge);
+    }
+
     public override void onUpdate(float deltaTime)
     {
-        if(DistanceToPlayer <= enemy.Range / 4)
+        if(DistanceToPlayer <= enemy.SafeDistance * 1.1)
         {
             enemy.StateMachine.ChangeState(EnemyStates.Attacking);
         }
@@ -58,19 +64,29 @@ public class MeleeEnemyInFight : BaseState
 public class MeleeEnemyAttack : BaseState
 {
     MeleeEnemy enemy;
+    float duration = 0.0f;
+    float elapsed = 0.0f;
 
     public MeleeEnemyAttack(MeleeEnemy e)
     {
         enemy = e;
+        duration = enemy.Animator.runtimeAnimatorController.animationClips.First(a => a.name == "Attack").length;
     }
 
     public override void onInit(params object[] args)
     {
         enemy.Animator.Play("Attack");
+        elapsed = 0.0f;
     }
 
     public override void onUpdate(float deltaTime)
     {
+        if(elapsed > duration)
+        {
+            enemy.StateMachine.ChangeState(EnemyStates.InFight);
+        }
+
+        elapsed += deltaTime;
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -125,6 +141,7 @@ public class MeleeEnemyAttack : BaseState
 public class MeleeEnemy : EnemyBase
 {
     public Animator Animator { get; private set; } = null;
+    public float AttackCooldown { get; private set; } = 2.0f;
 
     void Start()
     {
@@ -137,5 +154,10 @@ public class MeleeEnemy : EnemyBase
         StateMachine.AddState(EnemyStates.InFight, new MeleeEnemyInFight(this));
         StateMachine.AddState(EnemyStates.Attacking, new MeleeEnemyAttack(this));
         StateMachine.ChangeState(EnemyStates.Patroling);
+    }
+
+    public void OnAttackEnd()
+    {
+        StateMachine.ChangeState(EnemyStates.InFight);
     }
 }
