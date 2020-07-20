@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -195,11 +196,15 @@ public class PlayerDashing : BaseState
 public class PlayerAttacking : BaseState
 {
     private Player player = null;
+    private Animator animator = null;
     private float attackTimeElapsed = 0.0f;
+    private float attackDuration = 0.0f;
 
     public PlayerAttacking(Player p)
     {
         player = p;
+        animator = player.Weapon.GetComponent<Animator>();
+        attackDuration = animator.runtimeAnimatorController.animationClips.First(a => a.name == "Attack").length;
     }
 
     public override void onInit(params object[] args)
@@ -212,7 +217,7 @@ public class PlayerAttacking : BaseState
         var attackType = (AttackType) args[0];
         if(attackType == AttackType.High)
         {
-            player.Weapon.GetComponent<Animator>().Play("Attack_High");
+            player.Weapon.GetComponent<Animator>().Play("Attack");
         }
         else if (attackType == AttackType.Low)
         {
@@ -248,7 +253,7 @@ public class PlayerAttacking : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if (attackTimeElapsed > player.AttackDuration)
+        if (attackTimeElapsed > attackDuration)
         {
             player.StateMachine.ChangeState(PlayerState.Moving);
         }
