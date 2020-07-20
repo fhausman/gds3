@@ -360,6 +360,7 @@ public class Player : MonoBehaviour
     //public Vector2 BottomBlockZoneSize { get => settings.bottomBlockZoneSize; }
     //public float SweetSpotWidth { get => settings.sweetSpotWidth; }
     public float GravitySwitchHeight { get => settings.gravitySwitchHeight; }
+    public float GravitySwitchCooldown { get => settings.gravitySwitchCooldown; }
     #endregion
 
     #region Outside References
@@ -388,7 +389,8 @@ public class Player : MonoBehaviour
     public bool WeaponEquipped { get; set; } = true;
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
-    public float DashCooldownElapsed { get; set; } = 0.0f;
+    public float DashCooldownElapsed { get; set; } = 100.0f;
+    public float GravitySwitchCooldownElapsed { get; set; } = 100.0f;
     public bool IsHoldingObject { get => _heldObject != null; }
     public int CurrentHealth { get => _currentHealth; }
     public bool IsTouchingGround
@@ -404,7 +406,7 @@ public class Player : MonoBehaviour
         get
         {
             RaycastHit hit;
-            return Physics.Raycast(Parent.position, Parent.up, out hit, GravitySwitchHeight, 1 << 8);
+            return Physics.Raycast(Parent.position, Parent.up, out hit, GravitySwitchHeight, 1 << 8) && (GravitySwitchCooldownElapsed > GravitySwitchCooldown);
         }
     }
 
@@ -480,6 +482,8 @@ public class Player : MonoBehaviour
 
     public void Flip()
     {
+        GravitySwitchCooldownElapsed = 0.0f;
+
         _parent.Rotate(0, 0, 180);
         _parent.position -= _parent.up;
         _parent.transform.localScale = new Vector3(
@@ -534,7 +538,7 @@ public class Player : MonoBehaviour
     {
         //_aim = Controls.Player.Aim.ReadValue<Vector2>();
 
-        DashCooldownElapsed += Time.deltaTime;
+        CooldownUpdate();
         StateMachine.OnUpdate(Time.deltaTime);
 
         if (Controls.Player.Interact.triggered)
@@ -583,6 +587,19 @@ public class Player : MonoBehaviour
 
             StateMachine.ChangeState(PlayerState.ReceivedDamage,
                 collision.gameObject.GetComponent<Projectile>().Dir.x);
+        }
+    }
+
+    void CooldownUpdate()
+    {
+        if(DashCooldownElapsed < DashCooldown + Mathf.Epsilon)
+        {
+            DashCooldownElapsed += Time.deltaTime;
+        }
+
+        if(GravitySwitchCooldownElapsed < GravitySwitchCooldown + Mathf.Epsilon)
+        {
+            GravitySwitchCooldownElapsed += Time.deltaTime;
         }
     }
 
