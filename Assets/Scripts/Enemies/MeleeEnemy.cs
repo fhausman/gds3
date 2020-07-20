@@ -29,6 +29,12 @@ public class MeleeEnemyInFight : BaseState
 
     public override void onUpdate(float deltaTime)
     {
+        if((enemy.Logic.IsPlayerOnLeft && enemy.FacingLeft) ||
+            (!enemy.Logic.IsPlayerOnLeft && !enemy.FacingLeft))
+        {
+            enemy.Flip();
+        }
+
         if(DistanceToPlayer <= enemy.SafeDistance * 1.1 && enemy.CanAttack)
         {
             enemy.StateMachine.ChangeState(EnemyStates.Attacking);
@@ -39,17 +45,17 @@ public class MeleeEnemyInFight : BaseState
     {
         enemy.Logic.MoveTowards(enemy.PlayerRef.transform.position, enemy.Speed * deltaTime);
         
-        if (DistanceToPlayer < enemy.SafeDistance)
-        {
-            var dir = enemy.PlayerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
-            enemy.transform.position += enemy.transform.right * dir * enemy.Speed * deltaTime;
+        //if (DistanceToPlayer < enemy.SafeDistance)
+        //{
+        //    var dir = enemy.PlayerRef.transform.position.x > enemy.transform.position.x ? -1.0f : 1.0f;
+        //    enemy.transform.position += enemy.transform.right * dir * enemy.Speed * deltaTime;
 
-            RaycastHit hit;
-            if (Physics.Raycast(enemy.transform.position, enemy.transform.right * dir, out hit, 0.1f, LayerMask.GetMask("Ground")))
-            {
-                enemy.StateMachine.ChangeState(EnemyStates.Dashing, -dir);
-            }
-        }
+        //    RaycastHit hit;
+        //    if (Physics.Raycast(enemy.transform.position, enemy.transform.right * dir, out hit, 0.1f, LayerMask.GetMask("Ground")))
+        //    {
+        //        enemy.StateMachine.ChangeState(EnemyStates.Dashing, -dir);
+        //    }
+        //}
     }
 
     private void Dodge()
@@ -59,6 +65,8 @@ public class MeleeEnemyInFight : BaseState
             enemy.StateMachine.ChangeState(EnemyStates.Dashing, 3 * (enemy.Logic.IsPlayerOnLeft ? -1.0f : 1.0f));
         }
     }
+
+
 }
 
 public class MeleeEnemyAttack : BaseState
@@ -146,6 +154,7 @@ public class MeleeEnemy : EnemyBase
     public float AttackCooldown { get; } = 2.0f;
     public float AttackCooldownElapsed { get; set; } = 0.0f;
     public bool CanAttack { get => AttackCooldown < AttackCooldownElapsed; }
+    public bool FacingLeft { get => transform.localScale.x > 0; }
 
     void Start()
     {
@@ -169,5 +178,12 @@ public class MeleeEnemy : EnemyBase
     public void OnAttackEnd()
     {
         StateMachine.ChangeState(EnemyStates.InFight);
+    }
+
+    public void Flip()
+    {
+        var scale = transform.localScale;
+        scale.x *= -1.0f;
+        transform.localScale = scale;
     }
 }
