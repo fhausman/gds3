@@ -528,12 +528,4 @@ AnimationClip:
     script: {fileID: 0}
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0.5833333
-    functionName: OnAttackEnd
-    data: 
-    objectReferenceParameter: {fileID: 3933024816326930148, guid: bb50b4b143c6a394781a39b4592347fa,
-      type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

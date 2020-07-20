@@ -29,7 +29,7 @@ public class MeleeEnemyInFight : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if(DistanceToPlayer <= enemy.SafeDistance * 1.1)
+        if(DistanceToPlayer <= enemy.SafeDistance * 1.1 && enemy.CanAttack)
         {
             enemy.StateMachine.ChangeState(EnemyStates.Attacking);
         }
@@ -75,8 +75,10 @@ public class MeleeEnemyAttack : BaseState
 
     public override void onInit(params object[] args)
     {
+        enemy.AttackCooldownElapsed = 0.0f;
         enemy.Animator.Play("Attack");
         elapsed = 0.0f;
+
     }
 
     public override void onUpdate(float deltaTime)
@@ -141,7 +143,9 @@ public class MeleeEnemyAttack : BaseState
 public class MeleeEnemy : EnemyBase
 {
     public Animator Animator { get; private set; } = null;
-    public float AttackCooldown { get; private set; } = 2.0f;
+    public float AttackCooldown { get; } = 2.0f;
+    public float AttackCooldownElapsed { get; set; } = 0.0f;
+    public bool CanAttack { get => AttackCooldown < AttackCooldownElapsed; }
 
     void Start()
     {
@@ -154,6 +158,12 @@ public class MeleeEnemy : EnemyBase
         StateMachine.AddState(EnemyStates.InFight, new MeleeEnemyInFight(this));
         StateMachine.AddState(EnemyStates.Attacking, new MeleeEnemyAttack(this));
         StateMachine.ChangeState(EnemyStates.Patroling);
+    }
+
+    private void Update()
+    {
+        AttackCooldownElapsed += Time.deltaTime;
+        base.Update();
     }
 
     public void OnAttackEnd()
