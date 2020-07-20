@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -209,6 +210,8 @@ public class PlayerAttacking : BaseState
 
     public override void onInit(params object[] args)
     {
+        player.OnAttackStartNotify.Invoke();
+
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
         player.Controls.Player.Dash.performed += Dash;
 
@@ -398,6 +401,8 @@ public class Player : MonoBehaviour
     public float GravitySwitchCooldownElapsed { get; set; } = 100.0f;
     public bool IsHoldingObject { get => _heldObject != null; }
     public int CurrentHealth { get => _currentHealth; }
+    public UnityEvent OnAttackStartNotify { get; set; } = new UnityEvent();
+
     public bool IsTouchingGround
     {
         get

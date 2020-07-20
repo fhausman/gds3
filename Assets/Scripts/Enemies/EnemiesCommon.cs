@@ -11,7 +11,8 @@ public enum EnemyStates
     InFight,
     Dashing,
     Dead,
-    Damaged
+    Damaged,
+    Attacking
 }
 
 public class EnemyPatroling : BaseState
