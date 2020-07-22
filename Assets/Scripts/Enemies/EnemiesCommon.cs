@@ -234,18 +234,6 @@ public class EnemyBase : MonoBehaviour
         StateMachine.OnFixedUpdate(Time.deltaTime);
     }
 
-    protected void OnCollisionEnter(Collision collision)
-    {
-        var obj = collision.collider.gameObject;
-        if (obj.CompareTag("Projectile"))
-        {
-            if (obj.GetComponent<Projectile>().IsReflected)
-            {
-                ReceivedDamage();
-            }
-        }
-    }
-
     protected void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Weapon"))
