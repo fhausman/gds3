@@ -19,7 +19,7 @@ MonoBehaviour:
   dashSpeed: 30
   dashTime: 0.1
   dashCooldown: 0.8
-  gravitySwitchCooldown: 5
+  gravitySwitchCooldown: 1
   upperBlockZoneSize: {x: 0.5, y: 0.6}
   bottomBlockZoneSize: {x: 0.5, y: 0.6}
   sweetSpotWidth: 0.2
