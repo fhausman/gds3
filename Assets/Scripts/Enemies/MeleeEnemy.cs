@@ -62,7 +62,7 @@ public class MeleeEnemyInFight : BaseState
     {
         if (DistanceToPlayer < enemy.SafeDistance)
         {
-            enemy.StateMachine.ChangeState(EnemyStates.Dashing, 3 * (enemy.Logic.IsPlayerOnLeft ? -1.0f : 1.0f));
+            enemy.StateMachine.ChangeState(EnemyStates.Dashing, 3 * (enemy.Logic.IsPlayerOnLeft ? 1.0f : -1.0f));
         }
     }
 

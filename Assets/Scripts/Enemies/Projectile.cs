@@ -44,7 +44,7 @@ public class Projectile : MonoBehaviour
         {
             if (IsReflected)
             {
-                SendMessage("ReceivedDamage");
+                collision.gameObject.SendMessage("ReceivedDamage");
                 Destroy();
             }
             else
@@ -61,13 +61,15 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Weapon"))
+        if(other.CompareTag("ProjectileShield"))
         {
-            if (other.gameObject.GetComponent<Weapon>().IsInSweetSpot(transform.position))
+            if (other.gameObject.transform.parent.gameObject.GetComponentInChildren<Weapon>().IsInSweetSpot(transform.position))
             {
                 Reflect();
                 return;
             }
+
+            Destroy();
         }
     }
 

@@ -11,6 +11,7 @@ TagManager:
   - Terminal
   - Weapon
   - EnemyWeapon
+  - ProjectileShield
   layers:
   - Default
   - TransparentFX

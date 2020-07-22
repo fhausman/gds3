@@ -159,7 +159,7 @@ public class EnemyCommonLogic
 
     public bool IsPlayerOnLeft
     {
-        get => _enemy.transform.position.x <= _enemy.PlayerRef.transform.position.x;
+        get => _enemy.transform.position.x > _enemy.PlayerRef.transform.position.x;
     }
 
     public bool IsInRange

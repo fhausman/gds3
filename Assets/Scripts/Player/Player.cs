@@ -217,6 +217,8 @@ public class PlayerAttacking : BaseState
 
         attackTimeElapsed = 0.0f;
 
+        player.ProjectileShield.enabled = true;
+
         var attackType = (AttackType) args[0];
         if(attackType == AttackType.High)
         {
@@ -252,6 +254,8 @@ public class PlayerAttacking : BaseState
 
         player.Weapon.DisableCollision();
         player.Weapon.SetIdle();
+
+        player.ProjectileShield.enabled = false;
     }
 
     public override void onUpdate(float deltaTime)
@@ -379,6 +383,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Weapon _weapon = null;
     public Weapon Weapon { get => _weapon; }
+
+    [SerializeField]
+    private Collider _projectileShield = null;
+    public Collider ProjectileShield { get => _projectileShield; }
 
     #endregion
 
