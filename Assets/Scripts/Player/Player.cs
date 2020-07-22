@@ -612,7 +612,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing)
+        if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing && StateMachine.CurrentState != PlayerState.ReceivedDamage)
         {
             StateMachine.ChangeState(PlayerState.ReceivedDamage,
                 other.transform.position.x > transform.position.x ? -1.0f : 1.0f);
