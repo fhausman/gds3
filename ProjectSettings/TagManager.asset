@@ -10,6 +10,7 @@ TagManager:
   - Elevator
   - Terminal
   - Weapon
+  - EnemyWeapon
   layers:
   - Default
   - TransparentFX
