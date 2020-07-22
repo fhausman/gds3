@@ -7,6 +7,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 413376334926497947, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1709472317695293884, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3084516047920186980, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3555846874205117758, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4297487751380111460, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,6 +87,21 @@ PrefabInstance:
       propertyPath: _laserType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6694395503415912478, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7270935011780964862, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_Positions.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_Parameters.colorGradient.key0.r
@@ -112,10 +147,35 @@ PrefabInstance:
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
       value: 0.115385056
       objectReference: {fileID: 0}
+    - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_Positions.Array.data[0].x
+      value: 0.448
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_Positions.Array.data[0].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_Positions.Array.data[0].z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_Positions.Array.data[1].x
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 8461180643343755278, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_Name
       value: PowerBeam
+      objectReference: {fileID: 0}
+    - target: {fileID: 8819717482896740146, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 753b17b6d02785c47b8e9022667851f4, type: 3}
