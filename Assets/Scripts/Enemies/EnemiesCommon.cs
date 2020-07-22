@@ -68,7 +68,9 @@ public class EnemyDamaged : BaseState
     {
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
-        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, angle) * enemy.transform.right) * force, ForceMode.Impulse);
+
+        var dir = (float) args[0];
+        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, dir*angle) * enemy.transform.right * dir) * force, ForceMode.Impulse);
         enemy.Health -= 1;
     }
 
@@ -238,12 +240,12 @@ public class EnemyBase : MonoBehaviour
     {
         if (other.CompareTag("Weapon"))
         {
-            ReceivedDamage();
+            ReceivedDamage(Logic.IsPlayerOnLeft ? 1.0f : -1.0f);
         }
     }
 
-    private void ReceivedDamage()
+    private void ReceivedDamage(float dir)
     {
-        StateMachine.ChangeState(EnemyStates.Damaged);
+        StateMachine.ChangeState(EnemyStates.Damaged, dir);
     }
 }
