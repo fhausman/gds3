@@ -142,9 +142,11 @@ GameObject:
   - component: {fileID: 2729374797767249383}
   - component: {fileID: 6749774961326673818}
   - component: {fileID: 7766978543061211361}
-  m_Layer: 0
+  - component: {fileID: 9038419828555180799}
+  - component: {fileID: 7116457368541929643}
+  m_Layer: 9
   m_Name: Weapon
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -232,3 +234,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &9038419828555180799
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4705822174966886910}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1.0000006, y: 1.0000004, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7116457368541929643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4705822174966886910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce198b861543f7438024cdd402b3ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  col: {fileID: 9038419828555180799}

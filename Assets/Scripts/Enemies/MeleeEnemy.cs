@@ -86,7 +86,6 @@ public class MeleeEnemyAttack : BaseState
         enemy.AttackCooldownElapsed = 0.0f;
         enemy.Animator.Play("Attack");
         elapsed = 0.0f;
-
     }
 
     public override void onUpdate(float deltaTime)

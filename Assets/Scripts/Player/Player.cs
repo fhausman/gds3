@@ -584,7 +584,7 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.CompareTag("Projectile"))
+        if(collision.collider.CompareTag("Projectile") && StateMachine.CurrentState != PlayerState.Dashing)
         {
             //if(Blocking)
             //{
@@ -597,6 +597,15 @@ public class Player : MonoBehaviour
 
             StateMachine.ChangeState(PlayerState.ReceivedDamage,
                 collision.gameObject.GetComponent<Projectile>().Dir.x);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing)
+        {
+            StateMachine.ChangeState(PlayerState.ReceivedDamage,
+                other.transform.position.x > transform.position.x ? -1.0f : 1.0f);
         }
     }
 
