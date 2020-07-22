@@ -386,6 +386,7 @@ public class Player : MonoBehaviour
     private Vector2 _aim = Vector2.zero;
     private Interactable _heldObject = null;
     private int _currentHealth = 0;
+    private int _attacksCounter = 0;
     #endregion
 
     #region Properties
@@ -512,8 +513,11 @@ public class Player : MonoBehaviour
 
     public void AttackHigh(InputAction.CallbackContext ctx)
     {
-        if (WeaponEquipped)
+        if (WeaponEquipped && _attacksCounter < 3)
         {
+            _attacksCounter++;
+            StopCoroutine("ResetAttacksCounter");
+            StartCoroutine("ResetAttacksCounter");
             StateMachine.ChangeState(PlayerState.Attacking, AttackType.High);
         }
     }
@@ -524,6 +528,12 @@ public class Player : MonoBehaviour
         {
             StateMachine.ChangeState(PlayerState.Attacking, AttackType.Low);
         }
+    }
+
+    private IEnumerator ResetAttacksCounter()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _attacksCounter = 0;
     }
 
     #region Mono behaviour methods
