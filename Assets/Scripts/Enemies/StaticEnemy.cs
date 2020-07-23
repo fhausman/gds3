@@ -16,13 +16,16 @@ public class StaticEnemyIdle : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if (IsEnemyOnRight)
+        if (enemy.Logic.HasClearShot)
         {
-            StartShooting(1.0f);
-        }
-        else if (IsEnemyOnLeft)
-        {
-            StartShooting(-1.0f);
+            if (IsEnemyOnRight)
+            {
+                StartShooting(1.0f);
+            }
+            else if (IsEnemyOnLeft)
+            {
+                StartShooting(-1.0f);
+            }
         }
     }
 
