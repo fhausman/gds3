@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class Detector : MonoBehaviour
 {
-    public Interactable attachedObject;
+    public Interactable attachedObject1;
+    public Interactable attachedObject2;
+
 
     public void Activate()
     {
-        attachedObject.OnInteractionStart();
+        attachedObject1.OnInteractionStart();
+        attachedObject2.OnInteractionStart();
     }
 
     public void Deactivate()
     {
-        attachedObject.OnInteractionEnd();
+        attachedObject1.OnInteractionEnd();
+        attachedObject2.OnInteractionEnd();
     }
 }
