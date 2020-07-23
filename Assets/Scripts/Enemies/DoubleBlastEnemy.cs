@@ -8,11 +8,6 @@ public class DoubleBlastEnemyInFight : BaseState
     EnemyBase enemy;
     float elapsedTimeBetweenShots = 0.0f;
 
-    Vector3 DirToPlayer 
-    {
-        get => new Vector3(enemy.PlayerRef.transform.position.x - enemy.transform.position.x,
-                            enemy.PlayerRef.transform.position.y - enemy.transform.position.y);
-    }
     float DistanceToPlayer
     {
         get => Vector3.Distance(enemy.transform.position, enemy.PlayerRef.transform.position);
@@ -78,7 +73,7 @@ public class DoubleBlastEnemyInFight : BaseState
     {
         var proj = Object.Instantiate(enemy.Projectile);
         proj.transform.position = enemy.transform.position;
-        proj.Dir = Quaternion.Euler(0.0f, 0.0f, offset) * DirToPlayer.normalized;
+        proj.Dir = Quaternion.Euler(0.0f, 0.0f, offset) * enemy.Logic.DirToPlayer.normalized;
     }
 }
 

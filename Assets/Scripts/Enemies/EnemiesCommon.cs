@@ -177,6 +177,12 @@ public class EnemyCommonLogic
         }
     }
 
+    public Vector3 DirToPlayer
+    {
+        get => new Vector3(_enemy.PlayerRef.transform.position.x - _enemy.transform.position.x,
+                            _enemy.PlayerRef.transform.position.y - _enemy.transform.position.y);
+    }
+
     public void MoveTowards(Vector3 target, float speed)
     {
         var _transform = _enemy.transform;
