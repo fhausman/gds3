@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 04579b7eff0744d4199fe9bfba6420d2, type: 2}
-  projectile: {fileID: 585903233231760341, guid: 682329e77372422459b6fe8a0b064b3b,
+  projectile: {fileID: 441650186031619239, guid: a244b19bb113390458def6a1fbdec980,
     type: 3}
   spriteRenderer: {fileID: 3933024816326930137}
   patrolingPoints: []

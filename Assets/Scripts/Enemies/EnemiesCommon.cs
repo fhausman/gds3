@@ -177,6 +177,12 @@ public class EnemyCommonLogic
         }
     }
 
+    public Vector3 DirToPlayer
+    {
+        get => new Vector3(_enemy.PlayerRef.transform.position.x - _enemy.transform.position.x,
+                            _enemy.PlayerRef.transform.position.y - _enemy.transform.position.y);
+    }
+
     public void MoveTowards(Vector3 target, float speed)
     {
         var _transform = _enemy.transform;
@@ -215,6 +221,8 @@ public class EnemyBase : MonoBehaviour
     public float FacingDirection { get; set; } = -1.0f;
     public float TimeBetweenShots { get => 1 / ShootRate; }
     public int Health { get; set; } = 0;
+    protected bool IsEnemyOnLeft { get => Logic.IsPlayerOnLeft; }
+    protected bool IsEnemyOnRight { get => !Logic.IsPlayerOnLeft; }
 
     protected void Start()
     {

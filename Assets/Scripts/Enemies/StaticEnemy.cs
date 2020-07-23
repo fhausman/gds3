@@ -6,9 +6,6 @@ public class StaticEnemyIdle : BaseState
 {
     EnemyBase enemy;
 
-    bool IsEnemyOnLeft { get => enemy.Logic.IsPlayerOnLeft; }
-    bool IsEnemyOnRight { get => !enemy.Logic.IsPlayerOnLeft; }
-
     public StaticEnemyIdle(EnemyBase e)
     {
         enemy = e;
@@ -16,22 +13,15 @@ public class StaticEnemyIdle : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if (IsEnemyOnRight)
+        if (enemy.Logic.IsInRange && enemy.Logic.HasClearShot)
         {
-            StartShooting(1.0f);
-        }
-        else if (IsEnemyOnLeft)
-        {
-            StartShooting(-1.0f);
+            StartShooting();
         }
     }
 
-    private void StartShooting(float facingDir)
+    private void StartShooting()
     {
-        enemy.FacingDirection = facingDir;
         enemy.StateMachine.ChangeState(EnemyStates.Shooting);
-        enemy.SpriteRenderer.flipX = facingDir >= 0.0f;
-
     }
 }
 
@@ -75,7 +65,7 @@ public class StaticEnemyShooting : BaseState
     {
         var projectile = Object.Instantiate(enemy.Projectile);
         projectile.transform.position = enemy.transform.position;
-        projectile.Dir = enemy.transform.right * enemy.FacingDirection;
+        projectile.Dir = enemy.Logic.DirToPlayer.normalized;
     }
 }
 
@@ -88,5 +78,18 @@ public class StaticEnemy : EnemyBase
         StateMachine.AddState(EnemyStates.Idle, new StaticEnemyIdle(this));
         StateMachine.AddState(EnemyStates.Shooting, new StaticEnemyShooting(this));
         StateMachine.ChangeState(EnemyStates.Idle);
+    }
+
+    private void Update()
+    {
+        base.Update();
+        SetDirection();
+    }
+
+    private void SetDirection()
+    {
+        var facingDir = IsEnemyOnLeft ? -1.0f : 1.0f;
+        FacingDirection = facingDir;
+        SpriteRenderer.flipX = facingDir >= 0.0f;
     }
 }
