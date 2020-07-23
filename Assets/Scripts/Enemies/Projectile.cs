@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Boo.Lang;
+using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -15,11 +17,18 @@ public class Projectile : MonoBehaviour
 
     public Vector3 Dir { get; set; } = Vector3.zero;
 
+    public List<Collider> _ignoredColliders = new List<Collider>();
+
     private void Reflect()
     {
         Debug.Log("Reflect");
         Dir = -Dir;
         IsReflected = true;
+
+        foreach(var coll in _ignoredColliders)
+        {
+            Physics.IgnoreCollision(coll, _collider, false);
+        }
     }
 
     private void Destroy()
@@ -30,18 +39,37 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy();
+        var enemiesLayer = LayerMask.NameToLayer("Enemies");
+        if (collision.gameObject.layer == enemiesLayer)
+        {
+            if (IsReflected)
+            {
+                collision.gameObject.SendMessage("ReceivedDamage", Dir);
+                Destroy();
+            }
+            else
+            {
+                _ignoredColliders.Add(collision.collider);
+                Physics.IgnoreCollision(collision.collider, _collider, true);
+            }
+        }
+        else
+        {
+            Destroy();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Weapon"))
+        if(other.CompareTag("ProjectileShield"))
         {
-            if (other.gameObject.GetComponent<Weapon>().IsInSweetSpot(transform.position))
+            if (other.gameObject.transform.parent.gameObject.GetComponentInChildren<Weapon>().IsInSweetSpot(transform.position))
             {
                 Reflect();
                 return;
             }
+
+            Destroy();
         }
     }
 

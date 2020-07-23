@@ -11,7 +11,8 @@ public enum EnemyStates
     InFight,
     Dashing,
     Dead,
-    Damaged
+    Damaged,
+    Attacking
 }
 
 public class EnemyPatroling : BaseState
@@ -66,7 +67,10 @@ public class EnemyDamaged : BaseState
     public override void onInit(params object[] args)
     {
         rigidbody.velocity = Vector3.zero;
-        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, angle) * enemy.transform.right) * force, ForceMode.Impulse);
+        rigidbody.angularVelocity = Vector3.zero;
+
+        var dir = (float) args[0];
+        rigidbody.AddForce((Quaternion.Euler(0.0f, 0.0f, dir*angle) * enemy.transform.right * dir) * force, ForceMode.Impulse);
         enemy.Health -= 1;
     }
 
@@ -115,6 +119,9 @@ public class EnemyDashing : BaseState
 
     public override void onInit(params object[] args)
     {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+
         var dir = (float) args[0];
         rigidbody.AddForce(enemy.transform.right * dir * enemy.DashForce, ForceMode.Impulse);
     }
@@ -154,7 +161,7 @@ public class EnemyCommonLogic
 
     public bool IsPlayerOnLeft
     {
-        get => _enemy.transform.position.x <= _enemy.PlayerRef.transform.position.x;
+        get => _enemy.transform.position.x > _enemy.PlayerRef.transform.position.x;
     }
 
     public bool IsInRange
@@ -229,28 +236,16 @@ public class EnemyBase : MonoBehaviour
         StateMachine.OnFixedUpdate(Time.deltaTime);
     }
 
-    protected void OnCollisionEnter(Collision collision)
-    {
-        var obj = collision.collider.gameObject;
-        if (obj.CompareTag("Projectile"))
-        {
-            if (obj.GetComponent<Projectile>().IsReflected)
-            {
-                ReceivedDamage();
-            }
-        }
-    }
-
     protected void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Weapon"))
         {
-            ReceivedDamage();
+            ReceivedDamage(Logic.IsPlayerOnLeft ? 1.0f : -1.0f);
         }
     }
 
-    private void ReceivedDamage()
+    private void ReceivedDamage(float dir)
     {
-        StateMachine.ChangeState(EnemyStates.Damaged);
+        StateMachine.ChangeState(EnemyStates.Damaged, dir);
     }
 }

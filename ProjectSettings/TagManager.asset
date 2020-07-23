@@ -10,6 +10,8 @@ TagManager:
   - Elevator
   - Terminal
   - Weapon
+  - EnemyWeapon
+  - ProjectileShield
   layers:
   - Default
   - TransparentFX
@@ -20,7 +22,7 @@ TagManager:
   - 
   - 
   - Ground
-  - Projectiles
+  - EnemyWeapons
   - Player
   - Enemies
   - Lens

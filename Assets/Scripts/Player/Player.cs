@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -195,24 +197,32 @@ public class PlayerDashing : BaseState
 public class PlayerAttacking : BaseState
 {
     private Player player = null;
+    private Animator animator = null;
     private float attackTimeElapsed = 0.0f;
+    private float attackDuration = 0.0f;
 
     public PlayerAttacking(Player p)
     {
         player = p;
+        animator = player.Weapon.GetComponent<Animator>();
+        attackDuration = animator.runtimeAnimatorController.animationClips.First(a => a.name == "Attack").length;
     }
 
     public override void onInit(params object[] args)
     {
+        player.OnAttackStartNotify.Invoke();
+
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
         player.Controls.Player.Dash.performed += Dash;
 
         attackTimeElapsed = 0.0f;
 
+        player.ProjectileShield.enabled = true;
+
         var attackType = (AttackType) args[0];
         if(attackType == AttackType.High)
         {
-            player.Weapon.GetComponent<Animator>().Play("Attack_High");
+            player.Weapon.GetComponent<Animator>().Play("Attack");
         }
         else if (attackType == AttackType.Low)
         {
@@ -244,11 +254,13 @@ public class PlayerAttacking : BaseState
 
         player.Weapon.DisableCollision();
         player.Weapon.SetIdle();
+
+        player.ProjectileShield.enabled = false;
     }
 
     public override void onUpdate(float deltaTime)
     {
-        if (attackTimeElapsed > player.AttackDuration)
+        if (attackTimeElapsed > attackDuration)
         {
             player.StateMachine.ChangeState(PlayerState.Moving);
         }
@@ -372,12 +384,17 @@ public class Player : MonoBehaviour
     private Weapon _weapon = null;
     public Weapon Weapon { get => _weapon; }
 
+    [SerializeField]
+    private Collider _projectileShield = null;
+    public Collider ProjectileShield { get => _projectileShield; }
+
     #endregion
 
     #region Private Fields 
     private Vector2 _aim = Vector2.zero;
     private Interactable _heldObject = null;
     private int _currentHealth = 0;
+    private int _attacksCounter = 0;
     #endregion
 
     #region Properties
@@ -393,6 +410,8 @@ public class Player : MonoBehaviour
     public float GravitySwitchCooldownElapsed { get; set; } = 100.0f;
     public bool IsHoldingObject { get => _heldObject != null; }
     public int CurrentHealth { get => _currentHealth; }
+    public UnityEvent OnAttackStartNotify { get; set; } = new UnityEvent();
+
     public bool IsTouchingGround
     {
         get
@@ -408,6 +427,11 @@ public class Player : MonoBehaviour
             RaycastHit hit;
             return Physics.Raycast(Parent.position, Parent.up, out hit, GravitySwitchHeight, 1 << 8) && (GravitySwitchCooldownElapsed > GravitySwitchCooldown);
         }
+    }
+
+    public bool IsAttacking
+    {
+        get => StateMachine.CurrentState == PlayerState.Attacking;
     }
 
     //public float Aim { get => _aim.y * transform.up.y; }
@@ -497,8 +521,11 @@ public class Player : MonoBehaviour
 
     public void AttackHigh(InputAction.CallbackContext ctx)
     {
-        if (WeaponEquipped)
+        if (WeaponEquipped && _attacksCounter < 3)
         {
+            _attacksCounter++;
+            StopCoroutine("ResetAttacksCounter");
+            StartCoroutine("ResetAttacksCounter");
             StateMachine.ChangeState(PlayerState.Attacking, AttackType.High);
         }
     }
@@ -509,6 +536,12 @@ public class Player : MonoBehaviour
         {
             StateMachine.ChangeState(PlayerState.Attacking, AttackType.Low);
         }
+    }
+
+    private IEnumerator ResetAttacksCounter()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _attacksCounter = 0;
     }
 
     #region Mono behaviour methods
@@ -569,7 +602,7 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.CompareTag("Projectile"))
+        if(collision.collider.CompareTag("Projectile") && StateMachine.CurrentState != PlayerState.Dashing)
         {
             //if(Blocking)
             //{
@@ -582,6 +615,15 @@ public class Player : MonoBehaviour
 
             StateMachine.ChangeState(PlayerState.ReceivedDamage,
                 collision.gameObject.GetComponent<Projectile>().Dir.x);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing && StateMachine.CurrentState != PlayerState.ReceivedDamage)
+        {
+            StateMachine.ChangeState(PlayerState.ReceivedDamage,
+                other.transform.position.x > transform.position.x ? -1.0f : 1.0f);
         }
     }
 

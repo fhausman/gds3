@@ -149,6 +149,7 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 9c815244d92b91940bf16011fb6ab243, type: 2}
   _parent: {fileID: 7776613916687982162}
   _weapon: {fileID: 367278532711267162}
+  _projectileShield: {fileID: 6696204020068649327}
 --- !u!1 &2983368276797543724
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,6 +280,50 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &3570474889193740892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8967968222637326252}
+  - component: {fileID: 6696204020068649327}
+  m_Layer: 10
+  m_Name: ProjectileShield
+  m_TagString: ProjectileShield
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8967968222637326252
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3570474889193740892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.173, y: 0.488, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7776613916687982162}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6696204020068649327
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3570474889193740892}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 0.540061, y: 1, z: 1}
+  m_Center: {x: 0.13531548, y: 0, z: 0}
 --- !u!1 &4251292445293966279
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,6 +398,7 @@ Transform:
   - {fileID: 1065187206782375563}
   - {fileID: 2701407998214315043}
   - {fileID: 4562774846494420591}
+  - {fileID: 8967968222637326252}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
