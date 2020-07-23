@@ -44,7 +44,7 @@ public class Projectile : MonoBehaviour
         {
             if (IsReflected)
             {
-                collision.gameObject.SendMessage("ReceivedDamage", Dir);
+                collision.gameObject.SendMessage("ReceivedDamage", Dir.x);
                 Destroy();
             }
             else
