@@ -32,12 +32,13 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
-        var dot = Vector3.Dot(Vector3.up, PlayerUpVec);
-        
-        var newShift = new Vector2(0.0f, _lensShift * dot);
-        LensShift = Vector2.Lerp(LensShift, newShift, 0.1f);
+        var ver_dot = Vector3.Dot(Vector3.up, PlayerUpVec);
+        var hor_dot = Vector3.Dot(Vector3.up, PlayerRightVec);
 
-        var newOffset = new Vector3(0.0f, _followOffset * dot, -10.0f);
-        FollowOffset = Vector3.Lerp(FollowOffset, newOffset, 0.1f);
+        var newShift = new Vector2(-_lensShift * hor_dot, _lensShift * ver_dot);
+        LensShift = Vector2.Lerp(LensShift, newShift, 0.05f);
+
+        var newOffset = new Vector3(_followOffset * hor_dot, _followOffset * ver_dot, -10.0f);
+        FollowOffset = Vector3.Lerp(FollowOffset, newOffset, 0.5f);
     }
 }
