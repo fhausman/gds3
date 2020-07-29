@@ -141,6 +141,10 @@ public class StaticEnemy : EnemyBase
 
     private void ReceivedDamage(float dir)
     {
-        StateMachine.ChangeState(EnemyStates.Damaged, dir);
+        var _currState = StateMachine.CurrentState;
+        if (_currState != EnemyStates.Damaged && _currState != EnemyStates.Dead)
+        {
+            StateMachine.ChangeState(EnemyStates.Damaged, dir);
+        }
     }
 }
