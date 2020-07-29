@@ -1,0 +1,558 @@
+fileFormatVersion: 2
+guid: 3f089fdd4a6ae8b42bd0a61c19476709
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b2a9591990af98743ba3ff7cf1000886, type: 3}
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 1
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    isReadable: 0
+    streamingMipmaps: 1
+    streamingMipmapsPriority: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationDetail: -1
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+  spriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 0, y: 0}
+  mosaicSpriteImportData: []
+  rigSpriteImportData:
+  - name: Lufa_Lisgt_Small
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 800
+      y: 411
+      width: 201
+      height: 82
+    spriteID: 1f943d45e8a7ccc48972a3028afa4601
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 430, y: -146}
+  - name: Lufa_Lisgt_Big
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 285
+      width: 308
+      height: 309
+    spriteID: 63dd587e387d8e84fac126697a27df9c
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -315, y: -159}
+  - name: Lufa_Front
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 716
+      y: 4
+      width: 251
+      height: 228
+    spriteID: 5bc0ad49afb1d8a4ea28aeecc56ed06d
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 274, y: -496}
+  - name: Lufa_Back
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 428
+      y: 530
+      width: 152
+      height: 150
+    spriteID: fe7ae6c1515319f4a858be4faf7cf86a
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 17, y: 6}
+  - name: Kola 1
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 602
+      width: 282
+      height: 186
+    spriteID: a577079d72617024abdb39713d899fc5
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -560, y: 552}
+  - name: Robot_Head
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 386
+      y: 4
+      width: 322
+      height: 228
+    spriteID: 99b6e9971cc6f79429c6757e54bd8e18
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 15, y: -496}
+  - name: Robot_Neck
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 428
+      y: 285
+      width: 347
+      height: 118
+    spriteID: e868e1b651148a04d9245a6c191c23cf
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 69, y: -119}
+  - name: Robot_Chest
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 428
+      y: 411
+      width: 364
+      height: 111
+    spriteID: 508063bd77bb0574fbff79156f9a84ce
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 77, y: 95}
+  - name: Robot_Belly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 374
+      height: 273
+    spriteID: 7914392a748cc99438e9144e8b468540
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -342, y: -58}
+  - name: Pipe
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 320
+      y: 285
+      width: 100
+      height: 543
+    spriteID: 3ed804251c190c54796e4355371da25e
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -156, y: 187}
+  - name: Robot_NeckBack
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 588
+      y: 647
+      width: 320
+      height: 45
+    spriteID: 3831d6551d843554a9da6451e1018608
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 215, y: 154}
+  - name: Robot_ChestBack
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 588
+      y: 590
+      width: 344
+      height: 49
+    spriteID: cd8645632e10d844991c56cf79929e92
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 227, y: 194}
+  - name: Robot_BellyBack
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 588
+      y: 530
+      width: 363
+      height: 52
+    spriteID: 96c7bfd378d463d40a06679aff517d8c
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 237, y: 227}
+  - name: Kola 2
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 796
+      width: 282
+      height: 186
+    spriteID: 560094a2b5ba7c94d8636e8c2c878b58
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -256, y: 746}
+  platformSettings: []
+  mosaicLayers: 1
+  documentPivot: {x: 0, y: 0}
+  documentAlignment: 7
+  importHiddenLayers: 0
+  importedTextureWidth: 1024
+  importedTextureHeight: 1024
+  documentSize: {x: 1080, y: 1080}
+  paperDollMode: 0
+  keepDupilcateSpriteName: 0
+  spriteCategoryList:
+    categories: []
+  textureActualWidth: 1024
+  textureActualHeight: 1024
+  spritePackingTag: 
+  resliceFromLayer: 0
+  characterMode: 1
+  mosaicPSDLayers: []
+  rigPSDLayers:
+  - name: ROBOT_1_Closed
+    spriteName: 
+    isGroup: 1
+    parentIndex: -1
+    spriteID: 
+    layerID: 6
+    mosaicPosition: {x: 0, y: 0}
+  - name: Lufa
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 
+    layerID: 74
+    mosaicPosition: {x: 0, y: 0}
+  - name: Light
+    spriteName: 
+    isGroup: 1
+    parentIndex: 1
+    spriteID: 
+    layerID: 285
+    mosaicPosition: {x: 0, y: 0}
+  - name: Lufa_Lisgt_Small
+    spriteName: Lufa_Lisgt_Small
+    isGroup: 0
+    parentIndex: 2
+    spriteID: 1f943d45e8a7ccc48972a3028afa4601
+    layerID: 319
+    mosaicPosition: {x: 800, y: 411}
+  - name: Lufa_Lisgt_Big
+    spriteName: Lufa_Lisgt_Big
+    isGroup: 0
+    parentIndex: 2
+    spriteID: 63dd587e387d8e84fac126697a27df9c
+    layerID: 318
+    mosaicPosition: {x: 4, y: 285}
+  - name: Lufa_Front
+    spriteName: Lufa_Front
+    isGroup: 0
+    parentIndex: 1
+    spriteID: 5bc0ad49afb1d8a4ea28aeecc56ed06d
+    layerID: 317
+    mosaicPosition: {x: 716, y: 4}
+  - name: Lufa_Back
+    spriteName: Lufa_Back
+    isGroup: 0
+    parentIndex: 1
+    spriteID: fe7ae6c1515319f4a858be4faf7cf86a
+    layerID: 159
+    mosaicPosition: {x: 428, y: 530}
+  - name: Kola 1
+    spriteName: Kola 1
+    isGroup: 0
+    parentIndex: 0
+    spriteID: a577079d72617024abdb39713d899fc5
+    layerID: 309
+    mosaicPosition: {x: 4, y: 602}
+  - name: Body
+    spriteName: 
+    isGroup: 1
+    parentIndex: 0
+    spriteID: 
+    layerID: 141
+    mosaicPosition: {x: 0, y: 0}
+  - name: Body
+    spriteName: 
+    isGroup: 1
+    parentIndex: 8
+    spriteID: 
+    layerID: 62
+    mosaicPosition: {x: 0, y: 0}
+  - name: Robot_Head
+    spriteName: Robot_Head
+    isGroup: 0
+    parentIndex: 9
+    spriteID: 99b6e9971cc6f79429c6757e54bd8e18
+    layerID: 310
+    mosaicPosition: {x: 386, y: 4}
+  - name: Robot_Neck
+    spriteName: Robot_Neck
+    isGroup: 0
+    parentIndex: 9
+    spriteID: e868e1b651148a04d9245a6c191c23cf
+    layerID: 311
+    mosaicPosition: {x: 428, y: 285}
+  - name: Robot_Chest
+    spriteName: Robot_Chest
+    isGroup: 0
+    parentIndex: 9
+    spriteID: 508063bd77bb0574fbff79156f9a84ce
+    layerID: 312
+    mosaicPosition: {x: 428, y: 411}
+  - name: Robot_Belly
+    spriteName: Robot_Belly
+    isGroup: 0
+    parentIndex: 9
+    spriteID: 7914392a748cc99438e9144e8b468540
+    layerID: 313
+    mosaicPosition: {x: 4, y: 4}
+  - name: Pipe
+    spriteName: Pipe
+    isGroup: 0
+    parentIndex: 9
+    spriteID: 3ed804251c190c54796e4355371da25e
+    layerID: 305
+    mosaicPosition: {x: 320, y: 285}
+  - name: Robot_NeckBack
+    spriteName: Robot_NeckBack
+    isGroup: 0
+    parentIndex: 9
+    spriteID: 3831d6551d843554a9da6451e1018608
+    layerID: 314
+    mosaicPosition: {x: 588, y: 647}
+  - name: Robot_ChestBack
+    spriteName: Robot_ChestBack
+    isGroup: 0
+    parentIndex: 9
+    spriteID: cd8645632e10d844991c56cf79929e92
+    layerID: 316
+    mosaicPosition: {x: 588, y: 590}
+  - name: Robot_BellyBack
+    spriteName: Robot_BellyBack
+    isGroup: 0
+    parentIndex: 9
+    spriteID: 96c7bfd378d463d40a06679aff517d8c
+    layerID: 315
+    mosaicPosition: {x: 588, y: 530}
+  - name: Kola 2
+    spriteName: Kola 2
+    isGroup: 0
+    parentIndex: 0
+    spriteID: 560094a2b5ba7c94d8636e8c2c878b58
+    layerID: 308
+    mosaicPosition: {x: 4, y: 796}
+  characterData:
+    bones: []
+    parts: []
+    dimension: {x: 0, y: 0}
+    characterGroups: []
+  generateGOHierarchy: 0
+  textureAssetName: Robot_Shooting Texture
+  prefabAssetName: Robot_Shooting Prefab
+  spriteLibAssetName: Robot_Shooting Sprite Lib
+  secondarySpriteTextures: []
