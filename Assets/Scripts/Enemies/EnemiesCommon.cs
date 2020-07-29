@@ -226,9 +226,11 @@ public class EnemyBase : MonoBehaviour
 
     protected void Start()
     {
-        StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
         if(!StateMachine.AlreadyAdded(EnemyStates.Damaged))
             StateMachine.AddState(EnemyStates.Damaged, new EnemyDamaged(this));
+
+        if(!StateMachine.AlreadyAdded(EnemyStates.Dead))
+            StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
 
         Logic = new EnemyCommonLogic(this);
         Health = settings.health;
@@ -253,7 +255,7 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    private void ReceivedDamage(float dir)
+    protected virtual void ReceivedDamage(float dir)
     {
         StateMachine.ChangeState(EnemyStates.Damaged, dir);
     }

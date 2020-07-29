@@ -89,6 +89,23 @@ public class StaticEnemyDamaged : BaseState
     }
 }
 
+
+public class StaticEnemyDead : BaseState
+{
+    StaticEnemy enemy;
+
+    public StaticEnemyDead(StaticEnemy e)
+    {
+        enemy = e;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        enemy.Animator.Play("AnimRED_Crush");
+    }
+}
+
+
 public class StaticEnemy : EnemyBase
 {
     [SerializeField]
@@ -103,6 +120,7 @@ public class StaticEnemy : EnemyBase
         StateMachine.AddState(EnemyStates.Idle, new StaticEnemyIdle(this));
         StateMachine.AddState(EnemyStates.Shooting, new StaticEnemyShooting(this));
         StateMachine.AddState(EnemyStates.Damaged, new StaticEnemyDamaged(this));
+        StateMachine.AddState(EnemyStates.Dead, new StaticEnemyDead(this));
 
         base.Start();
 
@@ -139,7 +157,7 @@ public class StaticEnemy : EnemyBase
         StateMachine.ChangeState(EnemyStates.Idle);
     }
 
-    private void ReceivedDamage(float dir)
+    protected override void ReceivedDamage(float dir)
     {
         var _currState = StateMachine.CurrentState;
         if (_currState != EnemyStates.Damaged && _currState != EnemyStates.Dead)

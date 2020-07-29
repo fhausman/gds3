@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd8913a9e30d314a990ef3dd14490ed, type: 3}
   m_Name: StaticEnemySettings
   m_EditorClassIdentifier: 
-  health: 1
+  health: 2
   speed: 0
   shootRate: 0.5
   range: 4
