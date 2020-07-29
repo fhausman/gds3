@@ -73,7 +73,7 @@ public class DoubleBlastEnemyInFight : BaseState
     {
         var proj = Object.Instantiate(enemy.Projectile);
         proj.transform.position = enemy.transform.position;
-        proj.Dir = Quaternion.Euler(0.0f, 0.0f, offset) * enemy.Logic.DirToPlayer.normalized;
+        proj.Dir = Quaternion.Euler(0.0f, 0.0f, offset) * enemy.Logic.DirToPlayer(proj.transform.position).normalized;
     }
 }
 

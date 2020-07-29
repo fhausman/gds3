@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class StaticEnemyIdle : BaseState
 {
-    EnemyBase enemy;
+    StaticEnemy enemy;
 
-    public StaticEnemyIdle(EnemyBase e)
+    public StaticEnemyIdle(StaticEnemy e)
     {
         enemy = e;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        base.onInit(args);
+        enemy.Animator.Play("AnimRED_Idle");
     }
 
     public override void onUpdate(float deltaTime)
@@ -27,12 +33,12 @@ public class StaticEnemyIdle : BaseState
 
 public class StaticEnemyShooting : BaseState
 {
-    EnemyBase enemy;
+    StaticEnemy enemy;
     private float timeElapsed = 0.0f;
 
     bool IsPlayerInRange { get => enemy.Logic.IsInRange; }
 
-    public StaticEnemyShooting(EnemyBase e)
+    public StaticEnemyShooting(StaticEnemy e)
     {
         enemy = e;
     }
@@ -40,7 +46,7 @@ public class StaticEnemyShooting : BaseState
     public override void onInit(params object[] args)
     {
         timeElapsed = 0.0f;
-        Shoot();
+        enemy.Animator.Play("AnimRED_Attack");
     }
 
     public override void onUpdate(float deltaTime)
@@ -49,8 +55,8 @@ public class StaticEnemyShooting : BaseState
         {
             if (IsPlayerInRange)
             {
-                Shoot();
                 timeElapsed = 0.0f;
+                enemy.Animator.Play("AnimRED_Attack");
             }
             else
             {
@@ -60,23 +66,46 @@ public class StaticEnemyShooting : BaseState
 
         timeElapsed += deltaTime;
     }
+}
 
-    private void Shoot()
+public class StaticEnemyDamaged : BaseState
+{
+    StaticEnemy enemy;
+
+    public StaticEnemyDamaged(StaticEnemy e)
     {
-        var projectile = Object.Instantiate(enemy.Projectile);
-        projectile.transform.position = enemy.transform.position;
-        projectile.Dir = enemy.Logic.DirToPlayer.normalized;
+        enemy = e;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        enemy.Animator.Play("AnimRED_Damage");
+        enemy.Health -= 1;
+
+        if (enemy.Health <= 0)
+        {
+            enemy.StateMachine.ChangeState(EnemyStates.Dead);
+        }
     }
 }
 
 public class StaticEnemy : EnemyBase
 {
+    [SerializeField]
+    private Transform projectileSpawnPoint = null;
+    public Vector3 ProjectileSpawnPosition { get => projectileSpawnPoint.position; }
+
+    public Animator Animator { get; private set; } = null;
+
     private void Start()
     {
-        base.Start();
-
+        Animator = GetComponent<Animator>();
         StateMachine.AddState(EnemyStates.Idle, new StaticEnemyIdle(this));
         StateMachine.AddState(EnemyStates.Shooting, new StaticEnemyShooting(this));
+        StateMachine.AddState(EnemyStates.Damaged, new StaticEnemyDamaged(this));
+
+        base.Start();
+
         StateMachine.ChangeState(EnemyStates.Idle);
     }
 
@@ -90,6 +119,28 @@ public class StaticEnemy : EnemyBase
     {
         var facingDir = IsEnemyOnLeft ? -1.0f : 1.0f;
         FacingDirection = facingDir;
-        SpriteRenderer.flipX = facingDir >= 0.0f;
+        // SpriteRenderer.flipX = facingDir >= 0.0f;
+    }
+
+    private void Shoot()
+    {
+        var projectile = Object.Instantiate(Projectile);
+        projectile.transform.position = ProjectileSpawnPosition;
+        projectile.Dir = Logic.DirToPlayer(projectile.transform.position).normalized;
+    }
+
+    private void SetIdle()
+    {
+        Animator.Play("AnimRED_Idle");
+    }
+
+    private void OnDamageEnd()
+    {
+        StateMachine.ChangeState(EnemyStates.Idle);
+    }
+
+    private void ReceivedDamage(float dir)
+    {
+        StateMachine.ChangeState(EnemyStates.Damaged, dir);
     }
 }

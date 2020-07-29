@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &40307237206663295
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6089270785697378584}
+  m_Layer: 11
+  m_Name: ProjectileSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6089270785697378584
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40307237206663295}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.54, y: 7.732, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1277529636170475950}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1526450097705443128
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9073093541416097352}
   - component: {fileID: 4027311875952944404}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Lufa_Lisgt_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4169600264880025026}
   - component: {fileID: 6553044535624584904}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Lufa_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +203,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1277529636170475950}
-  m_Layer: 0
+  - component: {fileID: 9057214120922777655}
+  - component: {fileID: -7990386090106183059}
+  - component: {fileID: 7675445869328621889}
+  m_Layer: 11
   m_Name: Robot_RED
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,14 +222,66 @@ Transform:
   m_GameObject: {fileID: 2060335518037113619}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.5808566, y: 8.05232, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children:
   - {fileID: 3623068429882789109}
   - {fileID: 1580220525089525879}
   - {fileID: 1581435600444042851}
+  - {fileID: 6089270785697378584}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &9057214120922777655
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060335518037113619}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f1d97c0cd8b69464ca4362d7a355f390, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-7990386090106183059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060335518037113619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b33ff11829fa88b42bf85985433e4051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 04579b7eff0744d4199fe9bfba6420d2, type: 2}
+  projectile: {fileID: 441650186031619239, guid: a244b19bb113390458def6a1fbdec980,
+    type: 3}
+  spriteRenderer: {fileID: 0}
+  patrolingPoints: []
+  projectileSpawnPoint: {fileID: 6089270785697378584}
+--- !u!136 &7675445869328621889
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060335518037113619}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.32
+  m_Height: 6.859379
+  m_Direction: 1
+  m_Center: {x: 0, y: 3.81, z: 0}
 --- !u!1 &2616367808747940813
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +292,7 @@ GameObject:
   m_Component:
   - component: {fileID: 445492364129287274}
   - component: {fileID: 1068457313348582020}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_NeckBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +374,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3623068429882789109}
   - component: {fileID: 2842279754028477702}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Kola 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +456,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2728514141273966633}
   - component: {fileID: 2283342528514010278}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Lufa_Lisgt_Big
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -453,7 +538,7 @@ GameObject:
   m_Component:
   - component: {fileID: 284149890881316617}
   - component: {fileID: 3199594671482393873}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -536,7 +621,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5465874746589175275}
   - component: {fileID: 4122568627116849274}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +704,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1295897466849851232}
   - component: {fileID: 9109813864825611072}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -705,7 +790,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7937048634744101768}
   - component: {fileID: 2232040776505378864}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Lufa_Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -787,7 +872,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6733433137090558113}
   - component: {fileID: 8624034347015599180}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_ChestBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -869,7 +954,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8026652379425358647}
   - component: {fileID: 9087894737316353326}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -951,7 +1036,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6537149824544250014}
   - component: {fileID: 3746279316597271209}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_BellyBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1033,7 +1118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1581435600444042851}
   - component: {fileID: 4129714959679624027}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Robot_Belly
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1120,7 +1205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1580220525089525879}
   - component: {fileID: 9139173560090074673}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Kola 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

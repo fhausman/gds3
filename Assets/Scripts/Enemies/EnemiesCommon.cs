@@ -177,10 +177,10 @@ public class EnemyCommonLogic
         }
     }
 
-    public Vector3 DirToPlayer
+    public Vector3 DirToPlayer(Vector3 pos)
     {
-        get => new Vector3(_enemy.PlayerRef.transform.position.x - _enemy.transform.position.x,
-                            _enemy.PlayerRef.transform.position.y - _enemy.transform.position.y);
+        return new Vector3(_enemy.PlayerRef.transform.position.x - pos.x,
+                            _enemy.PlayerRef.transform.position.y - pos.y);
     }
 
     public void MoveTowards(Vector3 target, float speed)
@@ -227,7 +227,8 @@ public class EnemyBase : MonoBehaviour
     protected void Start()
     {
         StateMachine.AddState(EnemyStates.Dead, new EnemyDead(this));
-        StateMachine.AddState(EnemyStates.Damaged, new EnemyDamaged(this));
+        if(!StateMachine.AlreadyAdded(EnemyStates.Damaged))
+            StateMachine.AddState(EnemyStates.Damaged, new EnemyDamaged(this));
 
         Logic = new EnemyCommonLogic(this);
         Health = settings.health;
