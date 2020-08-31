@@ -13,7 +13,8 @@ public enum PlayerState
     Dashing,
     Attacking,
     ReceivedDamage,
-    FailedToFlip
+    FailedToFlip,
+    Flipping
 }
 
 public enum AttackType
@@ -36,12 +37,6 @@ public class PlayerMoving : BaseState
     {
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
         player.Controls.Player.Dash.performed += Dash;
-        player.Controls.Player.AttackHigh.performed += player.AttackHigh;
-        player.Controls.Player.AttackLow.performed += player.AttackLow;
-        //player.Controls.Player.Block.performed += Block;
-        //player.Controls.Player.Block.canceled += LeavingBlock;
-
-        player.Weapon.SetIdle();
     }
 
     public override void onExit()
@@ -60,23 +55,6 @@ public class PlayerMoving : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        //if (player.Blocking)
-        //{
-        //    speedModifier = player.BlockSpeedModifier;
-        //    if (player.Aim >= 0.0f)
-        //    {
-        //        player.Weapon.SetUpper();
-        //    }
-        //    else
-        //    {
-        //        player.Weapon.SetBottom();
-        //    }
-        //}
-        //else
-        //{
-        //    player.Weapon.SetIdle();
-        //    speedModifier = 1.0f;
-        //}
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -99,7 +77,7 @@ public class PlayerMoving : BaseState
         var isTouchingGround = player.IsTouchingGround;
         if (isTouchingGround && player.CanSwitch)
         {
-            player.Flip();
+            player.StateMachine.ChangeState(PlayerState.Flipping);
         }
         else if (isTouchingGround)
         {
@@ -115,34 +93,73 @@ public class PlayerMoving : BaseState
             player.DashCooldownElapsed = 0.0f;
         }
     }
+}
 
-    //private void Block(InputAction.CallbackContext ctx)
-    //{
-    //    player.Blocking = true;
+public class PlayerFlipping : BaseState
+{
+    private Player player = null;
+    private float switchProgress = 0.0f;
+    private float dir = 1.0f;
 
-    //    var zoneSize = player.Aim >= 0.0f ? player.UpperBlockZoneSize : player.BottomBlockZoneSize;
-    //    var projectiles =
-    //        Physics.OverlapBox(
-    //            player.transform.position + new Vector3(Mathf.Sign(player.transform.right.x) * player.FacingDirection * (zoneSize.x + (player.SweetSpotWidth) / 2),
-    //                                                    Mathf.Sign(player.Aim) * zoneSize.y / 2),
-    //            new Vector3(player.SweetSpotWidth / 2, zoneSize.y / 2, 0.5f),
-    //            player.transform.rotation,
-    //            LayerMask.GetMask("Projectiles")
-    //        );
+    private Quaternion _upRotation = Quaternion.Euler(Vector3.zero);
+    private Quaternion _downRotation = Quaternion.Euler(-180.0f, 0.0f, 0.0f);
 
-    //    foreach (var proj in projectiles)
-    //    {
-    //        proj.SendMessage("Reflect");
-    //    }
-    //}
+    private Quaternion? _start = null;
+    private Quaternion? _target = null;
 
-    //private void LeavingBlock(InputAction.CallbackContext ctx)
-    //{
-    //    if (player.Blocking)
-    //    {
-    //        player.Blocking = false;
-    //    }
-    //}
+    private Vector3 _up;
+    private Vector3 _down;
+
+    public PlayerFlipping(Player p)
+    {
+        player = p;
+    }
+
+    public override void onInit(params object[] args)
+    {
+        player.Controls.Player.GravitySwitch.performed += CancelSwitch;
+        dir = -dir;
+        if(dir > 0.0f)
+        {
+            _start = _upRotation;
+            _target = _downRotation;
+        }
+        else
+        {
+            _start = _downRotation;
+            _target = _upRotation;
+        }
+
+        _up = player.Parent.transform.up;
+    }
+
+    public override void onExit()
+    {
+        player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
+    }
+
+    public override void onUpdate(float deltaTime)
+    {
+        switchProgress += 0.01f;
+        player.Parent.rotation = Quaternion.Lerp(_start.Value, _target.Value, switchProgress);
+
+        RaycastHit hit;
+        if(player.HitsGround(out hit))
+        {
+            player.StateMachine.ChangeState(PlayerState.Moving);
+        }
+    }
+
+    public override void onFixedUpdate(float deltaTime)
+    {
+        var input = player.Controls.Player.HorizontalMovement.ReadValue<float>();
+        player.Parent.position += dir * _up * player.GravitySpeed * deltaTime;
+    }
+
+    private void CancelSwitch(InputAction.CallbackContext ctx)
+    {
+        player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
+    }
 }
 
 public class PlayerDashing : BaseState
@@ -346,12 +363,10 @@ public class PlayerFailedToFlip : BaseState
 
     public override void onInit(params object[] args)
     {
-        player.Animator.Play("SwitchFailed");
     }
 
     public override void onExit()
     {
-        player.Animator.Rebind();
     }
 }
 #endregion
@@ -388,6 +403,10 @@ public class Player : MonoBehaviour
     private Collider _projectileShield = null;
     public Collider ProjectileShield { get => _projectileShield; }
 
+    [SerializeField]
+    private Animator _animator = null;
+    public Animator Animator { get => _animator; }
+
     #endregion
 
     #region Private Fields 
@@ -400,7 +419,6 @@ public class Player : MonoBehaviour
     #region Properties
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
-    public Animator Animator { get; private set; } = null;
     private Vector3 GravityVelocity { get; set; } = Vector3.zero;
     //public bool Blocking { get; set; } = false;
     public bool WeaponEquipped { get; set; } = true;
@@ -481,13 +499,18 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //TODO: change state to falling
-            GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
-            _parent.position += GravityVelocity * deltaTime;
+            if (StateMachine.CurrentState != PlayerState.Flipping)
+            {
+                //TODO: change state to falling
+                GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
+                _parent.position += GravityVelocity * deltaTime;
+            }
         }
 
         if (Mathf.Abs(dir.x) > 0.0f + Mathf.Epsilon)
         {
+            Animator.SetTrigger("Running");
+
             if (!Physics.Raycast(transform.position, dir, out hit, 0.22f, 1 << 8))
             {
                 _parent.position += dir;
@@ -497,6 +520,15 @@ public class Player : MonoBehaviour
                 Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
             );
         }
+        else
+        {
+            Animator.SetTrigger("Idle");
+        }
+    }
+
+    public bool HitsGround(out RaycastHit hit)
+    {
+        return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
     }
 
     public void Flip()
@@ -548,13 +580,13 @@ public class Player : MonoBehaviour
     void Start()
     {
         Controls = new MainControls();
-        Animator = GetComponent<Animator>();
 
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
         StateMachine.AddState(PlayerState.Attacking, new PlayerAttacking(this));
         StateMachine.AddState(PlayerState.ReceivedDamage, new PlayerReceivedDamage(this));
         StateMachine.AddState(PlayerState.FailedToFlip, new PlayerFailedToFlip(this));
+        StateMachine.AddState(PlayerState.Flipping, new PlayerFlipping(this));
         StateMachine.ChangeState(PlayerState.Moving);
 
         _currentHealth = Health;
@@ -649,33 +681,5 @@ public class Player : MonoBehaviour
     {
         StateMachine.ChangeState(PlayerState.Moving);
     }
-
-#if !UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.color = Aim > 0.0f + Mathf.Epsilon ?
-            Color.green : Color.red;
-        DrawZonesDebug(UpperBlockZoneSize, 1.0f);
-
-        Gizmos.color = Aim < 0.0f - Mathf.Epsilon ?
-            Color.green : Color.red;
-        DrawZonesDebug(BottomBlockZoneSize, -1.0f);
-    }
-
-    private void DrawZonesDebug(Vector2 size, float dir)
-    {
-        //block box
-        var position = new Vector3(size.x / 2, dir * size.y / 2);
-        var boxSize = new Vector3(size.x, size.y, 0.5f);
-        Gizmos.DrawWireCube(position, boxSize);
-        //sweetspot
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(
-            position + new Vector3((boxSize.x + SweetSpotWidth) / 2, 0.0f),
-            new Vector3(SweetSpotWidth, boxSize.y, boxSize.z)
-            );
-    }
-#endif
 #endregion
 }

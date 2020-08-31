@@ -111,10 +111,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.21828212
-  m_Height: 1
+  m_Radius: 0.33212015
+  m_Height: 1.6466453
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0.11383805, y: 0.32332265, z: 0}
 --- !u!95 &7754695535264114625
 Animator:
   serializedVersion: 3
@@ -123,7 +123,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065187206782375564}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ca16863e1ab493c4c96908f6df24054a, type: 2}
   m_CullingMode: 0
@@ -150,6 +150,7 @@ MonoBehaviour:
   _parent: {fileID: 7776613916687982162}
   _weapon: {fileID: 367278532711267162}
   _projectileShield: {fileID: 6696204020068649327}
+  _animator: {fileID: 5985850498943390989}
 --- !u!1 &2983368276797543724
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,7 +170,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2701407998214315043
 Transform:
   m_ObjectHideFlags: 0
@@ -296,7 +297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8967968222637326252
 Transform:
   m_ObjectHideFlags: 0
@@ -359,7 +360,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4562774846494420591
 Transform:
   m_ObjectHideFlags: 0
