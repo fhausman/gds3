@@ -74,14 +74,9 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        var isTouchingGround = player.IsTouchingGround;
-        if (isTouchingGround && player.CanSwitch)
+        if (player.IsTouchingGround)
         {
             player.StateMachine.ChangeState(PlayerState.Flipping);
-        }
-        else if (isTouchingGround)
-        {
-            player.StateMachine.ChangeState(PlayerState.FailedToFlip);
         }
     }
 
@@ -130,11 +125,14 @@ public class PlayerFlipping : BaseState
 
         player.Parent.rotation = _target.Value;
         player.Parent.position += 2 * _dir;
+
+        player.Animator.Play("Falling Idle");
     }
 
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
+        player.Animator.Play("Falling To Landing");
     }
 
     public override void onUpdate(float deltaTime)
@@ -150,6 +148,9 @@ public class PlayerFlipping : BaseState
     {
         var input = player.Controls.Player.HorizontalMovement.ReadValue<float>();
         player.Parent.position += _dir * player.GravitySpeed * deltaTime;
+
+        var horizontalMove = player.transform.right * input * player.Speed * deltaTime;
+        player.Move(horizontalMove, deltaTime);
     }
 
     private void CancelSwitch(InputAction.CallbackContext ctx)
