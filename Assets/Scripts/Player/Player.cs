@@ -118,7 +118,6 @@ public class PlayerFlipping : BaseState
     public override void onInit(params object[] args)
     {
         player.Controls.Player.GravitySwitch.performed += CancelSwitch;
-        dir = -dir;
         if(dir > 0.0f)
         {
             _start = _upRotation;
@@ -131,17 +130,19 @@ public class PlayerFlipping : BaseState
         }
 
         _up = player.Parent.transform.up;
+        player.Parent.rotation = _target.Value;
+        player.Parent.position += Vector3.up * 2 * dir;
     }
 
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
+        dir = -dir;
     }
 
     public override void onUpdate(float deltaTime)
     {
         switchProgress += 0.01f;
-        player.Parent.rotation = Quaternion.Lerp(_start.Value, _target.Value, switchProgress);
 
         RaycastHit hit;
         if(player.HitsGround(out hit))
@@ -153,7 +154,7 @@ public class PlayerFlipping : BaseState
     public override void onFixedUpdate(float deltaTime)
     {
         var input = player.Controls.Player.HorizontalMovement.ReadValue<float>();
-        player.Parent.position += dir * _up * player.GravitySpeed * deltaTime;
+        player.Parent.position += _up * player.GravitySpeed * deltaTime;
     }
 
     private void CancelSwitch(InputAction.CallbackContext ctx)
