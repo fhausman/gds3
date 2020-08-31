@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 632170948069746234}
   - component: {fileID: 611404625354163646}
   m_Layer: 8
-  m_Name: Hale_Floor_01_Side_snaps002
+  m_Name: Outerwall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 15cb6b096bb78c7479c93c6e26153387, type: 2}
+  - {fileID: 2100000, guid: 48bfb129545be0e439a62d2e99911472, type: 2}
   - {fileID: 2100000, guid: 3d2110dabe6f73043ba4404830e26f36, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
