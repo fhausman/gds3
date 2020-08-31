@@ -98,8 +98,6 @@ public class PlayerMoving : BaseState
 public class PlayerFlipping : BaseState
 {
     private Player player = null;
-    private float switchProgress = 0.0f;
-    private float dir = 1.0f;
 
     private Quaternion _upRotation = Quaternion.Euler(Vector3.zero);
     private Quaternion _downRotation = Quaternion.Euler(-180.0f, 0.0f, 0.0f);
@@ -107,8 +105,7 @@ public class PlayerFlipping : BaseState
     private Quaternion? _start = null;
     private Quaternion? _target = null;
 
-    private Vector3 _up;
-    private Vector3 _down;
+    private Vector3 _dir;
 
     public PlayerFlipping(Player p)
     {
@@ -118,7 +115,9 @@ public class PlayerFlipping : BaseState
     public override void onInit(params object[] args)
     {
         player.Controls.Player.GravitySwitch.performed += CancelSwitch;
-        if(dir > 0.0f)
+        _dir = player.Parent.transform.up;
+
+        if (_dir.y > 0.0f)
         {
             _start = _upRotation;
             _target = _downRotation;
@@ -129,21 +128,17 @@ public class PlayerFlipping : BaseState
             _target = _upRotation;
         }
 
-        _up = player.Parent.transform.up;
         player.Parent.rotation = _target.Value;
-        player.Parent.position += Vector3.up * 2 * dir;
+        player.Parent.position += 2 * _dir;
     }
 
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
-        dir = -dir;
     }
 
     public override void onUpdate(float deltaTime)
     {
-        switchProgress += 0.01f;
-
         RaycastHit hit;
         if(player.HitsGround(out hit))
         {
@@ -154,12 +149,15 @@ public class PlayerFlipping : BaseState
     public override void onFixedUpdate(float deltaTime)
     {
         var input = player.Controls.Player.HorizontalMovement.ReadValue<float>();
-        player.Parent.position += _up * player.GravitySpeed * deltaTime;
+        player.Parent.position += _dir * player.GravitySpeed * deltaTime;
     }
 
     private void CancelSwitch(InputAction.CallbackContext ctx)
     {
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
+        player.Parent.rotation = _start.Value;
+        _dir = -_dir;
+        player.Parent.position += 2 * _dir;
     }
 }
 
