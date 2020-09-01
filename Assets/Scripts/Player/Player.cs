@@ -198,87 +198,6 @@ public class PlayerDashing : BaseState
     }
 }
 
-public class PlayerAttacking : BaseState
-{
-    private Player player = null;
-    private Animator animator = null;
-    private float attackTimeElapsed = 0.0f;
-    private float attackDuration = 0.0f;
-
-    public PlayerAttacking(Player p)
-    {
-        player = p;
-        animator = player.Weapon.GetComponent<Animator>();
-        attackDuration = animator.runtimeAnimatorController.animationClips.First(a => a.name == "Attack").length;
-    }
-
-    public override void onInit(params object[] args)
-    {
-        player.OnAttackStartNotify.Invoke();
-
-        player.Controls.Player.GravitySwitch.performed += GravitySwitch;
-        player.Controls.Player.Dash.performed += Dash;
-
-        attackTimeElapsed = 0.0f;
-
-        player.ProjectileShield.enabled = true;
-
-        var attackType = (AttackType) args[0];
-        if(attackType == AttackType.High)
-        {
-            player.Weapon.GetComponent<Animator>().Play("Attack");
-        }
-        else if (attackType == AttackType.Low)
-        {
-            player.Weapon.GetComponent<Animator>().Play("Attack_Low");
-        }
-
-        player.Weapon.EnableCollision();
-    }
-
-    public override void onExit()
-    {
-        player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
-        player.Controls.Player.Dash.performed -= Dash;
-
-        player.Weapon.DisableCollision();
-        player.Weapon.SetIdle();
-
-        player.ProjectileShield.enabled = false;
-    }
-
-    public override void onUpdate(float deltaTime)
-    {
-        if (attackTimeElapsed > attackDuration)
-        {
-            player.StateMachine.ChangeState(PlayerState.Moving);
-        }
-
-        var horizontalMove =
-            player.FacingDirection * player.transform.right * (player.Speed + 1.0f - (attackTimeElapsed / player.AttackDuration) * player.Speed) * deltaTime;
-        player.Move(horizontalMove, deltaTime);
-
-        attackTimeElapsed += deltaTime;
-    }
-
-    private void GravitySwitch(InputAction.CallbackContext ctx)
-    {
-        if (player.CanSwitch)
-        {
-            player.Flip();
-        }
-    }
-
-    public void Dash(InputAction.CallbackContext ctx)
-    {
-        if (player.CanDash)
-        {
-            player.StateMachine.ChangeState(PlayerState.Dashing);
-            player.DashCooldownElapsed = 0.0f;
-        }
-    }
-}
-
 public class PlayerReceivedDamage : BaseState
 {
     private Player player = null;
@@ -345,7 +264,7 @@ public class Player : MonoBehaviour
     public float DashTime { get => settings.dashTime; }
     public float DashCooldown { get => settings.dashCooldown; }
     public float AttackDuration { get => settings.attackDuration; }
-    public float GravitySwitchHeight { get => settings.gravitySwitchHeight; }
+    public float CoyoteTime { get => settings.coyoteTime; }
     public float GravitySwitchCooldown { get => settings.gravitySwitchCooldown; }
     #endregion
 
@@ -395,19 +314,6 @@ public class Player : MonoBehaviour
             RaycastHit hit;
             return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
         }
-    }
-    public bool CanSwitch
-    {
-        get
-        {
-            RaycastHit hit;
-            return Physics.Raycast(Parent.position, Parent.up, out hit, GravitySwitchHeight, 1 << 8) && (GravitySwitchCooldownElapsed > GravitySwitchCooldown);
-        }
-    }
-
-    public bool IsAttacking
-    {
-        get => StateMachine.CurrentState == PlayerState.Attacking;
     }
     #endregion
 
@@ -465,17 +371,6 @@ public class Player : MonoBehaviour
         return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
     }
 
-    public void Flip()
-    {
-        GravitySwitchCooldownElapsed = 0.0f;
-
-        _parent.Rotate(0, 0, 180);
-        _parent.position -= _parent.up;
-        _parent.transform.localScale = new Vector3(
-            -_parent.transform.localScale.x, _parent.transform.localScale.y, _parent.transform.localScale.z
-        ); ;
-    }
-
     public void DecreaseHealth(int healthAmount)
     {
         _currentHealth -= healthAmount;
@@ -517,7 +412,6 @@ public class Player : MonoBehaviour
 
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));
         StateMachine.AddState(PlayerState.Dashing, new PlayerDashing(this));
-        StateMachine.AddState(PlayerState.Attacking, new PlayerAttacking(this));
         StateMachine.AddState(PlayerState.ReceivedDamage, new PlayerReceivedDamage(this));
         StateMachine.AddState(PlayerState.FailedToFlip, new PlayerFailedToFlip(this));
         StateMachine.AddState(PlayerState.Flipping, new PlayerFlipping(this));

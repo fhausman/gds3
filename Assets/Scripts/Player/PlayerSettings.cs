@@ -16,5 +16,5 @@ public class PlayerSettings : ScriptableObject
     public Vector2 bottomBlockZoneSize = Vector2.zero;
     public float sweetSpotWidth = 0.0f;
     public float attackDuration = 0.0f;
-    public float gravitySwitchHeight = 5.0f;
+    public float coyoteTime = 0.1f;
 }
