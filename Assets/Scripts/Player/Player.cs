@@ -26,6 +26,7 @@ public class PlayerMoving : BaseState
 {
     private Player player = null;
     private float speedModifier = 1.0f;
+    private float coyoteTimeElapsed = 0.0f;
 
     public PlayerMoving(Player p)
     {
@@ -36,6 +37,8 @@ public class PlayerMoving : BaseState
     {
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
         player.Controls.Player.Dash.performed += Dash;
+
+        coyoteTimeElapsed = 0.0f;
     }
 
     public override void onExit()
@@ -50,6 +53,16 @@ public class PlayerMoving : BaseState
 
     public override void onUpdate(float deltaTime)
     {
+        if(player.IsTouchingGround)
+        {
+            coyoteTimeElapsed = 0.0f;
+        }
+        else
+        {
+            coyoteTimeElapsed += deltaTime;
+        }
+
+        Debug.Log(coyoteTimeElapsed);
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -69,7 +82,7 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        if (player.IsTouchingGround)
+        if (player.IsTouchingGround || (!player.IsTouchingGround && coyoteTimeElapsed < player.CoyoteTime))
         {
             player.StateMachine.ChangeState(PlayerState.Flipping);
         }
