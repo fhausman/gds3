@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 99
   speed: 7
-  gravitySpeed: 10
+  switchSpeed: 10
+  gravitySpeed: 20
   blockSpeedModifier: 0.1
   dashSpeed: 30
   dashTime: 0.1

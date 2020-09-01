@@ -144,7 +144,7 @@ public class PlayerFlipping : BaseState
         var input = player.Controls.Player.HorizontalMovement.ReadValue<float>();
         player.Parent.position += _dir * player.GravitySpeed * deltaTime;
 
-        var horizontalMove = player.transform.right * input * player.Speed * deltaTime;
+        var horizontalMove = player.transform.right * input * player.SwitchSpeed * deltaTime;
         player.Move(horizontalMove, deltaTime);
     }
 
@@ -339,6 +339,7 @@ public class Player : MonoBehaviour
     public PlayerSettings settings;
     public int Health { get => settings.health; }
     public float Speed { get => settings.speed; }
+    public float SwitchSpeed { get => settings.switchSpeed; }
     public float GravitySpeed { get => settings.gravitySpeed; }
     public float DashSpeed { get => settings.dashSpeed; }
     public float DashTime { get => settings.dashTime; }
