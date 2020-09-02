@@ -121,6 +121,9 @@ public class LaserSource : MonoBehaviour
     [SerializeField]
     private LaserType _laserType = LaserType.DeadlyLaser;
 
+    [SerializeField]
+    private bool _castsReflections = true;
+
     private ILaserHitBehaviour _laserHitBehaviour;
     private UnityEvent _onNothingWasHit = new UnityEvent();
     private const int MAX_REFLECTIONS_NUM = 10;
@@ -146,7 +149,8 @@ public class LaserSource : MonoBehaviour
         var currentDir = _beamOrigin.transform.right;
         beamPoints.Add(currentPoint);
 
-        for(int i = 0; i < MAX_REFLECTIONS_NUM; ++i)
+        var max_refl = _castsReflections ? MAX_REFLECTIONS_NUM : 1;
+        for (int i = 0; i < max_refl; ++i)
         {
             RaycastHit hit;
             if(!Physics.Raycast(currentPoint, currentDir, out hit, 100.0f, _laserHitBehaviour.GetCollisionMask()))

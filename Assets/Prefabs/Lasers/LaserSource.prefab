@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 8094166182585852299}
   - component: {fileID: 6670657430274894861}
   - component: {fileID: 954484454718005303}
+  - component: {fileID: 959872542809156042}
   - component: {fileID: 6215492058579816002}
   m_Layer: 0
   m_Name: LaserSource
@@ -193,6 +194,20 @@ MonoBehaviour:
   _maxWidth: 0.3
   _minWidth: 0.2
   _frequency: 20
+--- !u!114 &959872542809156042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8461180643343755278}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7006366836565a4385bd8c7d4cb0ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 10
+  _refPoint: {fileID: 0}
 --- !u!65 &6215492058579816002
 BoxCollider:
   m_ObjectHideFlags: 0
