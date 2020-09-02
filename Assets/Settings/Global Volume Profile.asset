@@ -23,12 +23,12 @@ MonoBehaviour:
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.366
     min: 0
     max: 1
   scatter:
     m_OverrideState: 1
-    m_Value: 0.205
+    m_Value: 0.314
     min: 0
     max: 1
   tint:

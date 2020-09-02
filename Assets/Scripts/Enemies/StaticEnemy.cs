@@ -14,7 +14,7 @@ public class StaticEnemyIdle : BaseState
     public override void onInit(params object[] args)
     {
         base.onInit(args);
-        enemy.Animator.Play("AnimRED_Idle");
+        //enemy.Animator.Play("AnimRED_Idle");
     }
 
     public override void onUpdate(float deltaTime)
@@ -36,7 +36,7 @@ public class StaticEnemyShooting : BaseState
     StaticEnemy enemy;
     private float timeElapsed = 0.0f;
 
-    bool IsPlayerInRange { get => enemy.Logic.IsInRange; }
+    bool IsPlayerInRange { get => enemy.Logic.IsInRange && enemy.Logic.HasClearShot; }
 
     public StaticEnemyShooting(StaticEnemy e)
     {
@@ -46,7 +46,7 @@ public class StaticEnemyShooting : BaseState
     public override void onInit(params object[] args)
     {
         timeElapsed = 0.0f;
-        enemy.Animator.Play("AnimRED_Attack");
+        //enemy.Animator.Play("AnimRED_Attack");
     }
 
     public override void onUpdate(float deltaTime)
@@ -56,7 +56,8 @@ public class StaticEnemyShooting : BaseState
             if (IsPlayerInRange)
             {
                 timeElapsed = 0.0f;
-                enemy.Animator.Play("AnimRED_Attack");
+                //enemy.Animator.Play("AnimRED_Attack");
+                enemy.Shoot();
             }
             else
             {
@@ -79,7 +80,7 @@ public class StaticEnemyDamaged : BaseState
 
     public override void onInit(params object[] args)
     {
-        enemy.Animator.Play("AnimRED_Damage");
+        //enemy.Animator.Play("AnimRED_Damage");
         enemy.Health -= 1;
 
         if (enemy.Health <= 0)
@@ -101,7 +102,7 @@ public class StaticEnemyDead : BaseState
 
     public override void onInit(params object[] args)
     {
-        enemy.Animator.Play("AnimRED_Crush");
+        //enemy.Animator.Play("AnimRED_Crush");
     }
 }
 
@@ -112,11 +113,11 @@ public class StaticEnemy : EnemyBase
     private Transform projectileSpawnPoint = null;
     public Vector3 ProjectileSpawnPosition { get => projectileSpawnPoint.position; }
 
-    public Animator Animator { get; private set; } = null;
+    //public Animator Animator { get; private set; } = null;
 
     private void Start()
     {
-        Animator = GetComponent<Animator>();
+        //Animator = GetComponent<Animator>();
         StateMachine.AddState(EnemyStates.Idle, new StaticEnemyIdle(this));
         StateMachine.AddState(EnemyStates.Shooting, new StaticEnemyShooting(this));
         StateMachine.AddState(EnemyStates.Damaged, new StaticEnemyDamaged(this));
@@ -140,7 +141,7 @@ public class StaticEnemy : EnemyBase
         // SpriteRenderer.flipX = facingDir >= 0.0f;
     }
 
-    private void Shoot()
+    public void Shoot()
     {
         var projectile = Object.Instantiate(Projectile);
         projectile.transform.position = ProjectileSpawnPosition;
@@ -149,7 +150,7 @@ public class StaticEnemy : EnemyBase
 
     private void SetIdle()
     {
-        Animator.Play("AnimRED_Idle");
+        //Animator.Play("AnimRED_Idle");
     }
 
     private void OnDamageEnd()
