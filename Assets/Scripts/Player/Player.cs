@@ -102,9 +102,6 @@ public class PlayerFlipping : BaseState
 {
     private Player player = null;
 
-    private Quaternion _upRotation = Quaternion.Euler(Vector3.zero);
-    private Quaternion _downRotation = Quaternion.Euler(-180.0f, 0.0f, 0.0f);
-
     private Quaternion? _start = null;
     private Quaternion? _target = null;
 
@@ -118,18 +115,10 @@ public class PlayerFlipping : BaseState
     public override void onInit(params object[] args)
     {
         player.Controls.Player.GravitySwitch.performed += CancelSwitch;
+        
         _dir = player.Parent.transform.up;
-
-        if (_dir.y > 0.0f)
-        {
-            _start = _upRotation;
-            _target = _downRotation;
-        }
-        else
-        {
-            _start = _downRotation;
-            _target = _upRotation;
-        }
+        _start = player.Parent.rotation;
+        _target = _start * Quaternion.Euler(180.0f, 0.0f, 0.0f);
 
         player.Parent.rotation = _target.Value;
         player.Parent.position += 2 * _dir;
