@@ -15,7 +15,7 @@ MonoBehaviour:
   health: 99
   speed: 7
   switchSpeed: 10
-  gravitySpeed: 20
+  gravitySpeed: 15
   blockSpeedModifier: 0.1
   dashSpeed: 30
   dashTime: 0.1

@@ -56,6 +56,7 @@ public class PlayerMoving : BaseState
         if(player.IsTouchingGround)
         {
             coyoteTimeElapsed = 0.0f;
+            speedModifier = 1.0f;
 
             if (player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling Idle"))
             {
@@ -65,6 +66,8 @@ public class PlayerMoving : BaseState
         else
         {
             coyoteTimeElapsed += deltaTime;
+            speedModifier = 0.8f;
+
             if (!player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling Idle"))
             {
                 player.Animator.Play("Falling Idle");
@@ -76,9 +79,7 @@ public class PlayerMoving : BaseState
 
     public override void onFixedUpdate(float deltaTime)
     {
-        var horizontalInput = Vector3.Dot(player.transform.right, Vector3.right) * player.Controls.Player.HorizontalMovement.ReadValue<float>();
-        var verticalInput = Vector3.Dot(player.transform.right, Vector3.up) * player.Controls.Player.VerticalMovement.ReadValue<float>();
-        var inputDirectionModifier = Mathf.Clamp(horizontalInput + verticalInput, -1.0f, 1.0f);
+        var inputDirectionModifier = player.InputModifier;
 
         if(Mathf.Abs(inputDirectionModifier) > 0.0f + Mathf.Epsilon)
         {
@@ -152,10 +153,9 @@ public class PlayerFlipping : BaseState
 
     public override void onFixedUpdate(float deltaTime)
     {
-        var input = player.Controls.Player.HorizontalMovement.ReadValue<float>();
         player.Parent.position += _dir * player.GravitySpeed * deltaTime;
 
-        var horizontalMove = player.transform.right * input * player.SwitchSpeed * deltaTime;
+        var horizontalMove = player.transform.right * player.InputModifier * player.SwitchSpeed * deltaTime;
         player.Move(horizontalMove, deltaTime);
     }
 
@@ -326,6 +326,16 @@ public class Player : MonoBehaviour
             return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
         }
     }
+
+    public float InputModifier
+    {
+        get
+        {
+            var horizontalInput = Vector3.Dot(transform.right, Vector3.right) * Controls.Player.HorizontalMovement.ReadValue<float>();
+            var verticalInput = Vector3.Dot(transform.right, Vector3.up) * Controls.Player.VerticalMovement.ReadValue<float>();
+            return Mathf.Clamp(horizontalInput + verticalInput, -1.0f, 1.0f);
+        }
+    }
     #endregion
 
     public void Move(Vector3 dir, float deltaTime)
@@ -350,6 +360,11 @@ public class Player : MonoBehaviour
         }
         else
         {
+            if(GravityVelocity == Vector3.zero)
+            {
+                GravityVelocity += -_parent.up * GravitySpeed * 0.5f;
+            }
+
             if (StateMachine.CurrentState != PlayerState.Flipping)
             {
                 //TODO: change state to falling
