@@ -56,10 +56,19 @@ public class PlayerMoving : BaseState
         if(player.IsTouchingGround)
         {
             coyoteTimeElapsed = 0.0f;
+
+            if (player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling Idle"))
+            {
+                player.Animator.Play("Falling To Landing");
+            }
         }
         else
         {
             coyoteTimeElapsed += deltaTime;
+            if (!player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling Idle"))
+            {
+                player.Animator.Play("Falling Idle");
+            }
         }
 
         Debug.Log(coyoteTimeElapsed);
