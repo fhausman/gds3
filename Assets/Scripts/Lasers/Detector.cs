@@ -4,19 +4,22 @@ using UnityEngine;
 
 public class Detector : MonoBehaviour
 {
-    public Interactable attachedObject1;
-    public Interactable attachedObject2;
-
+    [SerializeField]
+    private Interactable[] attachedObjects;
 
     public void Activate()
     {
-        attachedObject1.OnInteractionStart();
-        attachedObject2.OnInteractionStart();
+        foreach(var o in attachedObjects)
+        {
+            o.OnInteractionStart();
+        }
     }
 
     public void Deactivate()
     {
-        attachedObject1.OnInteractionEnd();
-        attachedObject2.OnInteractionEnd();
+        foreach (var o in attachedObjects)
+        {
+            o.OnInteractionEnd();
+        }
     }
 }

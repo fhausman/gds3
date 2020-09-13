@@ -457,7 +457,7 @@ public class Player : MonoBehaviour
         {
             if (_heldObject == null)
             {
-                var objects = Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Lens"));
+                var objects = Physics.OverlapSphere(Parent.position + Vector3.forward*2.0f, 1f, LayerMask.GetMask("Lens"));
                 if (objects.Length > 0)
                 {
                     _heldObject = objects[0].gameObject.GetComponent<Interactable>();

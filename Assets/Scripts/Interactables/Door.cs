@@ -7,25 +7,45 @@ public class Door : MonoBehaviour
     [SerializeField]
     private float _moveTime = 1.0f;
 
+    [SerializeField]
+    private bool _locked = false;
+
     private Vector3 _closePosition = Vector3.zero;
     private Vector3 _openPosition = Vector3.zero;
+
+    [SerializeField]
+    private Renderer lampRef = null;
+
+    [SerializeField]
+    private Material closedMaterial = null;
+
+    [SerializeField]
+    private Material openedMaterial = null;
 
     private void Start()
     {
         _closePosition = transform.position;
-        _openPosition = _closePosition - new Vector3(0.0f, 0.0f, -1.0f);
+        _openPosition = _closePosition - new Vector3(0.0f, 0.0f, -2.0f);
     }
 
     public void Open()
     {
-        StopAllCoroutines();
-        StartCoroutine(Move(transform.position, _openPosition));
+        if (!_locked)
+        {
+            lampRef.material = openedMaterial;
+            StopAllCoroutines();
+            StartCoroutine(Move(transform.position, _openPosition));
+        }
     }
 
     public void Close()
     {
-        StopAllCoroutines();
-        StartCoroutine(Move(transform.position, _closePosition));
+        if (!_locked)
+        {
+            lampRef.material = closedMaterial;
+            StopAllCoroutines();
+            StartCoroutine(Move(transform.position, _closePosition));
+        }
     }
 
     private IEnumerator Move(Vector3 from, Vector3 target)
