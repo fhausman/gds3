@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Linq;
+using System.Security.Policy;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -223,24 +224,40 @@ public class PlayerReceivedDamage : BaseState
 
     public override void onInit(params object[] args)
     {
-        damageCooldownElapsed = 0.0f;
-        impactDirection = (float) args[0];
+        //damageCooldownElapsed = 0.0f;
+        //impactDirection = (float) args[0];
 
-        player.DecreaseHealth(1000);
+        //player.DecreaseHealth(1000);
+        player.Animator.Play("Being Electrocuted");
+        damageCooldownElapsed = 0.0f;
     }
 
     public override void onUpdate(float deltaTime)
     {
-        if (damageCooldownElapsed > damageCooldownDuration)
-        {
-            player.StateMachine.ChangeState(PlayerState.Moving);
-        }
-
-        var horizontalMove =
-            impactDirection * Vector3.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
-        player.Move(horizontalMove, deltaTime);
-
         damageCooldownElapsed += deltaTime;
+        player.Renderer.material.SetFloat("_Prog", damageCooldownElapsed);
+        player.Joints.enabled = false;
+
+        if(damageCooldownElapsed > 2.0f)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        //if (damageCooldownElapsed > damageCooldownDuration)
+        //{
+        //    player.StateMachine.ChangeState(PlayerState.Moving);
+        //}
+
+        //var horizontalMove =
+        //    impactDirection * Vector3.right * (player.Speed + 1.0f - (damageCooldownElapsed / damageCooldownDuration) * player.Speed) * deltaTime;
+        //player.Move(horizontalMove, deltaTime);
+
+        //damageCooldownElapsed += deltaTime;
+    }
+
+    public override void onExit()
+    {
+        player.Renderer.material.SetFloat("_Prog", 1.0f);
+        player.Joints.enabled = true;
     }
 }
 
@@ -296,6 +313,13 @@ public class Player : MonoBehaviour
     private Animator _animator = null;
     public Animator Animator { get => _animator; }
 
+    [SerializeField]
+    private Renderer _renderer = null;
+    public Renderer Renderer { get => _renderer; }
+
+    [SerializeField]
+    private Renderer _joints = null;
+    public Renderer Joints { get => _joints; }
     #endregion
 
     #region Private Fields 
@@ -377,7 +401,7 @@ public class Player : MonoBehaviour
         {
             Animator.SetTrigger("Running");
 
-            if (!Physics.Raycast(transform.position, dir, out hit, 0.22f, 1 << 8))
+            if (!Physics.Raycast(transform.position, dir, out hit, 0.5f, 1 << 8))
             {
                 _parent.position += dir;
             }
@@ -487,8 +511,7 @@ public class Player : MonoBehaviour
     {
         if(collision.collider.CompareTag("Projectile") && StateMachine.CurrentState != PlayerState.Dashing)
         {
-            StateMachine.ChangeState(PlayerState.ReceivedDamage,
-                collision.gameObject.GetComponent<Projectile>().Dir.x);
+            StateMachine.ChangeState(PlayerState.ReceivedDamage);
         }
     }
 
@@ -496,8 +519,7 @@ public class Player : MonoBehaviour
     {
         if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing && StateMachine.CurrentState != PlayerState.ReceivedDamage)
         {
-            StateMachine.ChangeState(PlayerState.ReceivedDamage,
-                other.transform.position.x > transform.position.x ? -1.0f : 1.0f);
+            StateMachine.ChangeState(PlayerState.ReceivedDamage);
         }
     }
 
@@ -516,7 +538,8 @@ public class Player : MonoBehaviour
 
     void OnLaserHit()
     {
-        DecreaseHealth(100);
+        if(StateMachine.CurrentState != PlayerState.ReceivedDamage)
+            StateMachine.ChangeState(PlayerState.ReceivedDamage);
     }
 
     void OnSwitchFailEnd()

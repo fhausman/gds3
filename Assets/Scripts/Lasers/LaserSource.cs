@@ -159,6 +159,12 @@ public class LaserSource : MonoBehaviour
                 break;
             }
 
+            if (hit.collider.CompareTag("Player"))
+            {
+                _laserHitBehaviour.OnObjectHit(hit.collider.gameObject);
+                continue;
+            }
+
             (currentDir, currentPoint) = _laserHitBehaviour.Reflect(currentDir, hit);
             beamPoints.Add(currentPoint);
 

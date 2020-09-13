@@ -151,6 +151,8 @@ MonoBehaviour:
   _weapon: {fileID: 367278532711267162}
   _projectileShield: {fileID: 6696204020068649327}
   _animator: {fileID: 5985850498943390989}
+  _renderer: {fileID: 1696028486712489555}
+  _joints: {fileID: 1377197847313147347}
 --- !u!1 &2983368276797543724
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,6 +513,18 @@ GameObject:
 --- !u!4 &85855538558024469 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 92e0d679bf587124ab8377243a1dde24,
+    type: 3}
+  m_PrefabInstance: {fileID: 4921222622661414927}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1377197847313147347 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -2929736950991424036, guid: 92e0d679bf587124ab8377243a1dde24,
+    type: 3}
+  m_PrefabInstance: {fileID: 4921222622661414927}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1696028486712489555 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3187931662991661476, guid: 92e0d679bf587124ab8377243a1dde24,
     type: 3}
   m_PrefabInstance: {fileID: 4921222622661414927}
   m_PrefabAsset: {fileID: 0}
