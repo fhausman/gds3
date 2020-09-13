@@ -226,7 +226,7 @@ public class PlayerReceivedDamage : BaseState
         damageCooldownElapsed = 0.0f;
         impactDirection = (float) args[0];
 
-        player.DecreaseHealth(1);
+        player.DecreaseHealth(1000);
     }
 
     public override void onUpdate(float deltaTime)
