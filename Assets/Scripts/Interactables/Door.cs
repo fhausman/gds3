@@ -53,7 +53,7 @@ public class Door : MonoBehaviour
         var startTime = Time.time;
         while(Time.time - startTime < _moveTime)
         {
-            var new_z = Mathf.Lerp(from.z, target.z, (Time.time - startTime) / _moveTime);
+            var new_z = Mathf.Lerp(from.z, target.z, (Time.time - startTime) / (_moveTime * Mathf.Abs((target.z - from.z) / (_closePosition.z - _openPosition.z))));
             transform.position = new Vector3(transform.position.x, transform.position.y, new_z);
 
             yield return null;
