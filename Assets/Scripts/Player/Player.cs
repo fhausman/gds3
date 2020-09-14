@@ -381,7 +381,9 @@ public class Player : MonoBehaviour
 
             //Debug.DrawRay(hit.point, hit.normal, Color.red);
             _parent.position = hit.point;
-            _parent.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+            var normalQuat = Quaternion.LookRotation(_parent.forward, hit.normal);
+            _parent.rotation = Quaternion.RotateTowards(_parent.rotation, normalQuat, 5.0f);
+            //_parent.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             GravityVelocity = Vector3.zero;
         }
         else
