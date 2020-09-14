@@ -113,11 +113,11 @@ public class StaticEnemy : EnemyBase
     private Transform projectileSpawnPoint = null;
     public Vector3 ProjectileSpawnPosition { get => projectileSpawnPoint.position; }
 
-    //public Animator Animator { get; private set; } = null;
+    public Animator Animator { get; private set; } = null;
 
     private void Start()
     {
-        //Animator = GetComponent<Animator>();
+        Animator = GetComponent<Animator>();
         StateMachine.AddState(EnemyStates.Idle, new StaticEnemyIdle(this));
         StateMachine.AddState(EnemyStates.Shooting, new StaticEnemyShooting(this));
         StateMachine.AddState(EnemyStates.Damaged, new StaticEnemyDamaged(this));
@@ -145,7 +145,9 @@ public class StaticEnemy : EnemyBase
     {
         var projectile = Object.Instantiate(Projectile);
         projectile.transform.position = ProjectileSpawnPosition;
-        projectile.Dir = Logic.DirToPlayer(projectile.transform.position).normalized;
+        projectile.Dir = projectileSpawnPoint.forward;
+
+        Animator.Play("Shoot");
     }
 
     private void SetIdle()
@@ -160,10 +162,10 @@ public class StaticEnemy : EnemyBase
 
     protected override void ReceivedDamage(float dir)
     {
-        var _currState = StateMachine.CurrentState;
-        if (_currState != EnemyStates.Damaged && _currState != EnemyStates.Dead)
-        {
-            StateMachine.ChangeState(EnemyStates.Damaged, dir);
-        }
+        //var _currState = StateMachine.CurrentState;
+        //if (_currState != EnemyStates.Damaged && _currState != EnemyStates.Dead)
+        //{
+        //    StateMachine.ChangeState(EnemyStates.Damaged, dir);
+        //}
     }
 }
