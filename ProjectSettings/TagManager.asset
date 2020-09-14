@@ -12,6 +12,7 @@ TagManager:
   - Weapon
   - EnemyWeapon
   - ProjectileShield
+  - Checkpoint
   layers:
   - Default
   - TransparentFX

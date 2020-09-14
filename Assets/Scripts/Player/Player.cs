@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using System.Security.Policy;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -74,8 +75,6 @@ public class PlayerMoving : BaseState
                 player.Animator.Play("Falling Idle");
             }
         }
-
-        Debug.Log(coyoteTimeElapsed);
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -229,7 +228,9 @@ public class PlayerReceivedDamage : BaseState
 
         //player.DecreaseHealth(1000);
         player.Animator.Play("Being Electrocuted");
+        player.Collider.enabled = false;
         damageCooldownElapsed = 0.0f;
+        Debug.Log("Die");
     }
 
     public override void onUpdate(float deltaTime)
@@ -240,7 +241,7 @@ public class PlayerReceivedDamage : BaseState
 
         if(damageCooldownElapsed > 2.0f)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            player.Respawn();
         }
         //if (damageCooldownElapsed > damageCooldownDuration)
         //{
@@ -256,7 +257,7 @@ public class PlayerReceivedDamage : BaseState
 
     public override void onExit()
     {
-        player.Renderer.material.SetFloat("_Prog", 1.0f);
+        player.Renderer.material.SetFloat("_Prog", 0.0f);
         player.Joints.enabled = true;
     }
 }
@@ -306,8 +307,8 @@ public class Player : MonoBehaviour
     public Weapon Weapon { get => _weapon; }
 
     [SerializeField]
-    private Collider _projectileShield = null;
-    public Collider ProjectileShield { get => _projectileShield; }
+    private Collider _collider = null;
+    public Collider Collider { get => _collider; }
 
     [SerializeField]
     private Animator _animator = null;
@@ -327,6 +328,7 @@ public class Player : MonoBehaviour
     private Interactable _heldObject = null;
     private int _currentHealth = 0;
     private int _attacksCounter = 0;
+    private GameObject _checkpoint = null;
     #endregion
 
     #region Properties
@@ -421,12 +423,23 @@ public class Player : MonoBehaviour
         return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
     }
 
-    public void DecreaseHealth(int healthAmount)
+    public void Respawn()
     {
-        _currentHealth -= healthAmount;
-        if (_currentHealth <= 0)
+        Debug.Log("Respawn");
+
+        if (!_checkpoint)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            Animator.Play("Idle");
+            var pos = _checkpoint.transform.position;
+            pos.z = Parent.position.z;
+            Parent.position = pos;
+            Parent.rotation = Quaternion.Euler(Vector3.zero);
+            StateMachine.ChangeState(PlayerState.Moving);
+            Collider.enabled = true;
         }
     }
 
@@ -520,6 +533,10 @@ public class Player : MonoBehaviour
         if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing && StateMachine.CurrentState != PlayerState.ReceivedDamage)
         {
             StateMachine.ChangeState(PlayerState.ReceivedDamage);
+        }
+        else if(other.CompareTag("Checkpoint"))
+        {
+            _checkpoint = other.gameObject;
         }
     }
 

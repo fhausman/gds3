@@ -149,7 +149,7 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 9c815244d92b91940bf16011fb6ab243, type: 2}
   _parent: {fileID: 7776613916687982162}
   _weapon: {fileID: 367278532711267162}
-  _projectileShield: {fileID: 6696204020068649327}
+  _collider: {fileID: 1065187206782375561}
   _animator: {fileID: 5985850498943390989}
   _renderer: {fileID: 1696028486712489555}
   _joints: {fileID: 1377197847313147347}
