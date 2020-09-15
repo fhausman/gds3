@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33765777368079578}
   - component: {fileID: 23000709869406620}
   - component: {fileID: 245207050557337151}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Deck_Wall_snaps002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ae2efeea9c901af48b6bb19d9981d5d2, type: 2}
+  - {fileID: 2100000, guid: 8621dfcb3dbf229428e45425021e0875, type: 2}
   - {fileID: 2100000, guid: 3d2110dabe6f73043ba4404830e26f36, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
