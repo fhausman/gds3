@@ -151,8 +151,6 @@ public class PlayerFlipping : BaseState
 
     public override void onFixedUpdate(float deltaTime)
     {
-        player.Parent.position += _dir * player.GravitySpeed * deltaTime;
-
         var horizontalMove = player.transform.right * player.InputModifier * player.SwitchSpeed * deltaTime;
         player.Move(horizontalMove, deltaTime);
     }
@@ -163,6 +161,7 @@ public class PlayerFlipping : BaseState
         player.Parent.rotation = _start.Value;
         _dir = -_dir;
         player.Parent.position += 2 * _dir;
+        player.GravityVelocity = Vector3.zero;
     }
 }
 
@@ -356,7 +355,7 @@ public class Player : MonoBehaviour
     #region Properties
     public MainControls Controls { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
-    private Vector3 GravityVelocity { get; set; } = Vector3.zero;
+    public Vector3 GravityVelocity { get; set; } = Vector3.zero;
     public bool WeaponEquipped { get; set; } = true;
     public bool CanDash { get => DashCooldownElapsed > DashCooldown; }
     public float FacingDirection { get; set; } = 1.0f;
@@ -415,12 +414,8 @@ public class Player : MonoBehaviour
                 GravityVelocity += -_parent.up * GravitySpeed * 0.5f;
             }
 
-            if (StateMachine.CurrentState != PlayerState.Flipping)
-            {
-                //TODO: change state to falling
-                GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
-                _parent.position += GravityVelocity * deltaTime;
-            }
+            GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
+            _parent.position += GravityVelocity * deltaTime;
         }
 
         if (Mathf.Abs(dir.x) > 0.0f + Mathf.Epsilon)
