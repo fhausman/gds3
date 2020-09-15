@@ -239,6 +239,12 @@ public class PlayerReceivedDamage : BaseState
         player.Renderer.material.SetFloat("_Prog", damageCooldownElapsed);
         player.Joints.enabled = false;
 
+        if (player.Lens.activeSelf)
+        {
+            player.Lens.GetComponent<Rigidbody>().isKinematic = false;
+            player.Lens.transform.parent = null;
+        }
+
         if(damageCooldownElapsed > 2.0f)
         {
             player.Respawn();
@@ -321,6 +327,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Renderer _joints = null;
     public Renderer Joints { get => _joints; }
+
+    [SerializeField]
+    private GameObject _lensOnTheBack = null;
+    public GameObject Lens { get => _lensOnTheBack; }
+
     #endregion
 
     #region Private Fields 
@@ -329,6 +340,11 @@ public class Player : MonoBehaviour
     private int _currentHealth = 0;
     private int _attacksCounter = 0;
     private GameObject _checkpoint = null;
+
+    private Vector3 _pickLensPosition = Vector3.zero;
+    private Vector3 _originalLensPosition = Vector3.zero;
+    private Quaternion _originalLensRotation;
+    private Transform _originalLensParent = null;
     #endregion
 
     #region Properties
@@ -442,6 +458,18 @@ public class Player : MonoBehaviour
             Parent.rotation = Quaternion.Euler(Vector3.zero);
             StateMachine.ChangeState(PlayerState.Moving);
             Collider.enabled = true;
+
+            if (_lensOnTheBack.activeSelf)
+            {
+                _lensOnTheBack.transform.parent = _originalLensParent;
+                _lensOnTheBack.GetComponent<Rigidbody>().isKinematic = true;
+                _lensOnTheBack.transform.localPosition = _originalLensPosition;
+                _lensOnTheBack.transform.localRotation = _originalLensRotation;
+                _lensOnTheBack.SetActive(false);
+
+                _heldObject.transform.position = _pickLensPosition;
+                _heldObject.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -484,6 +512,10 @@ public class Player : MonoBehaviour
 
         _currentHealth = Health;
 
+        _originalLensParent = _lensOnTheBack.transform.parent;
+        _originalLensPosition = _lensOnTheBack.transform.localPosition;
+        _originalLensRotation = _lensOnTheBack.transform.localRotation;
+
         Controls.Enable();
     }
 
@@ -501,6 +533,9 @@ public class Player : MonoBehaviour
                 {
                     _heldObject = objects[0].gameObject.GetComponent<Interactable>();
                     _heldObject.OnInteractionStart();
+                    _pickLensPosition = _heldObject.transform.position;
+
+                    _lensOnTheBack.SetActive(true);
                 }
 
                 foreach(var obj in Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Terminal")))
@@ -513,6 +548,7 @@ public class Player : MonoBehaviour
                 _heldObject.OnInteractionEnd();
                 _heldObject.transform.position = new Vector3(transform.position.x, transform.position.y, _heldObject.transform.position.z);
                 _heldObject = null;
+                _lensOnTheBack.SetActive(false);
             }
         }
     }

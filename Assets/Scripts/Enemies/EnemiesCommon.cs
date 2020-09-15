@@ -207,9 +207,9 @@ public class EnemyBase : MonoBehaviour
     private Projectile projectile = null;
     public Projectile Projectile { get => projectile; }
 
-    [SerializeField]
-    private SpriteRenderer spriteRenderer = null;
-    public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
+    //[SerializeField]
+    //private SpriteRenderer spriteRenderer = null;
+    //public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
 
     [SerializeField]
     private Transform[] patrolingPoints = null;
