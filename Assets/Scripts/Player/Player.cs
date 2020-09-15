@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Linq;
-using System.Security.Policy;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Events;
@@ -228,6 +226,7 @@ public class PlayerReceivedDamage : BaseState
 
         //player.DecreaseHealth(1000);
         player.Animator.Play("Being Electrocuted");
+        player.StartCoroutine(FadeOut());
         player.Collider.enabled = false;
         damageCooldownElapsed = 0.0f;
         Debug.Log("Die");
@@ -259,6 +258,12 @@ public class PlayerReceivedDamage : BaseState
         //player.Move(horizontalMove, deltaTime);
 
         //damageCooldownElapsed += deltaTime;
+    }
+
+    private IEnumerator FadeOut()
+    {
+        yield return new WaitForSeconds(0.5f);
+        GameObject.Find("Fade").BroadcastMessage("FadeOut");
     }
 
     public override void onExit()
@@ -345,6 +350,7 @@ public class Player : MonoBehaviour
     private Vector3 _originalLensPosition = Vector3.zero;
     private Quaternion _originalLensRotation;
     private Transform _originalLensParent = null;
+    private bool _canDie = true;
     #endregion
 
     #region Properties
@@ -443,8 +449,6 @@ public class Player : MonoBehaviour
 
     public void Respawn()
     {
-        Debug.Log("Respawn");
-
         if (!_checkpoint)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -469,8 +473,21 @@ public class Player : MonoBehaviour
 
                 _heldObject.transform.position = _pickLensPosition;
                 _heldObject.gameObject.SetActive(true);
+                _heldObject = null;
             }
         }
+
+        StartCoroutine(DeathCooldown());
+    }
+
+    private IEnumerator DeathCooldown()
+    {
+        _canDie = false;
+
+        yield return new WaitForSeconds(0.3f);
+        GameObject.Find("Fade").BroadcastMessage("FadeIn");
+
+        _canDie = true;
     }
 
     public void AttackHigh(InputAction.CallbackContext ctx)
@@ -593,7 +610,7 @@ public class Player : MonoBehaviour
 
     void OnLaserHit()
     {
-        if(StateMachine.CurrentState != PlayerState.ReceivedDamage)
+        if(_canDie)
             StateMachine.ChangeState(PlayerState.ReceivedDamage);
     }
 
