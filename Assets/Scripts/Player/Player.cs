@@ -321,6 +321,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Renderer _joints = null;
     public Renderer Joints { get => _joints; }
+
+    [SerializeField]
+    private GameObject _lensOnTheBack = null;
+    public GameObject Lens { get => _lensOnTheBack; }
+
     #endregion
 
     #region Private Fields 
@@ -501,6 +506,7 @@ public class Player : MonoBehaviour
                 {
                     _heldObject = objects[0].gameObject.GetComponent<Interactable>();
                     _heldObject.OnInteractionStart();
+                    _lensOnTheBack.SetActive(true);
                 }
 
                 foreach(var obj in Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Terminal")))
@@ -513,6 +519,7 @@ public class Player : MonoBehaviour
                 _heldObject.OnInteractionEnd();
                 _heldObject.transform.position = new Vector3(transform.position.x, transform.position.y, _heldObject.transform.position.z);
                 _heldObject = null;
+                _lensOnTheBack.SetActive(false);
             }
         }
     }
