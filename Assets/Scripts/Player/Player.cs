@@ -262,7 +262,9 @@ public class PlayerReceivedDamage : BaseState
     private IEnumerator FadeOut()
     {
         yield return new WaitForSeconds(0.5f);
-        GameObject.Find("Fade").BroadcastMessage("FadeOut");
+        var fade = GameObject.Find("Fade");
+        if (fade)
+            fade.BroadcastMessage("FadeOut");
     }
 
     public override void onExit()
@@ -480,7 +482,9 @@ public class Player : MonoBehaviour
         _canDie = false;
 
         yield return new WaitForSeconds(0.3f);
-        GameObject.Find("Fade").BroadcastMessage("FadeIn");
+        var fade = GameObject.Find("Fade");
+        if(fade)
+            fade.BroadcastMessage("FadeIn");
 
         _canDie = true;
     }
