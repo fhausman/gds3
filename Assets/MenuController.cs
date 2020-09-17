@@ -11,6 +11,16 @@ public class MenuController : MonoBehaviour
     [SerializeField]
     private GameObject _credits = null;
 
+    [SerializeField]
+    private Fade _fade = null;
+
+
+    public void FadeOut()
+    {
+        _fade.onFadeOutEnd.AddListener(StartGame);
+        _fade.FadeOut();
+    }
+
     public void StartGame()
     {
         SceneManager.LoadScene("Level1(Snaps)Alt");
