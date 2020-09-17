@@ -43,9 +43,9 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
             hit_object.SendMessage("OnLaserHit");
             return true;
         }
-
+       
         return false;
-    }
+    }  
 
     public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit)
     {

@@ -90,10 +90,11 @@ public class PlayerMoving : BaseState
 
     private void GravitySwitch(InputAction.CallbackContext ctx)
     {
-        if (player.IsTouchingGround || (!player.IsTouchingGround && coyoteTimeElapsed < player.CoyoteTime))
-        {
+       // if (player.IsTouchingGround || (!player.IsTouchingGround && coyoteTimeElapsed < player.CoyoteTime))
+       // {
             player.StateMachine.ChangeState(PlayerState.Flipping);
-        }
+            player.GravityVelocity = Vector3.zero;
+        // }
     }
 
     public void Dash(InputAction.CallbackContext ctx)
@@ -123,7 +124,8 @@ public class PlayerFlipping : BaseState
     public override void onInit(params object[] args)
     {
         player.Controls.Player.GravitySwitch.performed += CancelSwitch;
-        
+        player.Parent.transform.parent = null;
+
         _dir = player.Parent.transform.up;
         _start = player.Parent.rotation;
         _target = _start * Quaternion.Euler(180.0f, 0.0f, 0.0f);
