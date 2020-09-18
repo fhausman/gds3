@@ -19,7 +19,7 @@ public class StaticEnemyIdle : BaseState
 
     public override void onUpdate(float deltaTime)
     {
-        if (enemy.Logic.IsInRange && enemy.Logic.HasClearShot)
+        if (enemy.Logic.IsInRange)
         {
             StartShooting();
         }
@@ -36,7 +36,7 @@ public class StaticEnemyShooting : BaseState
     StaticEnemy enemy;
     private float timeElapsed = 0.0f;
 
-    bool IsPlayerInRange { get => enemy.Logic.IsInRange && enemy.Logic.HasClearShot; }
+    bool IsPlayerInRange { get => enemy.Logic.IsInRange; }
 
     public StaticEnemyShooting(StaticEnemy e)
     {
