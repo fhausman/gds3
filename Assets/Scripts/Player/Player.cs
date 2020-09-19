@@ -340,6 +340,12 @@ public class Player : MonoBehaviour
     private GameObject _lensOnTheBack = null;
     public GameObject Lens { get => _lensOnTheBack; }
 
+    [SerializeField]
+    private AudioSource _audio = null;
+
+    [SerializeField]
+    private AudioClip[] _footsteps = null;
+
     #endregion
 
     #region Private Fields 
@@ -354,6 +360,7 @@ public class Player : MonoBehaviour
     private Quaternion _originalLensRotation;
     private Transform _originalLensParent = null;
     private bool _canDie = true;
+    private float _footstepDelay = 0.0f;
     #endregion
 
     #region Properties
@@ -435,11 +442,25 @@ public class Player : MonoBehaviour
             _parent.transform.localScale = new Vector3(
                 Mathf.Sign(FacingDirection) * Mathf.Abs(_parent.transform.localScale.x), _parent.transform.localScale.y, _parent.transform.localScale.z
             );
+
+            if (IsTouchingGround)
+            {
+                if (_footstepDelay > 0.3f)
+                {
+                    PlayFootstep();
+                }
+            }
         }
         else
         {
             Animator.SetTrigger("Idle");
         }
+    }
+
+    private void PlayFootstep()
+    {
+        _footstepDelay = 0.0f;
+        _audio.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
     }
 
     public bool HitsGround(out RaycastHit hit)
@@ -570,6 +591,8 @@ public class Player : MonoBehaviour
                 _lensOnTheBack.SetActive(false);
             }
         }
+
+        _footstepDelay += Time.deltaTime;
     }
 
     void FixedUpdate()
