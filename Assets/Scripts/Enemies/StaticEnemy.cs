@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class StaticEnemyIdle : BaseState
 {
@@ -115,6 +113,14 @@ public class StaticEnemy : EnemyBase
 
     public Animator Animator { get; private set; } = null;
 
+    [SerializeField]
+    private AudioSource _audio = null;
+
+    [SerializeField]
+    private AudioClip[] _shotSounds = null;
+
+    private int _currentShot = 0;
+
     private void Start()
     {
         Animator = GetComponent<Animator>();
@@ -148,6 +154,11 @@ public class StaticEnemy : EnemyBase
         projectile.Dir = projectileSpawnPoint.forward;
 
         Animator.Play("Shoot");
+
+        
+        _audio.PlayOneShot(_shotSounds[_currentShot % 2]);
+        ++_currentShot;
+        _audio.pitch = Random.Range(0.9f, 1.1f);
     }
 
     private void SetIdle()
