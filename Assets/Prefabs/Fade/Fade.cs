@@ -18,12 +18,12 @@ public class Fade : MonoBehaviour
 
     public void FadeIn()
     {
-        _anim.Play("FadeIn");
+        _anim.Play("FadeIn", -1, 0.0f);
     }
 
     public void FadeOut()
     {
-        _anim.Play("FadeOut");
+        _anim.Play("FadeOut", -1, 0.0f);
     }
 
     public void OnFadeOutEnd()
