@@ -22,10 +22,19 @@ public class Door : MonoBehaviour
     [SerializeField]
     private Material openedMaterial = null;
 
+    [SerializeField]
+    private AudioClip _openSound = null;
+
+    [SerializeField]
+    private AudioClip _closeSound = null;
+
+    private AudioSource _audio = null;
+
     private void Start()
     {
         _closePosition = transform.position;
         _openPosition = _closePosition - new Vector3(0.0f, 0.0f, -2.0f);
+        _audio = GetComponent<AudioSource>();
     }
 
     public void Open()
@@ -35,6 +44,8 @@ public class Door : MonoBehaviour
             lampRef.material = openedMaterial;
             StopAllCoroutines();
             StartCoroutine(Move(transform.position, _openPosition));
+            _audio.Stop();
+            _audio.PlayOneShot(_openSound);
         }
     }
 
@@ -45,6 +56,8 @@ public class Door : MonoBehaviour
             lampRef.material = closedMaterial;
             StopAllCoroutines();
             StartCoroutine(Move(transform.position, _closePosition));
+            _audio.Stop();
+            _audio.PlayOneShot(_closeSound);
         }
     }
 
