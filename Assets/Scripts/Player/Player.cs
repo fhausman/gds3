@@ -420,6 +420,7 @@ public class Player : MonoBehaviour
 
             GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
             _parent.position += GravityVelocity * deltaTime;
+            _parent.transform.parent = null;
         }
 
         if (Mathf.Abs(dir.x) > 0.0f + Mathf.Epsilon)
