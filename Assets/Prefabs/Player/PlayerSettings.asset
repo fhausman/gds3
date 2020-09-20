@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
   health: 99
-  speed: 7
+  speed: 6
   switchSpeed: 9
   gravitySpeed: 8
   blockSpeedModifier: 0.1

@@ -5,6 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: c2e0405bc3ba75043ade8144ade70ea4
+  - enabled: 1
+    path: Assets/Scenes/Story1.unity
+    guid: 89834ebd02fd0994191cf5b26e67d185
+  - enabled: 1
+    path: Assets/Scenes/Level1(Snaps)Alt.unity
+    guid: 02373b6d13bca4d458b138831ba9103b
   - enabled: 0
     path: Assets/Scenes/Poziom1.unity
     guid: 3abefc2913bb678409590c55e6a84b7b
@@ -15,18 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Poziom3.unity
     guid: 5f9f49e7daabb410e8e8f4f2324dd33e
   - enabled: 0
-    path: Assets/Scenes/Story1.unity
-    guid: 89834ebd02fd0994191cf5b26e67d185
-  - enabled: 0
     path: Assets/Scenes/Story2.unity
     guid: 3bc0eb4f48092d344b569f1264bfba48
   - enabled: 0
     path: Assets/Scenes/Story3.unity
     guid: cbaf0070859998f44b8c24a058b99863
-  - enabled: 1
-    path: Assets/Scenes/Menu.unity
-    guid: c2e0405bc3ba75043ade8144ade70ea4
-  - enabled: 1
-    path: Assets/Scenes/Level1(Snaps)Alt.unity
-    guid: 02373b6d13bca4d458b138831ba9103b
   m_configObjects: {}
