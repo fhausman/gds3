@@ -23,7 +23,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Poziom3.unity
     guid: 5f9f49e7daabb410e8e8f4f2324dd33e
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Story2.unity
     guid: 3bc0eb4f48092d344b569f1264bfba48
   - enabled: 0

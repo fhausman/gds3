@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Events;
@@ -619,6 +620,7 @@ public class Player : MonoBehaviour
         else if(other.CompareTag("Checkpoint"))
         {
             _checkpoint = other.gameObject;
+            _checkpoint.BroadcastMessage("OnCheckPointEnter");
         }
     }
 
