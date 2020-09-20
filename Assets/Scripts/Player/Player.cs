@@ -564,7 +564,7 @@ public class Player : MonoBehaviour
         CooldownUpdate();
         StateMachine.OnUpdate(Time.deltaTime);
 
-        if (Controls.Player.Interact.triggered)
+        if (Controls.Player.Interact.triggered && IsTouchingGround)
         {
             if (_heldObject == null)
             {
