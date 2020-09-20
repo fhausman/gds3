@@ -432,17 +432,17 @@ PrefabInstance:
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
@@ -466,6 +466,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -1363660678810306217, guid: e9d108c8d1ec73d4c82432931a49fb40,
         type: 2}
+    - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
+        type: 3}
+      propertyPath: m_parseCtrlCharacters
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
+        type: 3}
+      propertyPath: m_text
+      value: Essccape
+      objectReference: {fileID: 0}
+    - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 72
+      objectReference: {fileID: 0}
     - target: {fileID: 3135193979350419917, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: plotText.Array.size
