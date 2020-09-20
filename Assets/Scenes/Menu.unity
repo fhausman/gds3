@@ -680,6 +680,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b1040fedd8c3484ba95a29f1f562955, type: 3}
+--- !u!1 &160757826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2024100082931741400, guid: 2df0dfcef6f44ff47ad1c6bcaadeef71,
+    type: 3}
+  m_PrefabInstance: {fileID: 1313760728}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &200695390
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1822,6 +1828,7 @@ MonoBehaviour:
   _mainMenu: {fileID: 1443291277}
   _credits: {fileID: 566068542}
   _fade: {fileID: 537088688}
+  _music: {fileID: 160757826}
 --- !u!1 &566068542
 GameObject:
   m_ObjectHideFlags: 0
@@ -4310,6 +4317,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2024100082931741400, guid: 2df0dfcef6f44ff47ad1c6bcaadeef71,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2315418339788818584, guid: 2df0dfcef6f44ff47ad1c6bcaadeef71,
         type: 3}
       propertyPath: m_audioClip
@@ -4319,6 +4331,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Loop
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374311955739654476, guid: 2df0dfcef6f44ff47ad1c6bcaadeef71,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6423628312537307152, guid: 2df0dfcef6f44ff47ad1c6bcaadeef71,
         type: 3}

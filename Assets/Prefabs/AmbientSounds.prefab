@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8128538073067881745
 Transform:
   m_ObjectHideFlags: 0
@@ -132,7 +132,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audio: {fileID: 2315418339788818584}
-  _sequence: []
+  _sequence:
+  - {fileID: 8300000, guid: db5be99f6439a644391f8efd1030bc84, type: 3}
+  - {fileID: 8300000, guid: db5be99f6439a644391f8efd1030bc84, type: 3}
+  - {fileID: 8300000, guid: 4e1e50a0ac2621143a50936a7e5d51d5, type: 3}
+  - {fileID: 8300000, guid: 6fec57da6fc480c48ba153bf95acb457, type: 3}
+  - {fileID: 8300000, guid: db5be99f6439a644391f8efd1030bc84, type: 3}
+  - {fileID: 8300000, guid: 579cc4d978f85864e8d355c6a2422db8, type: 3}
+  - {fileID: 8300000, guid: 2fa4f05e37634cc4d9ed1b3c64c631ff, type: 3}
+  - {fileID: 8300000, guid: be57a75e253475e42a9f39c289ef3476, type: 3}
+  - {fileID: 8300000, guid: 6fec57da6fc480c48ba153bf95acb457, type: 3}
+  - {fileID: 8300000, guid: 4e1e50a0ac2621143a50936a7e5d51d5, type: 3}
 --- !u!1 &6423628312537307152
 GameObject:
   m_ObjectHideFlags: 0

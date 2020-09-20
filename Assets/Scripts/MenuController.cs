@@ -14,10 +14,14 @@ public class MenuController : MonoBehaviour
     [SerializeField]
     private Fade _fade = null;
 
+    [SerializeField]
+    private GameObject _music = null;
+
 
     public void FadeOut()
     {
         _fade.onFadeOutEnd.AddListener(StartGame);
+        _fade.onFadeOutEnd.AddListener(() => _music.SetActive(true));
         _fade.FadeOut();
     }
 
