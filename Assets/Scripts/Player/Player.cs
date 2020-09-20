@@ -371,6 +371,7 @@ public class Player : MonoBehaviour
     private bool _canDie = true;
     private float _footstepDelay = 0.0f;
     private bool _wasInAir = false;
+    private Rigidbody _rb = null;
     #endregion
 
     #region Properties
@@ -391,7 +392,7 @@ public class Player : MonoBehaviour
         get
         {
             RaycastHit hit;
-            return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
+            return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, LayerMask.GetMask("Ground"));
         }
     }
 
@@ -410,15 +411,17 @@ public class Player : MonoBehaviour
     {
         RaycastHit hit;
         //vertical movement
-        if (Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8))
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, LayerMask.GetMask("Ground")))
         {
             if (hit.collider.CompareTag("Elevator"))
             {
                 _parent.transform.parent = hit.collider.transform;
+                _rb.isKinematic = false;
+                _rb.constraints &= ~RigidbodyConstraints.FreezePositionY;
             }
             else
             {
-                _parent.transform.parent = null;
+                OnLeftElevator();
             }
 
             //Debug.DrawRay(hit.point, hit.normal, Color.red);
@@ -444,7 +447,7 @@ public class Player : MonoBehaviour
 
             GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
             _parent.position += GravityVelocity * deltaTime;
-            _parent.transform.parent = null;
+            OnLeftElevator();
 
             _wasInAir = true;
         }
@@ -453,7 +456,7 @@ public class Player : MonoBehaviour
         {
             Animator.SetTrigger("Running");
 
-            if (!Physics.Raycast(transform.position, dir, out hit, 0.5f, 1 << 8))
+            if (!Physics.Raycast(transform.position, dir, out hit, 0.5f, LayerMask.GetMask("Ground")))
             {
                 _parent.position += dir;
             }
@@ -476,6 +479,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnLeftElevator()
+    {
+        _parent.transform.parent = null;
+        _rb.isKinematic = true;
+        _rb.constraints |= RigidbodyConstraints.FreezePositionY;
+    }
+
     public void PlayFootstep()
     {
         _footstepDelay = 0.0f;
@@ -484,7 +494,7 @@ public class Player : MonoBehaviour
 
     public bool HitsGround(out RaycastHit hit)
     {
-        return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, 1 << 8);
+        return Physics.Raycast(transform.position, -transform.up, out hit, 1.0f, LayerMask.GetMask("Ground"));
     }
 
     public void Respawn()
@@ -560,6 +570,7 @@ public class Player : MonoBehaviour
     #region Mono behaviour methods
     void Start()
     {
+        _rb = GetComponent<Rigidbody>();
         Controls = new MainControls();
 
         StateMachine.AddState(PlayerState.Moving, new PlayerMoving(this));

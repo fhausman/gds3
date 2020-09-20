@@ -24,7 +24,7 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
 
     public DeadlyLaserBehaviour()
     {
-        _layerMask = LayerMask.GetMask("Player", "Ground");
+        _layerMask = LayerMask.GetMask("Player", "Ground", "Platforms");
     }
 
     public int GetCollisionMask()
