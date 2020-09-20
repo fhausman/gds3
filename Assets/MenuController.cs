@@ -23,7 +23,7 @@ public class MenuController : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Level1(Snaps)Alt");
+        SceneManager.LoadScene("Story1");
     }
 
     public void Credits()
