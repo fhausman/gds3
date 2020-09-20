@@ -134,12 +134,14 @@ public class PlayerFlipping : BaseState
         player.Parent.position += 2 * _dir;
 
         player.Animator.Play("Falling Idle");
+        player.PlayFootstep();
     }
 
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
         player.Animator.Play("Falling To Landing");
+        player.PlayFootstep();
     }
 
     public override void onUpdate(float deltaTime)
@@ -457,7 +459,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void PlayFootstep()
+    public void PlayFootstep()
     {
         _footstepDelay = 0.0f;
         _audio.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
