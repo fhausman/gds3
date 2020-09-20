@@ -586,7 +586,7 @@ public class Player : MonoBehaviour
             else
             {
                 _heldObject.OnInteractionEnd();
-                _heldObject.transform.position = new Vector3(transform.position.x, transform.position.y, _heldObject.transform.position.z);
+                _heldObject.transform.position = new Vector3(Mathf.Round(transform.position.x * 2.0f) / 2.0f, Mathf.Round(transform.position.y * 2.0f) / 2.0f, _heldObject.transform.position.z);
                 _heldObject = null;
                 _lensOnTheBack.SetActive(false);
             }
