@@ -8,6 +8,7 @@ public class LaserInterval : MonoBehaviour
 
      public GameObject[] lasers;
     [SerializeField] public float repeatRate = 1.0f;
+    [SerializeField] private Light _light = null;
    
     void Start()
     {
@@ -21,6 +22,11 @@ public class LaserInterval : MonoBehaviour
             lasers.GetComponent<LineRenderer>().enabled = !lasers.GetComponent<LineRenderer>().enabled;
             lasers.GetComponent<LaserSource>().enabled = !lasers.GetComponent<LaserSource>().enabled;
             lasers.GetComponent<BoxCollider>().enabled = !lasers.GetComponent<BoxCollider>().enabled;
+        }
+
+        if(_light)
+        {
+            _light.enabled = !_light.enabled;
         }
     }
 
