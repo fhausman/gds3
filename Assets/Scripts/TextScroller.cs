@@ -1,11 +1,12 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TextScroller : MonoBehaviour
 {
     [SerializeField]
-    private TextAsset[] plotText = null;
+    private TextAsset _plotText = null;
 
     [SerializeField]
     private string nextScene = "";
@@ -16,12 +17,14 @@ public class TextScroller : MonoBehaviour
     private int currentIndex = 0;
     private Fade fade;
     private AsyncOperation sceneLoad;
+    private string[] chapters;
 
     // Start is called before the first frame update
     void Start()
     {
         currentIndex = 0;
-        sceneText.text = plotText[currentIndex].text;
+        chapters = _plotText.text.Split('\n');
+        sceneText.text = chapters[currentIndex];
         fade = GameObject.FindObjectOfType<Fade>();
         sceneLoad = SceneManager.LoadSceneAsync(nextScene);
         sceneLoad.allowSceneActivation = false;
@@ -35,7 +38,7 @@ public class TextScroller : MonoBehaviour
             currentIndex++;
 
             fade.FadeIn();
-            if (currentIndex > plotText.Length - 1)
+            if (currentIndex > chapters.Length - 1)
             {
                 fade.onFadeOutEnd.AddListener(() => sceneLoad.allowSceneActivation = true);
                 fade.FadeOut();
@@ -43,7 +46,7 @@ public class TextScroller : MonoBehaviour
                 return;
             }
 
-            sceneText.text = plotText[currentIndex].text;
+            sceneText.text = chapters[currentIndex];
         }
     }
 }
