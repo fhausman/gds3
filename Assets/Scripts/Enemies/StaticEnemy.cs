@@ -43,7 +43,7 @@ public class StaticEnemyShooting : BaseState
 
     public override void onInit(params object[] args)
     {
-        timeElapsed = 0.0f;
+        timeElapsed = 100.0f;
         //enemy.Animator.Play("AnimRED_Attack");
     }
 
@@ -155,10 +155,8 @@ public class StaticEnemy : EnemyBase
 
         Animator.Play("Shoot");
 
-        
         _audio.PlayOneShot(_shotSounds[_currentShot % 2]);
         ++_currentShot;
-        _audio.pitch = Random.Range(0.9f, 1.1f);
     }
 
     private void SetIdle()
