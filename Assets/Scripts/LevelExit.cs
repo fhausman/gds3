@@ -11,7 +11,16 @@ public class LevelExit : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            SceneManager.LoadScene(sceneToLoad);
+            var fade = GameObject.Find("Fade").GetComponent<Fade>();
+            if (fade)
+            {
+                fade.onFadeOutEnd.AddListener(() => SceneManager.LoadScene(sceneToLoad));
+                fade.FadeOut();
+            }
+            else
+            {
+                SceneManager.LoadScene(sceneToLoad);
+            }
         }
     }
 }
