@@ -80,7 +80,7 @@ public class PlayerMoving : BaseState
     {
         var inputDirectionModifier = player.InputModifier;
 
-        if(Mathf.Abs(inputDirectionModifier) > 0.0f + Mathf.Epsilon)
+        if(Mathf.Abs(inputDirectionModifier) > 0.05f)
         {
             player.FacingDirection = Mathf.Sign(inputDirectionModifier);
         }
@@ -156,7 +156,13 @@ public class PlayerFlipping : BaseState
 
     public override void onFixedUpdate(float deltaTime)
     {
-        var horizontalMove = player.transform.right * player.InputModifier * player.SwitchSpeed * deltaTime;
+        var inputDirectionModifier = player.InputModifier;
+        if (Mathf.Abs(inputDirectionModifier) > 0.0f + Mathf.Epsilon)
+        {
+            player.FacingDirection = Mathf.Sign(inputDirectionModifier);
+        }
+
+        var horizontalMove = player.transform.right * inputDirectionModifier * player.SwitchSpeed * deltaTime;
         player.Move(horizontalMove, deltaTime);
     }
 
@@ -364,6 +370,7 @@ public class Player : MonoBehaviour
     private Transform _originalLensParent = null;
     private bool _canDie = true;
     private float _footstepDelay = 0.0f;
+    private bool _wasInAir = false;
     #endregion
 
     #region Properties
@@ -392,8 +399,8 @@ public class Player : MonoBehaviour
     {
         get
         {
-            var horizontalInput = Vector3.Dot(transform.right, Vector3.right) * Controls.Player.HorizontalMovement.ReadValue<float>();
-            var verticalInput = Vector3.Dot(transform.right, Vector3.up) * Controls.Player.VerticalMovement.ReadValue<float>();
+            var horizontalInput = Vector3.Dot(_parent.transform.right, Vector3.right) * Controls.Player.HorizontalMovement.ReadValue<float>();
+            var verticalInput = Vector3.Dot(_parent.transform.right, Vector3.up) * Controls.Player.VerticalMovement.ReadValue<float>();
             return Mathf.Clamp(horizontalInput + verticalInput, -1.0f, 1.0f);
         }
     }
@@ -420,6 +427,13 @@ public class Player : MonoBehaviour
             _parent.rotation = Quaternion.RotateTowards(_parent.rotation, normalQuat, 5.0f);
             //_parent.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             GravityVelocity = Vector3.zero;
+
+            if(_wasInAir)
+            {
+                PlayFootstep();
+            }
+
+            _wasInAir = false;
         }
         else
         {
@@ -431,9 +445,11 @@ public class Player : MonoBehaviour
             GravityVelocity += -_parent.up * GravitySpeed * deltaTime;
             _parent.position += GravityVelocity * deltaTime;
             _parent.transform.parent = null;
+
+            _wasInAir = true;
         }
 
-        if (Mathf.Abs(dir.x) > 0.0f + Mathf.Epsilon)
+        if (dir.magnitude > 0.05f)
         {
             Animator.SetTrigger("Running");
 
