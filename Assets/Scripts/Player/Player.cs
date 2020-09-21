@@ -37,7 +37,7 @@ public class PlayerMoving : BaseState
     public override void onInit(params object[] args)
     {
         player.Controls.Player.GravitySwitch.performed += GravitySwitch;
-        player.Controls.Player.Dash.performed += Dash;
+        //player.Controls.Player.Dash.performed += Dash;
 
         coyoteTimeElapsed = 0.0f;
     }
@@ -45,9 +45,9 @@ public class PlayerMoving : BaseState
     public override void onExit()
     {
         player.Controls.Player.GravitySwitch.performed -= GravitySwitch;
-        player.Controls.Player.Dash.performed -= Dash;
-        player.Controls.Player.AttackHigh.performed -= player.AttackHigh;
-        player.Controls.Player.AttackLow.performed -= player.AttackLow;
+        //player.Controls.Player.Dash.performed -= Dash;
+        //player.Controls.Player.AttackHigh.performed -= player.AttackHigh;
+        //player.Controls.Player.AttackLow.performed -= player.AttackLow;
 
         speedModifier = 1.0f;
     }
