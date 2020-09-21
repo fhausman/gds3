@@ -16,6 +16,14 @@ public class Elevator : MonoBehaviour
 
     [SerializeField]
     private Direction _direction = Direction.HORIZONTAL;
+
+    [SerializeField]
+    private float _upDownBounceDistance = 2.05f;
+
+    [SerializeField]
+    private float _leftRightBounceDistance = 2.05f;
+
+
     private Vector3 _dir = Vector3.left;
 
     private float delta = 0.0f;
@@ -28,7 +36,7 @@ public class Elevator : MonoBehaviour
     private void FixedUpdate()
     {
         transform.position += _dir * _moveSpeed * Time.fixedDeltaTime;
-        if (Physics.Raycast(transform.position, _dir, (Direction.HORIZONTAL == _direction ? 2.05f : 3.05f), LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(transform.position, _dir, (Direction.HORIZONTAL == _direction ? _leftRightBounceDistance : _upDownBounceDistance), LayerMask.GetMask("Ground")))
         {
             _dir = -_dir;
         }
