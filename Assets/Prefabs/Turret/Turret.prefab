@@ -80,17 +80,17 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.6
-  m_Pitch: 0.4
+  m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 5
-  MaxDistance: 30
+  MinDistance: 10
+  MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -200,8 +200,8 @@ MonoBehaviour:
   projectileSpawnPoint: {fileID: 1005586469451044092}
   _audio: {fileID: 1804706572417138250}
   _shotSounds:
-  - {fileID: 8300000, guid: f56a3d26652f6d243af38e4eb0307287, type: 3}
-  - {fileID: 8300000, guid: 04152830e7484dd4ca9acfac3da3bab2, type: 3}
+  - {fileID: 8300000, guid: 12c9e3ca3d0b40f4a91604eb7b53f257, type: 3}
+  - {fileID: 8300000, guid: ec49a8c16bb3b184bae2befb306125ff, type: 3}
 --- !u!95 &1493176440044586391
 Animator:
   serializedVersion: 3
