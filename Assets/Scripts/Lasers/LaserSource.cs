@@ -126,7 +126,7 @@ public class LaserSource : MonoBehaviour
 
     private ILaserHitBehaviour _laserHitBehaviour;
     private UnityEvent _onNothingWasHit = new UnityEvent();
-    private const int MAX_REFLECTIONS_NUM = 10;
+    private const int MAX_REFLECTIONS_NUM = 6;
 
     private void Awake()
     {
