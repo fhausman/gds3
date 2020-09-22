@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 2
   speed: 0
-  shootRate: 0.5
-  range: 16
+  shootRate: 0.4
+  range: 15
   safeDistance: 0
   dashForce: 0
