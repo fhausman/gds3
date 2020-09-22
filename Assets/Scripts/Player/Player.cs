@@ -142,7 +142,7 @@ public class PlayerFlipping : BaseState
     {
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
         player.Animator.Play("Falling To Landing");
-        player.PlayFootstep();
+        //player.PlayFootstep();
     }
 
     public override void onUpdate(float deltaTime)
@@ -173,6 +173,8 @@ public class PlayerFlipping : BaseState
         _dir = -_dir;
         player.Parent.position += 2 * _dir;
         player.GravityVelocity = Vector3.zero;
+
+        //player.PlayLand();
     }
 }
 
@@ -355,6 +357,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip[] _footsteps = null;
 
+    [SerializeField]
+    private AudioClip _land = null;
+
     #endregion
 
     #region Private Fields 
@@ -433,7 +438,7 @@ public class Player : MonoBehaviour
 
             if(_wasInAir)
             {
-                PlayFootstep();
+                PlayLand();
             }
 
             _wasInAir = false;
@@ -489,7 +494,14 @@ public class Player : MonoBehaviour
     public void PlayFootstep()
     {
         _footstepDelay = 0.0f;
+        _audio.pitch = 1.0f;
         _audio.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
+    }
+
+    public void PlayLand()
+    {
+        _audio.pitch = Random.Range(0.95f, 1.05f);
+        _audio.PlayOneShot(_land);
     }
 
     public bool HitsGround(out RaycastHit hit)
