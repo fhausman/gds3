@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Runtime.InteropServices;
 using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
@@ -115,6 +116,9 @@ public class PlayerFlipping : BaseState
     private Quaternion? _start = null;
     private Quaternion? _target = null;
 
+    private Quaternion? _startMesh = null;
+    private Quaternion? _targetMesh = null;
+
     private Vector3 _dir;
 
     public PlayerFlipping(Player p)
@@ -134,6 +138,10 @@ public class PlayerFlipping : BaseState
         player.Parent.rotation = _target.Value;
         player.Parent.position += 2 * _dir;
 
+        _startMesh = player.Mesh.rotation * Quaternion.Euler(180.0f, 0.0f, 0.0f);
+        _targetMesh = _startMesh * Quaternion.Euler(180.0f, 0.0f, 0.0f);
+        player.Mesh.rotation = _startMesh.Value;
+
         player.Animator.Play("Falling Idle");
         player.PlayFootstep();
     }
@@ -143,6 +151,8 @@ public class PlayerFlipping : BaseState
         player.Controls.Player.GravitySwitch.performed -= CancelSwitch;
         player.Animator.Play("Falling To Landing");
         //player.PlayFootstep();
+
+        player.Mesh.rotation = _targetMesh.Value;
     }
 
     public override void onUpdate(float deltaTime)
@@ -152,6 +162,8 @@ public class PlayerFlipping : BaseState
         {
             player.StateMachine.ChangeState(PlayerState.Moving);
         }
+
+        player.Mesh.rotation = Quaternion.RotateTowards(player.Mesh.rotation, _targetMesh.Value, 20.0f);
     }
 
     public override void onFixedUpdate(float deltaTime)
@@ -173,6 +185,10 @@ public class PlayerFlipping : BaseState
         _dir = -_dir;
         player.Parent.position += 2 * _dir;
         player.GravityVelocity = Vector3.zero;
+
+        _targetMesh = _startMesh * Quaternion.Euler(180.0f, 0.0f, 0.0f);
+        player.Mesh.rotation = _targetMesh.Value;
+        _targetMesh = _targetMesh * Quaternion.Euler(180.0f, 0.0f, 0.0f);
 
         //player.PlayLand();
     }
@@ -328,8 +344,8 @@ public class Player : MonoBehaviour
     public Transform Parent { get => _parent; }
 
     [SerializeField]
-    private Weapon _weapon = null;
-    public Weapon Weapon { get => _weapon; }
+    private Transform _mesh = null;
+    public Transform Mesh { get => _mesh; }
 
     [SerializeField]
     private Collider _collider = null;

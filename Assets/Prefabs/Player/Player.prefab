@@ -174,7 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 9c815244d92b91940bf16011fb6ab243, type: 2}
   _parent: {fileID: 7776613916687982162}
-  _weapon: {fileID: 367278532711267162}
+  _mesh: {fileID: 7818289280440677774}
   _collider: {fileID: 1065187206782375561}
   _animator: {fileID: 5985850498943390989}
   _renderer: {fileID: 1696028486712489555}
