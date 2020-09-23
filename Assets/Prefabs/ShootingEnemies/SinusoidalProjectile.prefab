@@ -94,6 +94,11 @@ PrefabInstance:
       propertyPath: _collider
       value: 
       objectReference: {fileID: 585903233231760338}
+    - target: {fileID: 7371453145951272219, guid: a244b19bb113390458def6a1fbdec980,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a244b19bb113390458def6a1fbdec980, type: 3}
 --- !u!135 &585903233231760338 stripped

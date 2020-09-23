@@ -1,7 +1,9 @@
 ﻿using Boo.Lang;
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Projectile : MonoBehaviour
 {
@@ -9,11 +11,16 @@ public class Projectile : MonoBehaviour
     private ProjectileSettings _settings = null;
     [SerializeField]
     private Collider _collider = null;
+    [SerializeField]
+    private VisualEffect _sparks = null;
+    [SerializeField]
+    private GameObject _body = null;
 
     public bool IsReflected { get; set; } = false;
 
     private float _elapsedTime = 0.0f;
     private Vector3 _startingPosition = Vector3.zero;
+    private float _speed = 0.0f;
 
     public Vector3 Dir { get; set; } = Vector3.zero;
 
@@ -33,8 +40,8 @@ public class Projectile : MonoBehaviour
 
     private void Destroy()
     {
-        Debug.Log("Destroy");
-        Destroy(gameObject);
+        _speed = 0.0f;
+        StartCoroutine(KillProjectile());
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -59,6 +66,28 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    private IEnumerator KillProjectile()
+    {
+        var progress = 0.0f;
+        var rate = _sparks.GetFloat("Rate");
+        var sparksTransform = _sparks.gameObject.transform;
+        sparksTransform.transform.localScale = sparksTransform.transform.localScale * 3;
+        while (rate > 0)
+        {
+            rate = Mathf.Lerp(rate, 0, progress);
+            var scale = Vector3.Lerp(_body.transform.localScale, Vector3.zero, progress);
+            _body.transform.localScale = scale;
+
+            _sparks.SetFloat("Rate", rate);
+
+            progress += 0.05f;
+
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("ProjectileShield"))
@@ -77,6 +106,7 @@ public class Projectile : MonoBehaviour
     {
         _collider.enabled = false;
         _startingPosition = transform.position;
+        _speed = _settings.projectileSpeed;
     }
 
     // Update is called once per frame
@@ -84,7 +114,7 @@ public class Projectile : MonoBehaviour
     {
         var deltaTime = Time.deltaTime;
 
-        var moveVec = Dir * _settings.projectileSpeed;
+        var moveVec = Dir * _speed;
         transform.Translate(moveVec * deltaTime);
 
         if (_settings.frequency != 0)
