@@ -170,7 +170,7 @@ public class StaticEnemy : EnemyBase
     {
         yield return new WaitForSeconds(0.25f);
 
-        _audio.PlayOneShot(_reloadSound);
+        _audio.PlayOneShot(_reloadSound, 0.5f);
     }
 
     private void SetIdle()
