@@ -20,6 +20,7 @@ public class LaserInterval : MonoBehaviour
 
     void EnableRepeat()
     {
+
         bool enabled = false;
         foreach(GameObject lasers in lasers)
         {
@@ -37,6 +38,8 @@ public class LaserInterval : MonoBehaviour
         if (!enabled)
         {
             _audioSource.Stop();
+            _audioSource.PlayOneShot(_audio[2]);
+            StartCoroutine(OnSound());
         }
         else
         {
@@ -45,5 +48,10 @@ public class LaserInterval : MonoBehaviour
         }
     }
 
-   
+    IEnumerator OnSound()
+    {
+        yield return new WaitForSeconds(repeatRate - _audio[0].length);
+
+        _audioSource.PlayOneShot(_audio[0]);
+    }
 }
