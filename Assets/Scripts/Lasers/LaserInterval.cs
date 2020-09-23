@@ -9,24 +9,39 @@ public class LaserInterval : MonoBehaviour
      public GameObject[] lasers;
     [SerializeField] public float repeatRate = 1.0f;
     [SerializeField] private Light _light = null;
+    [SerializeField] private AudioClip[] _audio;
+    private AudioSource _audioSource;
    
     void Start()
     {
+        _audioSource = GetComponent<AudioSource>();
         InvokeRepeating("EnableRepeat", 1.0f, repeatRate);
     }
 
     void EnableRepeat()
     {
+        bool enabled = false;
         foreach(GameObject lasers in lasers)
         {
             lasers.GetComponent<LineRenderer>().enabled = !lasers.GetComponent<LineRenderer>().enabled;
             lasers.GetComponent<LaserSource>().enabled = !lasers.GetComponent<LaserSource>().enabled;
             lasers.GetComponent<BoxCollider>().enabled = !lasers.GetComponent<BoxCollider>().enabled;
+            enabled = lasers.GetComponent<LineRenderer>().enabled;
         }
 
         if(_light)
         {
             _light.enabled = !_light.enabled;
+        }
+
+        if (!enabled)
+        {
+            _audioSource.Stop();
+        }
+        else
+        {
+            _audioSource.clip = _audio[1];
+            _audioSource.Play();
         }
     }
 
