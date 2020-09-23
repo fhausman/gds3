@@ -202,6 +202,7 @@ MonoBehaviour:
   _shotSounds:
   - {fileID: 8300000, guid: 12c9e3ca3d0b40f4a91604eb7b53f257, type: 3}
   - {fileID: 8300000, guid: ec49a8c16bb3b184bae2befb306125ff, type: 3}
+  _reloadSound: {fileID: 8300000, guid: d69fc447b5549494280a439e3ec2f57b, type: 3}
 --- !u!95 &1493176440044586391
 Animator:
   serializedVersion: 3

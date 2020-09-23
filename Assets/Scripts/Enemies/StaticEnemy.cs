@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Net.Http.Headers;
+using UnityEngine;
 
 public class StaticEnemyIdle : BaseState
 {
@@ -119,6 +121,9 @@ public class StaticEnemy : EnemyBase
     [SerializeField]
     private AudioClip[] _shotSounds = null;
 
+    [SerializeField]
+    private AudioClip _reloadSound = null;
+
     private int _currentShot = 0;
 
     private void Start()
@@ -157,6 +162,15 @@ public class StaticEnemy : EnemyBase
 
         _audio.PlayOneShot(_shotSounds[_currentShot % 2]);
         ++_currentShot;
+
+        StartCoroutine(ReloadSound());
+    }
+
+    private IEnumerator ReloadSound()
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        _audio.PlayOneShot(_reloadSound);
     }
 
     private void SetIdle()
