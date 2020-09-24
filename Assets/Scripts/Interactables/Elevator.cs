@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Elevator : MonoBehaviour
 {
@@ -18,10 +15,16 @@ public class Elevator : MonoBehaviour
     private Direction _direction = Direction.HORIZONTAL;
 
     [SerializeField]
-    private float _upDownBounceDistance = 2.05f;
+    private float _upBounceDistance = 2.05f;
 
     [SerializeField]
-    private float _leftRightBounceDistance = 2.05f;
+    private float _downBounceDistance = 2.05f;
+
+    [SerializeField]
+    private float _leftBounceDistance = 2.05f;
+
+    [SerializeField]
+    private float _rightBounceDistance = 2.05f;
 
 
     private Vector3 _dir = Vector3.left;
@@ -36,9 +39,21 @@ public class Elevator : MonoBehaviour
     private void FixedUpdate()
     {
         transform.position += _dir * _moveSpeed * Time.fixedDeltaTime;
-        if (Physics.Raycast(transform.position, _dir, (Direction.HORIZONTAL == _direction ? _leftRightBounceDistance : _upDownBounceDistance), LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(transform.position, _dir, GetBounceDistance(), LayerMask.GetMask("Ground")))
         {
             _dir = -_dir;
+        }
+    }
+
+    private float GetBounceDistance()
+    {
+        if (Direction.HORIZONTAL == _direction)
+        {
+            return _dir.x > 0.0f ? _rightBounceDistance : _leftBounceDistance;
+        }
+        else
+        {
+            return _dir.y > 0.0f ? _upBounceDistance : _downBounceDistance;
         }
     }
 }
