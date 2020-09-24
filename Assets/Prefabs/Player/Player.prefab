@@ -208,6 +208,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: be9e735b4cbabe5468bc1cfe2eddce09, type: 3}
   - {fileID: 8300000, guid: 7020d87755a23404d8de250976c0f2bd, type: 3}
   _land: {fileID: 8300000, guid: 7aa3331867b865a42b8a6f238a11570d, type: 3}
+  _death: {fileID: 8300000, guid: 9308c4128a952ad4ba7072cffcdda0d0, type: 3}
 --- !u!1 &2983368276797543724
 GameObject:
   m_ObjectHideFlags: 0

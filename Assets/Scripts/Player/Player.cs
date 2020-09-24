@@ -237,11 +237,11 @@ public class PlayerReceivedDamage : BaseState
         //impactDirection = (float) args[0];
 
         //player.DecreaseHealth(1000);
+        player.PlayDeath();
         player.Animator.Play("Being Electrocuted");
         player.StartCoroutine(FadeOut());
         player.Collider.enabled = false;
         damageCooldownElapsed = 0.0f;
-        Debug.Log("Die");
     }
 
     public override void onUpdate(float deltaTime)
@@ -359,6 +359,9 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private AudioClip _land = null;
+
+    [SerializeField]
+    private AudioClip _death = null;
 
     #endregion
 
@@ -504,6 +507,12 @@ public class Player : MonoBehaviour
     {
         _audio.pitch = Random.Range(0.95f, 1.05f);
         _audio.PlayOneShot(_land);
+    }
+
+    public void PlayDeath()
+    {
+        _audio.pitch = Random.Range(0.95f, 1.05f);
+        _audio.PlayOneShot(_death);
     }
 
     public bool HitsGround(out RaycastHit hit)
