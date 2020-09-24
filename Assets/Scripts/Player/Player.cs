@@ -381,6 +381,7 @@ public class Player : MonoBehaviour
 
     #region Properties
     public MainControls Controls { get; private set; } = null;
+    public PlayerInput PlayerInput { get; private set; } = null;
     public StateMachine<PlayerState> StateMachine { get; private set; } = new StateMachine<PlayerState>();
     public Vector3 GravityVelocity { get; set; } = Vector3.zero;
     public bool WeaponEquipped { get; set; } = true;
@@ -391,6 +392,7 @@ public class Player : MonoBehaviour
     public bool IsHoldingObject { get => _heldObject != null; }
     public int CurrentHealth { get => _currentHealth; }
     public UnityEvent OnAttackStartNotify { get; set; } = new UnityEvent();
+    public string CurrentControls { get; private set; }
 
     public bool IsTouchingGround
     {
@@ -599,6 +601,15 @@ public class Player : MonoBehaviour
         _originalLensRotation = _lensOnTheBack.transform.localRotation;
 
         Controls.Enable();
+
+        var playerInput = GetComponent<PlayerInput>();
+        if (playerInput != null)
+        {
+            PlayerInput = playerInput;
+            PlayerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+            PlayerInput.onControlsChanged += (ctx) => CurrentControls = ctx.currentControlScheme;
+            CurrentControls = PlayerInput.currentControlScheme;
+        }
     }
 
     void Update()
