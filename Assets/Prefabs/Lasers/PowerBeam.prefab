@@ -87,6 +87,11 @@ PrefabInstance:
       propertyPath: _laserType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6670657430274894861, guid: 753b17b6d02785c47b8e9022667851f4,
+        type: 3}
+      propertyPath: _color
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6694395503415912478, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_IsActive

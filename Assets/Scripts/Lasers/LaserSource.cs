@@ -10,9 +10,17 @@ enum LaserType
     PowerBeam
 }
 
+public enum BeamColor
+{
+    BLUE,
+    GREEN,
+    YELLOW,
+    RED
+}
+
 public interface ILaserHitBehaviour
 {
-    Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit);
+    Tuple<Vector3, Vector3> Reflect(Vector3 currDir, BeamColor color, RaycastHit hit);
     bool OnObjectHit(GameObject hit_object);
     int GetCollisionMask();
     void OnNothingWasHit();
@@ -47,7 +55,7 @@ public class DeadlyLaserBehaviour : ILaserHitBehaviour
         return false;
     }  
 
-    public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit)
+    public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, BeamColor color, RaycastHit hit)
     {
         return Tuple.Create(Vector3.Reflect(currDir, hit.normal), hit.point);
     }
@@ -96,12 +104,19 @@ public class PowerBeamBehaviour : ILaserHitBehaviour
         return false;
     }
 
-    public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, RaycastHit hit)
+    public Tuple<Vector3, Vector3> Reflect(Vector3 currDir, BeamColor color, RaycastHit hit)
     {
         if(hit.collider.gameObject.CompareTag("Lens"))
         {
             var lens = hit.collider.gameObject.GetComponent<Lens>();
-            return Tuple.Create(lens.GetReflectionDirection(), lens.transform.position);
+            if (color == lens.Color)
+            {
+                return Tuple.Create(lens.GetReflectionDirection(), lens.transform.position);
+            }
+            else
+            {
+                return Tuple.Create(-currDir, lens.transform.position);
+            }
         }
 
         return Tuple.Create(Vector3.Reflect(currDir, hit.normal), hit.point);
@@ -120,6 +135,9 @@ public class LaserSource : MonoBehaviour
 
     [SerializeField]
     private LaserType _laserType = LaserType.DeadlyLaser;
+
+    [SerializeField]
+    private BeamColor _color = BeamColor.RED;
 
     [SerializeField]
     private bool _castsReflections = true;
@@ -165,7 +183,7 @@ public class LaserSource : MonoBehaviour
                 continue;
             }
 
-            (currentDir, currentPoint) = _laserHitBehaviour.Reflect(currentDir, hit);
+            (currentDir, currentPoint) = _laserHitBehaviour.Reflect(currentDir, _color, hit);
             beamPoints.Add(currentPoint);
 
             if (_laserHitBehaviour.OnObjectHit(hit.collider.gameObject))

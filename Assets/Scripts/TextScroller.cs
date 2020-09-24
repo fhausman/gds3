@@ -17,14 +17,17 @@ public class TextScroller : MonoBehaviour
     private int currentIndex = 0;
     private Fade fade;
     private AsyncOperation sceneLoad;
-    private string[] chapters;
+    private string[] chapters = null;
 
     // Start is called before the first frame update
     void Start()
     {
         currentIndex = 0;
-        chapters = _plotText.text.Split('\n');
-        sceneText.text = chapters[currentIndex];
+        if (_plotText != null)
+        {
+            chapters = _plotText.text.Split('\n');
+            sceneText.text = chapters[currentIndex];
+        }
         fade = GameObject.FindObjectOfType<Fade>();
         sceneLoad = SceneManager.LoadSceneAsync(nextScene);
         sceneLoad.allowSceneActivation = false;
@@ -35,18 +38,30 @@ public class TextScroller : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            currentIndex++;
-
-            fade.FadeIn();
-            if (currentIndex > chapters.Length - 1)
+            if (chapters != null)
             {
-                fade.onFadeOutEnd.AddListener(() => sceneLoad.allowSceneActivation = true);
-                fade.FadeOut();
-                gameObject.SetActive(false);
-                return;
-            }
+                currentIndex++;
 
-            sceneText.text = chapters[currentIndex];
+                fade.FadeIn();
+                if (currentIndex > chapters.Length - 1)
+                {
+                    LoadNextScene();
+                    return;
+                }
+
+                sceneText.text = chapters[currentIndex];
+            }
+            else
+            {
+                LoadNextScene();
+            }
         }
+    }
+
+    void LoadNextScene()
+    {
+        fade.onFadeOutEnd.AddListener(() => sceneLoad.allowSceneActivation = true);
+        fade.FadeOut();
+        gameObject.SetActive(false);
     }
 }
