@@ -432,17 +432,17 @@ PrefabInstance:
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 7
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
@@ -456,12 +456,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: e9d108c8d1ec73d4c82432931a49fb40,
-        type: 2}
-    - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
-        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: -1363660678810306217, guid: e9d108c8d1ec73d4c82432931a49fb40,
@@ -470,11 +464,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_parseCtrlCharacters
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
-        type: 3}
-      propertyPath: m_text
-      value: Essccape
       objectReference: {fileID: 0}
     - target: {fileID: 722687025209776856, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
