@@ -7324,17 +7324,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'KAMIL PIEKARSKI - GAME DESIGN
+  m_text: 'KAMIL PIEKARSKI - GAME DESIGN & LEVEL DESIGN
 
-    FILIP HAUSMAN - PROGRAMMING & PRODUCTION
+    FILIP HAUSMAN - PROGRAMMING
+    & PRODUCTION
 
-    PATRYK
-    AUGUSEWICZ - SOUND DESIGN
+    PATRYK AUGUSEWICZ - SOUND DESIGN
 
     FILIP BIERNAT - 3D ASSETS
 
-    MARCIN JAGIELAK
-    - GAME DESIGN'
+    MARCIN
+    JAGIELAK - GAME DESIGN'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d108c8d1ec73d4c82432931a49fb40, type: 2}
   m_sharedMaterial: {fileID: -1363660678810306217, guid: e9d108c8d1ec73d4c82432931a49fb40,
