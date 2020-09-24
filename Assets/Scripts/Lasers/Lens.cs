@@ -15,6 +15,10 @@ public class Lens : MonoBehaviour
     [SerializeField]
     private LensDirection _dir = LensDirection.UP;
 
+    [SerializeField]
+    private BeamColor _reflectColor = BeamColor.BLUE;
+    public BeamColor Color { get => _reflectColor; }
+
     public Vector3 GetReflectionDirection()
     {
         switch(_dir)
