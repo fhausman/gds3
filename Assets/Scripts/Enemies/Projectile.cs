@@ -71,7 +71,7 @@ public class Projectile : MonoBehaviour
         var progress = 0.0f;
         var rate = _sparks.GetFloat("Rate");
         var sparksTransform = _sparks.gameObject.transform;
-        sparksTransform.transform.localScale = sparksTransform.transform.localScale * 3;
+        sparksTransform.transform.localScale = sparksTransform.transform.localScale * 2;
         while (rate > 0)
         {
             rate = Mathf.Lerp(rate, 0, progress);
