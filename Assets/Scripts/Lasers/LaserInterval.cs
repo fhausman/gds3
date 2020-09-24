@@ -50,7 +50,7 @@ public class LaserInterval : MonoBehaviour
 
     IEnumerator OnSound()
     {
-        yield return new WaitForSeconds(repeatRate - _audio[0].length);
+        yield return new WaitForSeconds(repeatRate - (_audio[0].length / _audioSource.pitch));
 
         _audioSource.PlayOneShot(_audio[0]);
     }
