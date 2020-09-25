@@ -58,8 +58,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 5
   _direction: 0
-  _upDownBounceDistance: 2.05
-  _leftRightBounceDistance: 4
+  _upBounceDistance: 2.05
+  _downBounceDistance: 2.05
+  _leftBounceDistance: 2.05
+  _rightBounceDistance: 2.05
 --- !u!114 &8721265773641581211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,7 +513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1018684808052034, guid: d4a69086e0bd5e440a2bda14734b225c, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4160004270461786, guid: d4a69086e0bd5e440a2bda14734b225c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -582,7 +584,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1018684808052034, guid: d4a69086e0bd5e440a2bda14734b225c, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4160004270461786, guid: d4a69086e0bd5e440a2bda14734b225c, type: 3}
       propertyPath: m_LocalPosition.x
