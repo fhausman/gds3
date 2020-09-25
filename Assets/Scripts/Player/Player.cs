@@ -67,7 +67,7 @@ public class PlayerMoving : BaseState
         else
         {
             coyoteTimeElapsed += deltaTime;
-            speedModifier = 0.8f;
+            speedModifier = 1.0f; // 0.8f;
 
             if (!player.Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling Idle"))
             {
