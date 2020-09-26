@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
@@ -631,18 +632,17 @@ public class Player : MonoBehaviour
             if (_heldObject == null)
             {
                 var objects = Physics.OverlapSphere(Parent.position + Vector3.forward*2.0f, 1f, LayerMask.GetMask("Lens"));
-                if (objects.Length > 0)
+                foreach(var obj in objects)
                 {
-                    _heldObject = objects[0].gameObject.GetComponent<Interactable>();
-                    _heldObject.OnInteractionStart();
-                    _pickLensPosition = _heldObject.transform.position;
+                    _heldObject = obj.GetComponent<Interactable>();
+                    if (_heldObject != null)
+                    {
+                        _heldObject.OnInteractionStart();
+                        _pickLensPosition = _heldObject.transform.position;
 
-                    _lensOnTheBack.SetActive(true);
-                }
-
-                foreach(var obj in Physics.OverlapSphere(transform.position, 0.5f, LayerMask.GetMask("Terminal")))
-                {
-                    obj.gameObject.SendMessage("Activate");
+                        _lensOnTheBack.SetActive(true);
+                        break;
+                    }
                 }
             }
             else

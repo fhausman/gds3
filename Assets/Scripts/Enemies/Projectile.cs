@@ -41,6 +41,7 @@ public class Projectile : MonoBehaviour
     private void Destroy()
     {
         _speed = 0.0f;
+        _collider.enabled = false;
         StartCoroutine(KillProjectile());
     }
 
