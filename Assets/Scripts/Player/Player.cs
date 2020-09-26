@@ -672,15 +672,32 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing && StateMachine.CurrentState != PlayerState.ReceivedDamage)
-        {
-            StateMachine.ChangeState(PlayerState.ReceivedDamage);
-        }
-        else if(other.CompareTag("Checkpoint"))
+        //if(other.CompareTag("EnemyWeapon") && StateMachine.CurrentState != PlayerState.Dashing && StateMachine.CurrentState != PlayerState.ReceivedDamage)
+        //{
+        //    StateMachine.ChangeState(PlayerState.ReceivedDamage);
+        //}
+        if(other.CompareTag("Checkpoint"))
         {
             _checkpoint = other.gameObject;
             _checkpoint.BroadcastMessage("OnCheckPointEnter");
         }
+        else if (other.CompareTag("SpaceDeath"))
+        {
+            Controls.Player.Disable();
+            StartCoroutine(SpaceDeath());
+        }
+    }
+
+    IEnumerator SpaceDeath()
+    {
+        var fade = GameObject.Find("Fade");
+        if (fade)
+            fade.BroadcastMessage("FadeOut");
+
+        yield return new WaitForSeconds(0.5f);
+
+        Respawn();
+        Controls.Player.Enable();
     }
 
     void CooldownUpdate()
