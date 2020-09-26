@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 1804706572417138250}
   - component: {fileID: 8824982521656119025}
   - component: {fileID: 1493176440044586391}
-  m_Layer: 11
+  m_Layer: 9
   m_Name: Turret
   m_TagString: Projectile
   m_Icon: {fileID: 0}
