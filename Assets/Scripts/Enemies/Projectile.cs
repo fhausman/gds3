@@ -41,6 +41,7 @@ public class Projectile : MonoBehaviour
     private void Destroy()
     {
         _speed = 0.0f;
+        _collider.enabled = false;
         StartCoroutine(KillProjectile());
     }
 
@@ -90,16 +91,26 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("ProjectileShield"))
-        {
-            if (other.gameObject.transform.parent.gameObject.GetComponentInChildren<Weapon>().IsInSweetSpot(transform.position))
-            {
-                Reflect();
-                return;
-            }
+        //if(other.CompareTag("ProjectileShield"))
+        //{
+        //    if (other.gameObject.transform.parent.gameObject.GetComponentInChildren<Weapon>().IsInSweetSpot(transform.position))
+        //    {
+        //        Reflect();
+        //        return;
+        //    }
 
-            Destroy();
+        //    Destroy();
+        //}
+    }
+
+    private IEnumerator EnableCol()
+    {
+        while(_elapsedTime < 0.1f)
+        {
+            yield return null;
         }
+
+        _collider.enabled = true;
     }
 
     private void Start()
@@ -107,6 +118,8 @@ public class Projectile : MonoBehaviour
         _collider.enabled = false;
         _startingPosition = transform.position;
         _speed = _settings.projectileSpeed;
+
+        StartCoroutine(EnableCol());
     }
 
     // Update is called once per frame
@@ -121,11 +134,6 @@ public class Projectile : MonoBehaviour
         {
             var sin = transform.up * (_startingPosition.y + Mathf.Sin(_elapsedTime * _settings.frequency) * _settings.magnitude);
             transform.position = new Vector3(transform.position.x, sin.y, transform.position.z);
-        }
-
-        if(_elapsedTime >= 0.1f)
-        {
-            _collider.enabled = true;
         }
 
         _elapsedTime += deltaTime;

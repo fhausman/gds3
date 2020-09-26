@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class TextScroller : MonoBehaviour
@@ -13,6 +14,9 @@ public class TextScroller : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI sceneText = null;
+
+    [SerializeField]
+    private UnityEvent[] events = null;
 
     private int currentIndex = 0;
     private Fade fade;
@@ -27,6 +31,7 @@ public class TextScroller : MonoBehaviour
         {
             chapters = _plotText.text.Split('\n');
             sceneText.text = chapters[currentIndex];
+            events[0].Invoke();
         }
         fade = GameObject.FindObjectOfType<Fade>();
         sceneLoad = SceneManager.LoadSceneAsync(nextScene);
@@ -50,6 +55,7 @@ public class TextScroller : MonoBehaviour
                 }
 
                 sceneText.text = chapters[currentIndex];
+                events[currentIndex].Invoke();
             }
             else
             {
