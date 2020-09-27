@@ -353,6 +353,18 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+--- !u!114 &968703626 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3135193979350419917, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
+    type: 3}
+  m_PrefabInstance: {fileID: 173343437766380303}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8119eb171d649a4f9296d3b56e4fa44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1730533070
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -458,6 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f9f59199706d874e9d3a953efdeb2f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _textScroller: {fileID: 968703626}
   _explosion: {fileID: 8300000, guid: 4d3feada140397d41b8b7e23011c746d, type: 3}
   _laserOff: {fileID: 8300000, guid: d52895e191e5fe641851820cfec9575a, type: 3}
   _animator: {fileID: 173343437766380305}

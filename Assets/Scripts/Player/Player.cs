@@ -364,6 +364,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _death = null;
 
+    [SerializeField]
+    private AudioClip[] _takeBox = null;
+
     #endregion
 
     #region Private Fields 
@@ -641,6 +644,7 @@ public class Player : MonoBehaviour
                         _pickLensPosition = _heldObject.transform.position;
 
                         _lensOnTheBack.SetActive(true);
+                        _audio.PlayOneShot(_takeBox[0], 0.5f);
                         break;
                     }
                 }
@@ -651,6 +655,7 @@ public class Player : MonoBehaviour
                 _heldObject.transform.position = new Vector3(Mathf.Round(transform.position.x * 2.0f) / 2.0f, Mathf.Round(transform.position.y * 2.0f) / 2.0f, _heldObject.transform.position.z);
                 _heldObject = null;
                 _lensOnTheBack.SetActive(false);
+                _audio.PlayOneShot(_takeBox[1], 0.5f);
             }
         }
 

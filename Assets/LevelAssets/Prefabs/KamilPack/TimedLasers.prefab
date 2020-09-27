@@ -150,7 +150,7 @@ MonoBehaviour:
   repeatRate: 1
   _light: {fileID: 0}
   _audio:
-  - {fileID: 8300000, guid: 09341c487f3f85f419ade8f93d38cd58, type: 3}
+  - {fileID: 8300000, guid: d0afc6fc8a818d1438a0e869886e371a, type: 3}
   - {fileID: 8300000, guid: a26c474ca45e79844a290357fdfc0c71, type: 3}
   - {fileID: 8300000, guid: d52895e191e5fe641851820cfec9575a, type: 3}
 --- !u!1001 &1565026810053949687
@@ -218,7 +218,7 @@ PrefabInstance:
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_Positions.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
@@ -419,7 +419,7 @@ PrefabInstance:
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_Positions.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
@@ -605,7 +605,7 @@ PrefabInstance:
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
       propertyPath: m_Positions.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8094166182585852299, guid: 753b17b6d02785c47b8e9022667851f4,
         type: 3}
