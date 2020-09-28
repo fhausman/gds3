@@ -35,7 +35,10 @@ public class TextScroller : MonoBehaviour
         {
             chapters = _plotText.text.Split('\n');
             sceneText.text = chapters[currentIndex];
-            events[0].Invoke();
+            if (events.Length > 0)
+            {
+                events[0].Invoke();
+            }
         }
         fade = GameObject.FindObjectOfType<Fade>();
         sceneLoad = SceneManager.LoadSceneAsync(nextScene);
@@ -59,7 +62,10 @@ public class TextScroller : MonoBehaviour
                 {
                     fade.FadeIn();
                     sceneText.text = chapters[currentIndex];
-                    events[currentIndex].Invoke();
+                    if (events.Length > currentIndex)
+                    {
+                        events[currentIndex].Invoke();
+                    }
                 }
             }
             else
