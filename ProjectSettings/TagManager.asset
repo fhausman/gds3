@@ -14,6 +14,7 @@ TagManager:
   - ProjectileShield
   - Checkpoint
   - SpaceDeath
+  - AmbientSounds
   layers:
   - Default
   - TransparentFX
