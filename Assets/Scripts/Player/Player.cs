@@ -653,9 +653,10 @@ public class Player : MonoBehaviour
             }
             else
             {
-                _heldObject.OnInteractionEnd();
                 _heldObject.transform.position = GetLensPosition();
+                _heldObject.OnInteractionEnd();
                 _heldObject = null;
+
                 _lensOnTheBack.SetActive(false);
                 _audio.PlayOneShot(_takeBox[1], 0.5f);
             }
