@@ -643,7 +643,10 @@ public class Player : MonoBehaviour
                         _heldObject.OnInteractionStart();
                         _pickLensPosition = _heldObject.transform.position;
 
+                        var meshRenderer = _heldObject.GetComponentInChildren<MeshRenderer>();
                         _lensOnTheBack.SetActive(true);
+                        _lensOnTheBack.GetComponentInChildren<MeshRenderer>().materials = meshRenderer.materials;
+
                         _audio.PlayOneShot(_takeBox[0], 0.5f);
                         break;
                     }
