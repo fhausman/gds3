@@ -26,11 +26,13 @@ public class PauseMenu : MonoBehaviour
         {
             pauseMenu.SetActive(true);
             Time.timeScale = 0.0f;
+            Cursor.visible = true;
         }
         else
         {
             pauseMenu.SetActive(false);
             Time.timeScale = 1.0f;
+            Cursor.visible = false;
         }
     }
 
@@ -38,11 +40,13 @@ public class PauseMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Menu");
         Time.timeScale = 1.0f;
+        Cursor.visible = true;
     }
 
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1.0f;
+        Cursor.visible = false;
     }
 }

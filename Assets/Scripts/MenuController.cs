@@ -28,6 +28,7 @@ public class MenuController : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene("Story1");
+        Cursor.visible = false;
     }
 
     public void Credits()
