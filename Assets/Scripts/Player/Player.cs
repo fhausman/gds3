@@ -81,7 +81,7 @@ public class PlayerMoving : BaseState
     {
         var inputDirectionModifier = player.InputModifier;
 
-        if(Mathf.Abs(inputDirectionModifier) > 0.05f)
+        if(Mathf.Abs(inputDirectionModifier) > 0.01f)
         {
             player.FacingDirection = Mathf.Sign(inputDirectionModifier);
         }
@@ -466,7 +466,7 @@ public class Player : MonoBehaviour
             _wasInAir = true;
         }
 
-        if (dir.magnitude > 0.05f)
+        if (dir.magnitude > 0.01f)
         {
             Animator.SetTrigger("Running");
 
@@ -652,7 +652,7 @@ public class Player : MonoBehaviour
             else
             {
                 _heldObject.OnInteractionEnd();
-                _heldObject.transform.position = new Vector3(Mathf.Round(transform.position.x * 2.0f) / 2.0f, Mathf.Round(transform.position.y * 2.0f) / 2.0f, _heldObject.transform.position.z);
+                _heldObject.transform.position = GetLensPosition();
                 _heldObject = null;
                 _lensOnTheBack.SetActive(false);
                 _audio.PlayOneShot(_takeBox[1], 0.5f);
@@ -660,6 +660,26 @@ public class Player : MonoBehaviour
         }
 
         _footstepDelay += Time.deltaTime;
+    }
+
+    Vector3 GetLensPosition()
+    {
+        var verDot = Vector3.Dot(Parent.up, Vector3.up);
+        var horDot = Vector3.Dot(Parent.up, Vector3.right);
+
+        Debug.Log(string.Format("ver: {0} hor: {1}", verDot, horDot));
+        if (Mathf.Abs(verDot) >= 0.5f)
+        {
+            return new Vector3(Mathf.Round(Parent.position.x * 2.0f) / 2.0f, Parent.position.y + Parent.up.y * 0.4f, _heldObject.transform.position.z);
+        }
+        else if (Mathf.Abs(horDot) >= 0.5f)
+        {
+            return new Vector3(Parent.position.x + Parent.up.x * 0.4f, Mathf.Round(Parent.position.y * 2.0f) / 2.0f, _heldObject.transform.position.z);
+        }
+        else
+        {
+            return new Vector3(Mathf.Round(Parent.position.x * 2.0f) / 2.0f, Mathf.Round(Parent.position.y * 2.0f) / 2.0f, _heldObject.transform.position.z);
+        }
     }
 
     void FixedUpdate()

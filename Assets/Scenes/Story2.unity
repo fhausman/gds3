@@ -467,6 +467,11 @@ PrefabInstance:
       propertyPath: plotText.Array.data[2]
       value: 
       objectReference: {fileID: 4900000, guid: e40124589633ff84e98ed7404bd3453c, type: 3}
+    - target: {fileID: 3135193979350419917, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
+        type: 3}
+      propertyPath: _plotText
+      value: 
+      objectReference: {fileID: 4900000, guid: 3868972b07b5a4746aa03c206fe1e78e, type: 3}
     - target: {fileID: 7840888538631588732, guid: 77ac9ca354a3dfd4bb93c386be2de57d,
         type: 3}
       propertyPath: m_Name
