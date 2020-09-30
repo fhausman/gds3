@@ -17,6 +17,10 @@ public class MenuController : MonoBehaviour
     [SerializeField]
     private GameObject _music = null;
 
+    private void Start()
+    {
+        Cursor.visible = true;
+    }
 
     public void FadeOut()
     {
